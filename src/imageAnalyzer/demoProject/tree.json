@@ -1,0 +1,203 @@
+{
+    "nodes": [{
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:04.705.png",
+        "imageName": "2018-07-3014:29:04.705.png",
+        "buttons": ["com.ppg.spunky_java:id\/BJugar", "com.ppg.spunky_java:id\/BCrear", "com.ppg.spunky_java:id\/BUnirse"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/BJugar", "com.ppg.spunky_java:id\/BUnirse", "com.ppg.spunky_java:id\/BCrear"],
+        "name": "(0) com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity\n",
+        "id": 0,
+        "focusedApp": "com.ppg.spunky_java\/.MainActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:08.063.png",
+        "imageName": "2018-07-3014:29:08.063.png",
+        "buttons": ["com.ppg.spunky_java:id\/BSiguiente"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.EscogerGrupoActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/BSiguiente"],
+        "name": "(1) com.ppg.spunky_java\/com.ppg.spunky_java.EscogerGrupoActivity\n",
+        "id": 1,
+        "focusedApp": "com.ppg.spunky_java\/.EscogerGrupoActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:14.9.png",
+        "imageName": "2018-07-3014:29:14.9.png",
+        "buttons": [],
+        "currentFocus": "Crash after state: 1",
+        "clickedButtons": [],
+        "name": "(2) Crash after state: 1",
+        "id": 2,
+        "focusedApp": "Crash after state: 1"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:20.197.png",
+        "imageName": "2018-07-3014:29:20.197.png",
+        "buttons": ["android:id\/button1", "android:id\/button3"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity\n",
+        "clickedButtons": ["android:id\/button1"],
+        "name": "(3) com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity\n",
+        "id": 3,
+        "focusedApp": "com.ppg.spunky_java\/.MainActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:23.553.png",
+        "imageName": "2018-07-3014:29:23.553.png",
+        "buttons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "name": "(4) com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "id": 4,
+        "focusedApp": "com.ppg.spunky_java\/.UnirseActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:30.005.png",
+        "imageName": "2018-07-3014:29:30.005.png",
+        "buttons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "name": "(5) com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "id": 5,
+        "focusedApp": "com.ppg.spunky_java\/.UnirseActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:35.634.png",
+        "imageName": "2018-07-3014:29:35.634.png",
+        "buttons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "name": "(6) com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "id": 6,
+        "focusedApp": "com.ppg.spunky_java\/.UnirseActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:41.098.png",
+        "imageName": "2018-07-3014:29:41.098.png",
+        "buttons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "name": "(7) com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "id": 7,
+        "focusedApp": "com.ppg.spunky_java\/.UnirseActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:46.483.png",
+        "imageName": "2018-07-3014:29:46.483.png",
+        "buttons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "name": "(8) com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "id": 8,
+        "focusedApp": "com.ppg.spunky_java\/.UnirseActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:51.945.png",
+        "imageName": "2018-07-3014:29:51.945.png",
+        "buttons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "clickedButtons": ["com.ppg.spunky_java:id\/buttonJugar"],
+        "name": "(9) com.ppg.spunky_java\/com.ppg.spunky_java.UnirseActivity\n",
+        "id": 9,
+        "focusedApp": "com.ppg.spunky_java\/.UnirseActivity"
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:30:03.065.png",
+        "imageName": "2018-07-3014:30:03.065.png",
+        "buttons": [],
+        "currentFocus": "com.ppg.spunky_java\/com.ppg.spunky_java.EnConstruccionActivity\n",
+        "clickedButtons": [],
+        "name": "(10) com.ppg.spunky_java\/com.ppg.spunky_java.EnConstruccionActivity\n",
+        "id": 10,
+        "focusedApp": "com.ppg.spunky_java\/.EnConstruccionActivity"
+    }, {
+        "screenCapture": "NA",
+        "imageName": "NA",
+        "buttons": "NA",
+        "currentFocus": "NA",
+        "clickedButtons": "NA",
+        "name": "(11) End of execution",
+        "id": 11,
+        "focusedApp": "NA"
+    }],
+    "links": [{
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:06.803.pngT.png",
+        "id": 0,
+        "source": 0,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:04.705.xml; 2018-07-30 14:29:06.053", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:06.134", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:06.173", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:04.705.png, \/sdcard\/2018-07-3014:29:04.705.png, .\/generated\/ab5\/2018-07-3014:29:04.705.png; 2018-07-30 14:29:06.76", "command: TAP; parameters: 894, 1161; 2018-07-30 14:29:06.803; id: com.ppg.spunky_java:id\/BJugar"],
+        "value": 4,
+        "target": 1
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:18.941.pngT.png",
+        "id": 3,
+        "source": 0,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:17.375.xml; 2018-07-30 14:29:18.809", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:18.855", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:18.893", "command: TAP; parameters: 231, 1566; 2018-07-30 14:29:18.943; id: com.ppg.spunky_java:id\/BUnirse"],
+        "value": 2,
+        "target": 3
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:30:01.723.pngT.png",
+        "id": 11,
+        "source": 0,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:30:00.267.xml; 2018-07-30 14:30:01.605", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:30:01.644", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:30:01.683", "command: TAP; parameters: 110, 1394; 2018-07-30 14:30:01.724; id: com.ppg.spunky_java:id\/BCrear"],
+        "value": 2,
+        "target": 10
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:12.435.pngT.png",
+        "id": 1,
+        "source": 1,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:08.063.xml; 2018-07-30 14:29:09.412", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:09.464", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:09.503", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:08.063.png, \/sdcard\/2018-07-3014:29:08.063.png, .\/generated\/ab5\/2018-07-3014:29:08.063.png; 2018-07-30 14:29:09.846", "command: TAP; parameters: 269, 1630; 2018-07-30 14:29:12.435; id: com.ppg.spunky_java:id\/BSiguiente"],
+        "value": 2,
+        "target": 2
+    }, {
+        "screenCapture": "",
+        "id": 2,
+        "source": 2,
+        "actions": ["command: CLEAR DATA; parameters:com.ppg.spunky_java; 2018-07-30 14:29:15.87", "command: START APP; parameters:com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity; 2018-07-30 14:29:15.964"],
+        "value": 2,
+        "target": 11
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:22.146.pngT.png",
+        "id": 4,
+        "source": 3,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:20.197.xml; 2018-07-30 14:29:21.576", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:21.623", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:21.665", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:20.197.png, \/sdcard\/2018-07-3014:29:20.197.png, .\/generated\/ab5\/2018-07-3014:29:20.197.png; 2018-07-30 14:29:22.097", "command: TAP; parameters: 465, 1023; 2018-07-30 14:29:22.146; id: android:id\/button1"],
+        "value": 2,
+        "target": 4
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:28.612.pngT.png",
+        "id": 5,
+        "source": 4,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:23.553.xml; 2018-07-30 14:29:24.926", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:24.975", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:25.013", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:23.553.png, \/sdcard\/2018-07-3014:29:23.553.png, .\/generated\/ab5\/2018-07-3014:29:23.553.png; 2018-07-30 14:29:25.526", "command: TAP; parameters: 777, 1592; 2018-07-30 14:29:28.612; id: com.ppg.spunky_java:id\/buttonJugar"],
+        "value": 2,
+        "target": 5
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:34.253.pngT.png",
+        "id": 6,
+        "source": 5,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:30.005.xml; 2018-07-30 14:29:31.362", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:31.398", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:31.433", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:30.005.png, \/sdcard\/2018-07-3014:29:30.005.png, .\/generated\/ab5\/2018-07-3014:29:30.005.png; 2018-07-30 14:29:31.955", "command: TAP; parameters: 479, 1580; 2018-07-30 14:29:34.253; id: com.ppg.spunky_java:id\/buttonJugar"],
+        "value": 2,
+        "target": 6
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:39.796.pngT.png",
+        "id": 7,
+        "source": 6,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:35.634.xml; 2018-07-30 14:29:37.004", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:37.057", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:37.094", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:35.634.png, \/sdcard\/2018-07-3014:29:35.634.png, .\/generated\/ab5\/2018-07-3014:29:35.634.png; 2018-07-30 14:29:37.609", "command: TAP; parameters: 566, 1585; 2018-07-30 14:29:39.796; id: com.ppg.spunky_java:id\/buttonJugar"],
+        "value": 2,
+        "target": 7
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:45.155.pngT.png",
+        "id": 8,
+        "source": 7,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:41.098.xml; 2018-07-30 14:29:42.435", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:42.476", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:42.513", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:41.098.png, \/sdcard\/2018-07-3014:29:41.098.png, .\/generated\/ab5\/2018-07-3014:29:41.098.png; 2018-07-30 14:29:43.021", "command: TAP; parameters: 120, 1616; 2018-07-30 14:29:45.155; id: com.ppg.spunky_java:id\/buttonJugar"],
+        "value": 2,
+        "target": 8
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:50.582.pngT.png",
+        "id": 9,
+        "source": 8,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:46.483.xml; 2018-07-30 14:29:47.856", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:47.903", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:47.944", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:46.483.png, \/sdcard\/2018-07-3014:29:46.483.png, .\/generated\/ab5\/2018-07-3014:29:46.483.png; 2018-07-30 14:29:48.456", "command: TAP; parameters: 962, 1554; 2018-07-30 14:29:50.582; id: com.ppg.spunky_java:id\/buttonJugar"],
+        "value": 2,
+        "target": 9
+    }, {
+        "screenCapture": ".\/generated\/ab5\/2018-07-3014:29:56.142.pngT.png",
+        "id": 10,
+        "source": 9,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:29:51.945.xml; 2018-07-30 14:29:53.292", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:29:53.343", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:29:53.392", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:29:51.945.png, \/sdcard\/2018-07-3014:29:51.945.png, .\/generated\/ab5\/2018-07-3014:29:51.945.png; 2018-07-30 14:29:53.897", "command: TAP; parameters: 231, 1568; 2018-07-30 14:29:56.142; id: com.ppg.spunky_java:id\/buttonJugar"],
+        "value": 2,
+        "target": 0
+    }, {
+        "screenCapture": "",
+        "id": 12,
+        "source": 10,
+        "actions": ["command: TAKE XML SNAPSHOT; parameters: .\/generated\/ab5\/2018-07-3014:30:03.065.xml; 2018-07-30 14:30:04.436", "command: GETTING CURRENT FOCUS; parameters: none; 2018-07-30 14:30:04.483", "command: GETTING FOCUSED APP; parameters: none; 2018-07-30 14:30:04.534", "command: PULL SCREENSHOT; parameters: \/sdcard\/2018-07-3014:30:03.065.png, \/sdcard\/2018-07-3014:30:03.065.png, .\/generated\/ab5\/2018-07-3014:30:03.065.png; 2018-07-30 14:30:05.129", "command: GO BACK; parameters: none; 2018-07-30 14:30:05.399"],
+        "value": 2,
+        "target": 11
+    }]
+}

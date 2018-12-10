@@ -1,0 +1,40 @@
+{
+    "nodes": [{
+        "image": "2018-05-2108:09:03.151.png",
+        "name": "com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity\n - com.ppg.spunky_java\/.MainActivity",
+        "group": 0
+    }, {
+        "image": "2018-05-2108:09:05.602.png",
+        "name": "com.ppg.spunky_java\/com.ppg.spunky_java.EnConstruccionActivity\n - com.ppg.spunky_java\/.EnConstruccionActivity",
+        "group": 1
+    }, {
+        "image": "2018-05-2108:09:09.942.png",
+        "name": "com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity\n - com.ppg.spunky_java\/.MainActivity",
+        "group": 2
+    }, {
+        "image": "2018-05-2108:09:12.332.png",
+        "name": "com.ppg.spunky_java\/com.ppg.spunky_java.MainActivity\n - com.ppg.spunky_java\/.MainActivity",
+        "group": 3
+    }, {
+        "image": "2018-05-2108:09:16.584.png",
+        "name": "com.ppg.spunky_java\/com.ppg.spunky_java.EscogerGrupoActivity\n - com.ppg.spunky_java\/.EscogerGrupoActivity",
+        "group": 4
+    }],
+    "links": [{
+        "source": 0,
+        "value": 4,
+        "target": 1
+    }, {
+        "source": 1,
+        "value": 4,
+        "target": 2
+    }, {
+        "source": 2,
+        "value": 4,
+        "target": 3
+    }, {
+        "source": 3,
+        "value": 4,
+        "target": 4
+    }]
+}

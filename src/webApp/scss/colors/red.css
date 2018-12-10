@@ -1,0 +1,74 @@
+::-moz-selection {
+  /* Code for Firefox */
+  background-color: #f44336;
+}
+
+::selection {
+  background-color: #f44336;
+}
+
+a:hover,
+.sticky-header .nav-list li a,
+.sticky-header .nav-list li a::before,
+.twitter-item a:hover,
+.mdl-textfield--floating-label.is-focused .mdl-textfield__label,
+.mdl-textfield--floating-label.is-dirty .mdl-textfield__label,
+.mdl-textfield--floating-label.has-placeholder .mdl-textfield__label {
+  color: #f44336;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:active:hover,
+.btn-primary:active:focus,
+.mdl-button--raised:focus:not(:active),
+.btn-primary,
+.section-title,
+.section-title .section-anchor,
+.service-item:hover .icon::after,
+.team-member .skill-bar,
+.slick-dots .slick-active button,
+.portfolio-filter li .active,
+.portfolio-item .hover::after,
+.portfolio-item .hover-inner a,
+.news-slider-nav .hentry,
+.news-slider-nav .slick-arrow,
+.price-table:hover .price-head,
+.site-header.primary-bg,
+.price-table:hover .price-foot,
+.mdl-textfield__label::after {
+  background-color: #f44336;
+}
+
+.is-sticky .site-header.primary-bg {
+  background-color: #f55a4e;
+}
+
+.slick-dots li {
+  border-color: #f44336;
+}
+
+.sticky-header .nav-list li::after {
+  border-right-color: #f44336;
+}
+
+.scalabilty {
+  border-top-color: #f44336;
+}
+
+.news-slider-for::after {
+  border-bottom-color: #f44336;
+}
+
+/*============================================================
+	Mobile (Portrait) Design for a width of 320px
+==============================================================*/
+@media only screen and (max-width: 767px) {
+  .sticky-header .nav-list li a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  .sticky-header .nav-list li a:hover {
+    color: #f44336;
+  }
+}
