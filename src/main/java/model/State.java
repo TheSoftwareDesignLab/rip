@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -64,6 +65,11 @@ public class State {
 	 */
 	private List<Transition> inboundTransitions = new ArrayList<Transition>();
 
+	private List<HybridError> hybridErrors;
+	
+	private String screenShot;
+
+
 	/**
 	 * Creates a new state
 	 * 
@@ -77,6 +83,9 @@ public class State {
 		this.contextualChanges = contextualChanges;
 		possibleTransitions = new ArrayDeque<Transition>();
 		buttonNodes = new ArrayList<AndroidNode>();
+		hybridErrors = new ArrayList<HybridError>();
+		outboundTransitions = new ArrayList<Transition>();
+		inboundTransitions = new ArrayList<Transition>();
 
 	}
 
@@ -116,12 +125,22 @@ public class State {
 	public Transition popTransition() throws NoSuchElementException {
 		return possibleTransitions.pop();
 	}
+	
+	public void addInboundTransition(Transition pTransition) {
+		inboundTransitions.add(pTransition);
+	}
+	
+	public void addOutboundTransition(Transition pTransition) {
+		outboundTransitions.add(pTransition);
+	}
 
 	/**
 	 * Evaluates the XML view of the file and generate the possible transitions for
 	 * the state
 	 */
 	public void generatePossibleTransition() {
+		
+		possibleTransitions.push(new Transition(this, TransitionType.BUTTON_BACK));
 
 		// Add the possible contextual changes in the transitions
 		if (contextualChanges == true) {
@@ -135,7 +154,6 @@ public class State {
 
 		// Interactions in hybrid applications
 		if (hybrid == true) {
-			// TODO Hybrid transitions
 		}
 
 		// GUI interactions
@@ -149,12 +167,35 @@ public class State {
 			for (int j = 0; j < attributes.getLength(); j++) {
 				Node attribute = attributes.item(j);
 				newAndroidNode = new AndroidNode(this, currentNode);
-				if(newAndroidNode.isAButton()) {
-				possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
-				buttonNodes.add(newAndroidNode);
-				break;
+				if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
+					possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+					buttonNodes.add(newAndroidNode);
+					break;
 				}
+				
 			}
 		}
 	}
+
+	public void addError(HybridError error) {
+		hybridErrors.add(error);
+
+	}
+	
+	public void setScreenShot(String screenShot) {
+		this.screenShot = screenShot;
+	}
+
+	public String getScreenShot() {
+		return screenShot;
+	}
+	
+	public boolean hasRemainingTransitions() {
+		return !possibleTransitions.isEmpty();
+	}
+
+	public void addPossibleTransition(Transition transition) {
+		possibleTransitions.addLast(transition);
+	}
+	
 }

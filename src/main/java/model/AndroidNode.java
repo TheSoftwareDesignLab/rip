@@ -10,11 +10,12 @@ public class AndroidNode {
 
 	private State state;
 	private boolean interacted;
-	public boolean clickable;
+	private boolean clickable;
 	private int[] centralPoint;
 	private int[] point1;
 	private int[] point2;
 	private String pClass;
+	private boolean enabled;
 
 	public AndroidNode(State state, Node domNode) {
 		this.state = state;
@@ -40,6 +41,8 @@ public class AndroidNode {
 					break;
 				case CLASS:
 					pClass = attributeValue;
+				case ENABLED:
+					enabled = true;
 					break;
 					
 				}
@@ -96,6 +99,10 @@ public class AndroidNode {
 	
 	public String getpClass() {
 		return pClass;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 }

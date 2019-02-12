@@ -182,10 +182,12 @@ public class ExternalProcess2 {
 	 * 
 	 * @param Filename
 	 *            is the path where the file will be saved.
+	 * @throws RipException 
+	 * @throws IOException 
 	 * @throws Exception
 	 *             if filename is wrong, not valid directory
 	 */
-	public static void takeScreenshot(String filename) throws Exception {
+	public static void takeScreenshot(String filename) throws IOException, RipException {
 
 		String example = "/sdcard/screen.png";
 
@@ -203,10 +205,12 @@ public class ExternalProcess2 {
 	 *            must be replaced with the path of the file in the device
 	 * @param LocalFilePath
 	 *            is the path where the file will be stored in the computer.
+	 * @throws RipException 
+	 * @throws IOException 
 	 * @throws Exception
 	 *             if any path is wrong
 	 */
-	public static void pullFile(String remotePath, String localPath) throws Exception {
+	public static void pullFile(String remotePath, String localPath) throws IOException, RipException {
 
 		String remotePathEx = "/sdcard/sreen.png";
 		String localPathEx = "screenPull.png";
@@ -229,10 +233,12 @@ public class ExternalProcess2 {
 	 *            is the path where the file will be stored in the computer.
 	 * @param Filename
 	 *            is the path where the file will be saved.
+	 * @throws RipException 
+	 * @throws IOException 
 	 * @throws Exception
 	 *             if filename is wrong, not valid directory or any path is wrong
 	 */
-	public static void pullScreenshot(String filename, String remotePath, String localPath) throws Exception {
+	public static void pullScreenshot(String filename, String remotePath, String localPath) throws IOException, RipException {
 
 		String filenameEx = "/sdcard/screen2.png";
 		String remotePathEx = "/sdcard/screen2.png";
@@ -377,8 +383,10 @@ public class ExternalProcess2 {
 	/**
 	 * Simulates the effect of touching back soft button, return to the last
 	 * activity. 4 is KEYCODE_BACK
+	 * @throws RipException 
+	 * @throws IOException 
 	 */
-	public static void goBack() throws Exception {
+	public static void goBack() throws IOException, RipException {
 
 		List<String> commands = Arrays.asList("adb", "shell", "input", "keyevent", "4");
 		executeProcess(commands, "GO BACK", null, null);
@@ -388,8 +396,10 @@ public class ExternalProcess2 {
 	/**
 	 * Simulates the effect of touching home soft button, return home. 3 is
 	 * KEYCODE_HOME
+	 * @throws RipException 
+	 * @throws IOException 
 	 */
-	public static void goHome() throws Exception {
+	public static void goHome() throws IOException, RipException {
 
 		List<String> commands = Arrays.asList("adb", "shell", "input", "keyevent", "3");
 		executeProcess(commands, "GO HOME", null, null);
@@ -1333,5 +1343,4 @@ public class ExternalProcess2 {
 			e.printStackTrace();
 		}
 	}
-
 }

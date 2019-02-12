@@ -10,4 +10,5 @@ public enum TransitionType {
     ROTATE_LANDSCAPE,
     ROTATE_PORTRAIT,
     BUTTON_BACK,
+    FIRST_INTERACTION
 }

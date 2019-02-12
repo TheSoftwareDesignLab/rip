@@ -63,6 +63,9 @@ public class Transition {
 		this.originElement = originElement;
 	}
 	
+	public String toString() {
+		return type + " - "+origin.getId() + " -> " + destination.getId(); 
+	}
 	
 	
 	
