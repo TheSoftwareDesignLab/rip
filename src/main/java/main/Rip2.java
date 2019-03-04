@@ -64,7 +64,7 @@ public class Rip2 {
 	/**
 	 * The application was installed
 	 */
-	private boolean appInstalled = false;
+	private boolean appInstalled;
 
 	/**
 	 * Folder where the results will be exported
@@ -74,7 +74,7 @@ public class Rip2 {
 	/**
 	 * Location of the APK file
 	 */
-	private String apkLocation = "androidApps/tesos.apk";
+	private String apkLocation;
 
 	/**
 	 * Package name of the application
@@ -123,17 +123,18 @@ public class Rip2 {
 
 	private boolean rippingOutsideApp;
 
-	public Rip2() throws RipException {
+	private Rip2(String apkPath, String outputFolder) throws RipException {
 		pacName = "";
 		isRunning = true;
-		statesTable = new Hashtable<String, State>();
-		states = new ArrayList<State>();
-		transitions = new ArrayList<Transition>();
+		statesTable = new Hashtable<>();
+		states = new ArrayList<>();
+		transitions = new ArrayList<>();
 		waitingTime = 500;
 		Date nowFolder = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("hhmmss");
 		String time = dateFormat.format(nowFolder);
-		folderName = "./generated/generated_" + time;
+//		folderName = "./generated/generated_" + time;
+		folderName ="./"+ outputFolder;
 		File newFolder = new File(folderName);
 		newFolder.mkdirs();
 
@@ -143,12 +144,16 @@ public class Rip2 {
 		} catch (IOException | RipException e) {
 			e.printStackTrace();
 		}
-
+		apkLocation = apkPath;
 		// Installs the APK in the device
 		appInstalled = installAPK(apkLocation);
 
 		if (!appInstalled) {
 			throw new RipException("APK could not be installed");
+		}
+
+		if(aapt==null) {
+			throw new RipException("AAPT_LOCATION was not set");
 		}
 
 		// Launches the applications' main activity
@@ -254,9 +259,9 @@ public class Rip2 {
 				boolean stateChanges = false;
 
 				// While no changes in in the state are detected
-				while (stateChanges == false) {
+				while (!stateChanges) {
 					stateTransition = currentState.popTransition();
-					transitionType = executeTransition(stateTransition);
+					//transitionType = executeTransition(stateTransition);
 					// Waits until the executed transition changes the application current state
 					waitTime(waitingTime);
 					// Checks if the application changes due to the executed transition
@@ -344,7 +349,7 @@ public class Rip2 {
 		return found;
 	}
 
-	public boolean stateChanges() throws CrawlingOutsideAppException, IOException, RipException {
+	private boolean stateChanges() throws CrawlingOutsideAppException, IOException, RipException {
 		String rawXML = ExternalProcess2.getCurrentViewHierarchy();
 		if (rawXML.equals(currentState.getRawXML())) {
 			return false;
@@ -482,18 +487,24 @@ public class Rip2 {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("\n 2018, Universidad de los Andes\n The Software Design Lab\n");
-		System.out.println("https://thesoftwaredesignlab.github.io/\n");
-		String s = String.join("\n", "🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥", "🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥",
-				"🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥", "🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥 ",
-				"🔥🔥   🔥🔥    🔥🔥  🔥🔥          ", "🔥🔥    🔥🔥   🔥🔥  🔥🔥          ",
-				"🔥🔥     🔥🔥  🔥🔥  🔥🔥          ", " ");
 
-		System.out.println(s);
-		try {
-			new Rip2();
-		} catch (RipException e) {
-			e.printStackTrace();
+		if(args.length<2) {
+			System.err.println("Some arguments are missing, please provide apk location and outputfolder");
+		} else {
+			System.out.println("\n 2018, Universidad de los Andes\n The Software Design Lab\n");
+			System.out.println("https://thesoftwaredesignlab.github.io/\n");
+			String s = String.join("\n", "🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥", "🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥",
+					"🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥", "🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥 ",
+					"🔥🔥   🔥🔥    🔥🔥  🔥🔥          ", "🔥🔥    🔥🔥   🔥🔥  🔥🔥          ",
+					"🔥🔥     🔥🔥  🔥🔥  🔥🔥          ", " ");
+
+
+			System.out.println(s);
+			try {
+				new Rip2(args[0], args[1]);
+			} catch (RipException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

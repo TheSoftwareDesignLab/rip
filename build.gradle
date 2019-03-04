@@ -19,7 +19,7 @@ repositories {
     
     task jarjar(type: Jar) {
     manifest {
-        attributes "Main-Class": "main.Rip"
+        attributes "Main-Class": "main.Rip2"
     }
     baseName = 'RIP'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
