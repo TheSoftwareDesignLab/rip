@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import main.Rip2;
+import main.RIPBase;
 
 public class JSConsoleReader extends Thread {
 	
-	private static Rip2 rip;
+	private static RIPBase rip;
 	
 	private static boolean isRunning = true;
 	
-	public JSConsoleReader(Rip2 mainThread) {
+	public JSConsoleReader(RIPBase mainThread) {
 		super();
 		rip = mainThread;
 	}

@@ -1,4 +1,4 @@
-package imageAnalyzer;
+package helper;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -6,9 +6,12 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-public class ImageAnalyzer {
+public class ImageHelper {
+	
+	
+	// In this class can be added a new method that highlight a part of an image based on coordinates.
 
-	public float compareImage(File fileA, File fileB) {
+	public static float compareImage(File fileA, File fileB) {
 
 		float percentage = 0;
 		try {

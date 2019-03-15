@@ -64,7 +64,7 @@ public class Transition {
 	}
 	
 	public String toString() {
-		return type + " - "+origin.getId() + " -> " + destination.getId(); 
+		return origin.getId()+";"+destination.getId()+";"+type;
 	}
 	
 	

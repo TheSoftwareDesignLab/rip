@@ -17,11 +17,19 @@ repositories {
     jcenter()
 }
     
-    task jarjar(type: Jar) {
+    task baseRIP(type: Jar) {
     manifest {
-        attributes "Main-Class": "main.Rip2"
+        attributes "Main-Class": "main.RIPBase"
     }
     baseName = 'RIP'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar }
+    
+    task ripI18N(type: Jar) {
+    manifest {
+        attributes "Main-Class": "main.RIPi18n"
+    }
+    baseName = 'RIPi18n'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
