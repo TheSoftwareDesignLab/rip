@@ -924,7 +924,6 @@ public class EmulatorHelper {
 
 		String[] temp = answer.get(0).split(" ");
 		String activity = temp[temp.length - 1].replace("}", "");
-		System.out.println(activity);
 		return activity;
 	}
 

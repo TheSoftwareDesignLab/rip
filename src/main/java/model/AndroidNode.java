@@ -16,14 +16,30 @@ public class AndroidNode {
 	private int[] point2;
 	private String pClass;
 	private boolean enabled;
+	private String resourceID="";
+	private String text="";
+	private String name="";
+	private String xPath="";
+	private String index="";
 
 	public AndroidNode(State state, Node domNode) {
 		this.state = state;
 		loadAttributesFromDom(domNode);
+		String[] classes = pClass.split("\\.");
+		xPath = (!pClass.equals("")?classes[classes.length-1]:"")+(!resourceID.equals("")?"/"+resourceID:"");
+		Node temp = domNode.getParentNode();
+		while(!temp.getNodeName().equals("hierarchy")) {
+			NamedNodeMap teemp = temp.getAttributes();
+			String [] classess = teemp.getNamedItem("class").getNodeValue().split("\\.");
+			String index = teemp.getNamedItem("index").getNodeValue();
+			xPath=index+"_"+classess[classess.length-1]+"/"+xPath;
+			temp = temp.getParentNode();
+		}
 	}
 
 	public void loadAttributesFromDom(Node domNode) {
 		NamedNodeMap attributes = domNode.getAttributes();
+		name = domNode.getNodeName();
 		String bounds;
 		String attributeValue;
 		AndroidNodeProperty androidNodeProperty;
@@ -44,7 +60,12 @@ public class AndroidNode {
 				case ENABLED:
 					enabled = true;
 					break;
-					
+				case RESOURCE_ID:
+					resourceID = attributeValue;
+				case TEXT:
+					text = attributeValue;
+				case INDEX:
+					index = attributeValue;
 				}
 			}
 			else {
@@ -53,6 +74,24 @@ public class AndroidNode {
 		}
 	}
 	
+	
+	
+	public String getxPath() {
+		return xPath;
+	}
+
+	public String getResourceID() {
+		return resourceID;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 	/**
 	 * Calculates the bounds and central point of a node
 	 * @param text Raw input

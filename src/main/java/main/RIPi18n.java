@@ -8,6 +8,10 @@ import java.util.NoSuchElementException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -21,8 +25,8 @@ import model.TransitionType;
 public class RIPi18n extends RIPBase{
 
 
-	private RIPi18n(String apkPath, String outputFolder, String isHybrid) throws RipException, IOException {
-		super(apkPath, outputFolder, isHybrid);
+	public RIPi18n(String apkPath, String outputFolder, String isHybrid, String[] args) throws RipException, IOException {
+		super(apkPath, outputFolder, isHybrid, args);
 	}
 
 	@Override
@@ -35,6 +39,8 @@ public class RIPi18n extends RIPBase{
 			parsedXML = loadXMLFromString(rawXML);
 
 			currentState.setParsedXML(parsedXML);
+			String activity = EmulatorHelper.getCurrentFocus();
+			currentState.setActivityName(activity);
 			currentState.setRawXML(rawXML);
 
 			State foundState = findStateInGraph(currentState);
@@ -111,27 +117,8 @@ public class RIPi18n extends RIPBase{
 			e.printStackTrace();
 		} finally {
 		}
-	}
+	}	
 
-	@Override
-	public void buildFiles() throws IOException {
-
-		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "rstGraph.csv"));
-		writer.write("strNodeID;dstNodeID;edgeType");
-		writer.newLine();
-		transitions.forEach(t -> {
-			try {
-				writer.write(t.toString());
-				writer.newLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		});
-		writer.close();
-
-	}
-	
 	public String processXML(String rawXML) {
 		return rawXML.replaceAll("(text|focused|checked)=\"[^\"]*\"", "");
 	}
@@ -151,7 +138,7 @@ public class RIPi18n extends RIPBase{
 			System.err.println("Some arguments are missing, please provide apk location and outputfolder");
 		} else {
 			try {
-				new RIPi18n(args[0], args[1], args[2]);
+				new RIPi18n(args[0], args[1], args[2], args);
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

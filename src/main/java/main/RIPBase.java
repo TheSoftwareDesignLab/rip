@@ -1,5 +1,6 @@
 package main;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.simple.JSONObject;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -28,6 +30,10 @@ import model.Transition;
 import model.TransitionType;
 
 public class RIPBase {
+	
+	public static String STATES = "states";
+	public static String TRANSITIONS = "transitions";
+	public static String AMOUNT_STATES = "amountStates";
 
 	/*
 	 * Environment variables
@@ -71,7 +77,7 @@ public class RIPBase {
 	 */
 	public String packageName;
 
-	public int sequentialNumber;
+	public int sequentialNumber=-1;
 
 	/**
 	 * Main activity of the application
@@ -113,7 +119,7 @@ public class RIPBase {
 
 	public boolean rippingOutsideApp;
 
-	public RIPBase(String apkPath, String outputFolder, String isHybrid) throws RipException, IOException {
+	public RIPBase(String apkPath, String outputFolder, String isHybrid, String[] preProcArgs) throws RipException, IOException {
 		printRIPInitialMessage();
 		hybridApp = Boolean.parseBoolean(isHybrid);
 		pacName = "";
@@ -123,7 +129,7 @@ public class RIPBase {
 		transitions = new ArrayList<>();
 		waitingTime = 500;
 
-		folderName ="./"+ outputFolder;
+		folderName = outputFolder;
 		File newFolder = new File(folderName);
 		newFolder.mkdirs();
 
@@ -169,6 +175,8 @@ public class RIPBase {
 			jsConsoleReader.start();
 		}
 
+		preProcess(preProcArgs);
+
 		Transition initialTransition = new Transition(null, TransitionType.FIRST_INTERACTION);
 		State initialState = new State(hybridApp, contextualExploration);
 		initialState.setId(getSequentialNumber());
@@ -179,6 +187,16 @@ public class RIPBase {
 		if(jsConsoleReader != null) {
 			jsConsoleReader.kill();
 		}
+	}
+
+	/**
+	 * This method allows developers to execute a previous processing before starting the ripping process
+	 * @param preProcArgs 
+	 */
+	public void preProcess(String[] preProcArgs) {
+
+		//Insert specific implementation
+
 	}
 
 	public boolean stateChanges() throws IOException, RipException {
@@ -197,9 +215,46 @@ public class RIPBase {
 		return builder.parse(is);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void buildFiles() throws IOException {
-		System.out.println("strNodeID;dstNodeID;edgeType");
-		transitions.forEach(t -> System.out.println(t.toString()));
+
+		JSONObject resultFile = new JSONObject();
+		resultFile.put(AMOUNT_STATES,statesTable.size());
+
+		JSONObject resultStates = new JSONObject();
+		for (int i = 0; i < states.size(); i++) {
+			State tempState = states.get(i);
+			JSONObject state = new JSONObject();
+			state.put("id", tempState.getId());
+			state.put("activityName", tempState.getActivityName());
+			state.put("rawXML", tempState.getRawXML());
+			state.put("screenShot", tempState.getScreenShot());
+			resultStates.put(""+tempState.getId(), state);
+		}
+		resultFile.put(STATES, resultStates);
+
+		JSONObject resultTransitions = new JSONObject();
+		for (int i = 0; i < transitions.size(); i++) {
+			Transition tempTransition = transitions.get(i);
+			JSONObject transition = new JSONObject();
+
+			transition.put("stState", tempTransition.getOrigin().getId());
+			transition.put("dsState", tempTransition.getDestination().getId());
+			transition.put("tranType", tempTransition.getType().name());
+			if(tempTransition.getOriginNode()!=null) {
+				JSONObject androidNode = new JSONObject();
+				androidNode.put("resourceID", tempTransition.getOriginNode().getResourceID());
+				androidNode.put("name", tempTransition.getOriginNode().getName());
+				androidNode.put("text", tempTransition.getOriginNode().getText());
+				androidNode.put("xpath", tempTransition.getOriginNode().getxPath());
+				transition.put("androidNode", androidNode);
+			}			
+			resultTransitions.put(""+i,transition);
+		}
+		resultFile.put(TRANSITIONS, resultTransitions);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "result.json"));
+		writer.write(resultFile.toJSONString());
+		writer.close();
 	}
 
 	public int getSequentialNumber() {
@@ -293,14 +348,13 @@ public class RIPBase {
 			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
 			Document parsedXML;
 			parsedXML = loadXMLFromString(rawXML);
-
+			String activity = EmulatorHelper.getCurrentFocus();
+			currentState.setActivityName(activity);
 			currentState.setParsedXML(parsedXML);
+			
 			currentState.setRawXML(rawXML);
 
 			State foundState = findStateInGraph(currentState);
-			System.out.println("---------");
-			System.out.println(foundState != null);
-			System.out.println("---------");
 			if (foundState != null) {
 				// State already exists
 				currentState = foundState;
@@ -385,7 +439,7 @@ public class RIPBase {
 			System.err.println("Some arguments are missing, please provide apk location and outputfolder");
 		} else {
 			try {
-				new RIPBase(args[0], args[1], args[2]);
+				new RIPBase(args[0], args[1], args[2], args);
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
