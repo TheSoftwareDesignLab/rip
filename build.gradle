@@ -31,8 +31,15 @@ repositories {
     }
     baseName = 'RIPi18n'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
+    with jar}
+    
+    task ripRR(type: Jar) {
+    manifest {
+        attributes "Main-Class": "main.RIPRR"
+    }
+    baseName = 'RIPRR'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar}
 
 
 dependencies {
