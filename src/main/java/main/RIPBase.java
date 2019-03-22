@@ -31,6 +31,7 @@ import model.TransitionType;
 
 public class RIPBase {
 	
+	public static final Object AMOUNT_TRANSITIONS = "amountTransitions";
 	public static String STATES = "states";
 	public static String TRANSITIONS = "transitions";
 	public static String AMOUNT_STATES = "amountStates";
@@ -220,6 +221,7 @@ public class RIPBase {
 
 		JSONObject resultFile = new JSONObject();
 		resultFile.put(AMOUNT_STATES,statesTable.size());
+		resultFile.put(AMOUNT_TRANSITIONS, transitions.size());
 
 		JSONObject resultStates = new JSONObject();
 		for (int i = 0; i < states.size(); i++) {

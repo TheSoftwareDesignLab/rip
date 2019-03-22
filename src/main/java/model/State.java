@@ -197,5 +197,17 @@ public class State {
 	public void addPossibleTransition(Transition transition) {
 		possibleTransitions.addLast(transition);
 	}
+
+	public AndroidNode getAndroidNode(String resourceID, String xpath, String text) {
+		
+		for (int i = 0; i < buttonNodes.size(); i++) {
+			AndroidNode temp = buttonNodes.get(i);
+			if(temp.getxPath().equals(xpath)||temp.getResourceID().equals(resourceID)||temp.getText().equals(text)) {
+				return temp;
+			}
+		}
+		return null;
+		
+	}
 	
 }
