@@ -249,6 +249,7 @@ public class RIPBase {
 				androidNode.put("name", tempTransition.getOriginNode().getName());
 				androidNode.put("text", tempTransition.getOriginNode().getText());
 				androidNode.put("xpath", tempTransition.getOriginNode().getxPath());
+				androidNode.put("bounds", tempTransition.getOriginNode().getCentralX()+"-"+tempTransition.getOriginNode().getCentralY());
 				transition.put("androidNode", androidNode);
 			}			
 			resultTransitions.put(""+i,transition);

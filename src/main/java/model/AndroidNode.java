@@ -26,13 +26,13 @@ public class AndroidNode {
 		this.state = state;
 		loadAttributesFromDom(domNode);
 		String[] classes = pClass.split("\\.");
-		xPath = (!pClass.equals("")?classes[classes.length-1]:"")+(!resourceID.equals("")?"/"+resourceID:"");
+		xPath = domNode.getAttributes().getNamedItem("index").getNodeValue()+"_"+(!pClass.equals("")?classes[classes.length-1]:"")+(!resourceID.equals("")?"/"+resourceID:"");
 		Node temp = domNode.getParentNode();
 		while(!temp.getNodeName().equals("hierarchy")) {
 			NamedNodeMap teemp = temp.getAttributes();
 			String [] classess = teemp.getNamedItem("class").getNodeValue().split("\\.");
-			String index = teemp.getNamedItem("index").getNodeValue();
-			xPath=index+"_"+classess[classess.length-1]+"/"+xPath;
+			String indexx = teemp.getNamedItem("index").getNodeValue();
+			xPath=indexx+"_"+classess[classess.length-1]+"/"+xPath;
 			temp = temp.getParentNode();
 		}
 	}

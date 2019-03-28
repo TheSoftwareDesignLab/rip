@@ -202,7 +202,7 @@ public class State {
 		
 		for (int i = 0; i < buttonNodes.size(); i++) {
 			AndroidNode temp = buttonNodes.get(i);
-			if(temp.getxPath().equals(xpath)||temp.getResourceID().equals(resourceID)||temp.getText().equals(text)) {
+			if(temp.getxPath().equals(xpath)&&temp.getResourceID().equals(resourceID)&&temp.getText().equals(text)) {
 				return temp;
 			}
 		}

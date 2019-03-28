@@ -50,3 +50,7 @@ androidApps/
 
 # JDT-specific (Eclipse Java Development Tools)     
 .classpath
+
+# TSDL tests
+test/output/
+test/outputt/
