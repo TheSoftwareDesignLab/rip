@@ -1,26 +1,17 @@
 package main;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import helper.EmulatorHelper;
-import helper.ExternalProcess2;
 import helper.Helper;
 import model.State;
 import model.Transition;
-import model.TransitionType;
 
 public class RIPi18n extends RIPBase{
 
