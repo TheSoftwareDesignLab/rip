@@ -123,7 +123,7 @@ public class Rip2 {
 
 	private boolean rippingOutsideApp;
 
-	private Rip2(String apkPath, String outputFolder) throws RipException {
+	private Rip2(String apkPath, String outputFolder, String emulatorId) throws RipException {
 		pacName = "";
 		isRunning = true;
 		statesTable = new Hashtable<>();
@@ -140,13 +140,13 @@ public class Rip2 {
 
 		// Captures the Android version of the device
 		try {
-			version = ExternalProcess2.getAndroidVersion();
+			version = ExternalProcess2.getAndroidVersion(emulatorId);
 		} catch (IOException | RipException e) {
 			e.printStackTrace();
 		}
 		apkLocation = apkPath;
 		// Installs the APK in the device
-		appInstalled = installAPK(apkLocation);
+		appInstalled = installAPK(apkLocation, emulatorId);
 
 		if (!appInstalled) {
 			throw new RipException("APK could not be installed");
@@ -160,7 +160,7 @@ public class Rip2 {
 		try {
 			packageName = ExternalProcess2.getPackageName(aapt, apkLocation);
 			mainActivity = ExternalProcess2.getMainActivity(aapt, apkLocation);
-			ExternalProcess2.startActivity(packageName, mainActivity);
+			ExternalProcess2.startActivity(packageName, mainActivity, emulatorId);
 			ProgressBar pb = new ProgressBar("Waiting for the app", 100);
 			pb.start();
 			for (int i = 5; i > 0; i--) {
@@ -183,7 +183,7 @@ public class Rip2 {
 		Transition initialTransition = new Transition(null, TransitionType.FIRST_INTERACTION);
 		State initialState = new State(hybridApp, contextualExploration);
 		initialState.setId(getSequentialNumber());
-		explore(initialState, initialTransition);
+		explore(initialState, initialTransition, emulatorId);
 
 		buildFiles();
 		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered");
@@ -205,10 +205,10 @@ public class Rip2 {
 
 	}
 
-	private void explore(State previousState, Transition executedTransition) {
+	private void explore(State previousState, Transition executedTransition, String emulatorId) {
 		currentState = new State(hybridApp, contextualExploration);
 		try {
-			String rawXML = ExternalProcess2.getCurrentViewHierarchy();
+			String rawXML = ExternalProcess2.getCurrentViewHierarchy(emulatorId);
 			Document parsedXML;
 			try {
 				parsedXML = loadXMLFromString(rawXML);
@@ -224,7 +224,7 @@ public class Rip2 {
 				} else {
 					// New state discovered
 					currentState.setId(getSequentialNumber());
-					String screenShot = takeScreenShot();
+					String screenShot = takeScreenShot(emulatorId);
 					System.out.println("Current ST: " + currentState.getId());
 					State sameState = compareScreenShotWithExisting(screenShot);
 					rippingOutsideApp = isRippingOutsideApp(parsedXML);
@@ -265,12 +265,12 @@ public class Rip2 {
 					// Waits until the executed transition changes the application current state
 					waitTime(waitingTime);
 					// Checks if the application changes due to the executed transition
-					stateChanges = stateChanges();
+					stateChanges = stateChanges(emulatorId);
 				}
 
 				// If the state changes, recursively explores the application
 				if (stateChanges) {
-					explore(currentState, stateTransition);
+					explore(currentState, stateTransition, emulatorId);
 				}
 
 			} catch (NoSuchElementException e) {
@@ -331,11 +331,11 @@ public class Rip2 {
 		return sequentialNumber;
 	}
 
-	private String takeScreenShot() throws IOException, RipException {
+	private String takeScreenShot(String emulatorId) throws IOException, RipException {
 		String screencap = "/sdcard/" + currentState.getId() + ".png";
 		String screenCapName = currentState.getId() + ".png";
 		String local = folderName + File.separator + screenCapName;
-		ExternalProcess2.pullScreenshot(screencap, screencap, local);
+		ExternalProcess2.pullScreenshot(screencap, screencap, local, emulatorId);
 		return local;
 	}
 
@@ -349,8 +349,8 @@ public class Rip2 {
 		return found;
 	}
 
-	private boolean stateChanges() throws CrawlingOutsideAppException, IOException, RipException {
-		String rawXML = ExternalProcess2.getCurrentViewHierarchy();
+	private boolean stateChanges(String emulatorId) throws CrawlingOutsideAppException, IOException, RipException {
+		String rawXML = ExternalProcess2.getCurrentViewHierarchy(emulatorId);
 		if (rawXML.equals(currentState.getRawXML())) {
 			return false;
 		}
@@ -456,10 +456,10 @@ public class Rip2 {
 		// }
 	}
 
-	private boolean installAPK(String pathAPK) {
+	private boolean installAPK(String pathAPK, String emulatorId) {
 
 		try {
-			ExternalProcess2.installAPK(pathAPK);
+			ExternalProcess2.installAPK(pathAPK, emulatorId);
 			logMessage("INSTALL APP", new String[] { pathAPK }, null);
 			return true;
 
@@ -488,8 +488,8 @@ public class Rip2 {
 
 	public static void main(String[] args) {
 
-		if(args.length<2) {
-			System.err.println("Some arguments are missing, please provide apk location and outputfolder");
+		if(args.length<3) {
+			System.err.println("Some arguments are missing, please provide apk location, outputfolder and emulator id");
 		} else {
 			System.out.println("\n 2018, Universidad de los Andes\n The Software Design Lab\n");
 			System.out.println("https://thesoftwaredesignlab.github.io/\n");
@@ -501,7 +501,8 @@ public class Rip2 {
 
 			System.out.println(s);
 			try {
-				new Rip2(args[0], args[1]);
+				//args[0] apkLocation, args[1] outputFolder, args[2] emulator id
+				new Rip2(args[0], args[1], args[2]);
 			} catch (RipException e) {
 				e.printStackTrace();
 			}

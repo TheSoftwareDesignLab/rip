@@ -97,14 +97,14 @@ public class ExternalProcess2 {
 	/**
 	 * Installs an apk file in a device.
 	 * 
-	 * @param Path
+	 * @param path
 	 *            is where apk is stored
 	 * @throws Exception
 	 *             if the app is already installed
 	 */
-	public static void installAPK(String path) throws Exception {
+	public static void installAPK(String path, String emulatorId) throws Exception {
 		// String example = "./"+Rip.APPS_FOLDER+"/"+path;
-		List<String> commands = Arrays.asList("adb", "install", "-r", path);
+		List<String> commands = Arrays.asList("adb", "-s" ,emulatorId ,"install", "-r", path);
 		executeProcess(commands, "INSTALLING APK", "Installation complete", "App could not be installed");
 	}
 
@@ -138,9 +138,9 @@ public class ExternalProcess2 {
 	 *             if activity does not exist or warning if activity is a current
 	 *             task
 	 */
-	public static void startActivity(String packageName, String activity) throws IOException, RipException {
+	public static void startActivity(String packageName, String activity, String emulatorId) throws IOException, RipException {
 
-		List<String> commands = Arrays.asList("adb", "shell", "am", "start", "-n", packageName + "/" + activity);
+		List<String> commands = Arrays.asList("adb","-s",emulatorId,"shell", "am", "start", "-n", packageName + "/" + activity);
 		executeProcess(commands, "START ACTIVITY", "Activity launched", "Activity could not be started");
 
 	}
@@ -180,37 +180,37 @@ public class ExternalProcess2 {
 	/**
 	 * Takes a screenshot of the actual device's screen.
 	 * 
-	 * @param Filename
+	 * @param filename
 	 *            is the path where the file will be saved.
 	 * @throws RipException 
 	 * @throws IOException 
 	 * @throws Exception
 	 *             if filename is wrong, not valid directory
 	 */
-	public static void takeScreenshot(String filename) throws IOException, RipException {
+	public static void takeScreenshot(String filename, String emulatorId) throws IOException, RipException {
 
 		String example = "/sdcard/screen.png";
 
 		if (filename.equals("")) {
 			filename = example;
 		}
-		List<String> commands = Arrays.asList("adb", "shell", "screencap", filename);
+		List<String> commands = Arrays.asList("adb","-s" ,emulatorId,"shell", "screencap", filename);
 		executeProcess(commands, "TAKE SCREENSHOT", "Screenshot saved at: " + filename, "Screenshot was not captured");
 	}
 
 	/**
 	 * Extracts a file from device or emulator (remote) to computer (local).
 	 * 
-	 * @param RemoteFilePath
+	 * @param remotePath
 	 *            must be replaced with the path of the file in the device
-	 * @param LocalFilePath
+	 * @param localPath
 	 *            is the path where the file will be stored in the computer.
 	 * @throws RipException 
 	 * @throws IOException 
 	 * @throws Exception
 	 *             if any path is wrong
 	 */
-	public static void pullFile(String remotePath, String localPath) throws IOException, RipException {
+	public static void pullFile(String remotePath, String localPath, String emulatorId) throws IOException, RipException {
 
 		String remotePathEx = "/sdcard/sreen.png";
 		String localPathEx = "screenPull.png";
@@ -219,7 +219,7 @@ public class ExternalProcess2 {
 			remotePath = remotePathEx;
 			localPath = localPathEx;
 		}
-		List<String> commands = Arrays.asList("adb", "pull", remotePath, localPath);
+		List<String> commands = Arrays.asList("adb","-s",emulatorId ,"pull", remotePath, localPath);
 		executeProcess(commands, "PULL FILE", "File saved on PC", "File could not be pulled");
 	}
 
@@ -227,18 +227,18 @@ public class ExternalProcess2 {
 	 * Takes a screenshot and copies it in computer. Calls methods takeScreenshot
 	 * and pullFile .
 	 * 
-	 * @param RemoteFilePath
+	 * @param remotePath
 	 *            must be replaced with the path of the file in the device.
-	 * @param LocalFilePath
+	 * @param localPath
 	 *            is the path where the file will be stored in the computer.
-	 * @param Filename
+	 * @param filename
 	 *            is the path where the file will be saved.
 	 * @throws RipException 
 	 * @throws IOException 
 	 * @throws Exception
 	 *             if filename is wrong, not valid directory or any path is wrong
 	 */
-	public static void pullScreenshot(String filename, String remotePath, String localPath) throws IOException, RipException {
+	public static void pullScreenshot(String filename, String remotePath, String localPath, String emulatorId) throws IOException, RipException {
 
 		String filenameEx = "/sdcard/screen2.png";
 		String remotePathEx = "/sdcard/screen2.png";
@@ -249,8 +249,8 @@ public class ExternalProcess2 {
 			localPath = localPathEx;
 			filename = filenameEx;
 		}
-		takeScreenshot(filename);
-		pullFile(remotePath, localPath);
+		takeScreenshot(filename, emulatorId);
+		pullFile(remotePath, localPath, emulatorId);
 	}
 
 	/**
@@ -311,9 +311,9 @@ public class ExternalProcess2 {
 	/**
 	 * Simulates a tap in the screen.
 	 * 
-	 * @param CoordX
+	 * @param coordX
 	 *            X coordinate
-	 * @param Coordy
+	 * @param coordY
 	 *            Y coordinate
 	 * @throws RipException
 	 * @throws IOException
@@ -328,7 +328,7 @@ public class ExternalProcess2 {
 	/**
 	 * Simulates a long tap in the screen.
 	 * 
-	 * @param CoordX
+	 * @param coordX
 	 *            and CoordY are the coordinates of the touch and milliseconds, the
 	 *            time of it.
 	 */
@@ -355,7 +355,7 @@ public class ExternalProcess2 {
 	 *            and coordY1 are the source coordinate
 	 * @param coordX2
 	 *            and coordY2 destination coordinate
-	 * @param Milliseconds,
+	 * @param ms,
 	 *            time of the touch.
 	 */
 	public static void scroll(String coordX1, String coordY1, String coordX2, String coordY2, String ms)
@@ -498,7 +498,7 @@ public class ExternalProcess2 {
 	 * @throws Exception
 	 *             if file cannot be created or pulled
 	 */
-	public static void saveLogcat(String path, String localPath) throws Exception {
+	public static void saveLogcat(String path, String localPath, String emulatorId) throws Exception {
 		if (path.equals("") || localPath.equals("")) {
 			path = "/sdcard/outputLogcat.txt";
 			localPath = "out.txt";
@@ -506,7 +506,7 @@ public class ExternalProcess2 {
 		createFile(path);
 		List<String> commands = Arrays.asList("adb", "shell", "logcat", "-d", ">", path);
 		executeProcess(commands, "SAVE LOGCAT", null, null);
-		pullFile(path, localPath);
+		pullFile(path, localPath, emulatorId);
 
 	}
 
@@ -611,7 +611,7 @@ public class ExternalProcess2 {
 	 *            won't be saved
 	 * @return XML file in String format
 	 */
-	public static String takeXMLSnapshot(String destinationRoute) throws Exception {
+	public static String takeXMLSnapshot(String destinationRoute, String emulatorId) throws Exception {
 
 		List<String> commands = Arrays.asList("adb", "shell", "uiautomator", "dump");
 		List<String> answer = executeProcess(commands, "TAKE XML SNAPSHOT", null, null);
@@ -619,19 +619,19 @@ public class ExternalProcess2 {
 		String route = temp[0].split("UI hierchary dumped to: ")[1].replaceAll("(\\r)", "");
 
 		if (destinationRoute != null) {
-			pullFile(route, destinationRoute);
+			pullFile(route, destinationRoute, emulatorId);
 		}
 
 		return readRemoteFile(route);
 
 	}
 
-	public static String getCurrentViewHierarchy() throws IOException, RipException {
-		List<String> commands = Arrays.asList("adb", "shell", "uiautomator", "dump");
+	public static String getCurrentViewHierarchy(String emulatorId) throws IOException, RipException {
+		List<String> commands = Arrays.asList("adb", "-s", emulatorId,"shell", "uiautomator", "dump");
 		List<String> answer = executeProcess(commands, "TAKE XML SNAPSHOT", null, null);
 		String[] temp = answer.get(0).split("\n");
 		String route = temp[0].split("UI hierchary dumped to: ")[1].replaceAll("(\\r)", "");
-		List<String> readCommands = Arrays.asList("adb", "shell", "cat", route);
+		List<String> readCommands = Arrays.asList("adb","-s",emulatorId ,"shell", "cat", route);
 		List<String> response = executeProcess(readCommands, "READ XML SNAPSHOT", null, null);
 		return response.get(0);
 	}
@@ -862,8 +862,8 @@ public class ExternalProcess2 {
 	 * @throws Exception
 	 *             if no device is connected
 	 */
-	public static String getAndroidVersion() throws IOException, RipException {
-		List<String> commands = Arrays.asList("adb", "shell", "getprop", "ro.build.version.release");
+	public static String getAndroidVersion(String emulatorId) throws IOException, RipException {
+		List<String> commands = Arrays.asList("adb", "-s",emulatorId,"shell", "getprop", "ro.build.version.release");
 		List<String> answer = executeProcess(commands, "CHEKING ANDROID VERSION", null, null);
 		String answ = answer.get(0).replaceAll("\\s+", "");
 
