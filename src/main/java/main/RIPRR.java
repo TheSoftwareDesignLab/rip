@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 
 import helper.EmulatorHelper;
 import helper.Helper;
+import helper.ImageHelper;
 import model.AndroidNode;
 import model.State;
 import model.Transition;
@@ -32,14 +33,14 @@ public class RIPRR extends RIPi18n {
 
 	public ArrayList<Transition> oldTransitions;
 
-	public RIPRR(String apkPath, String outputFolder, String isHybrid, String scriptPath) throws RipException, IOException {
-		super(apkPath, outputFolder, isHybrid, new String[] {scriptPath});
+	public RIPRR(String configFilePath) throws RipException, IOException {
+		super(configFilePath);
 	}
 
 	@Override
-	public void preProcess(String[] preProcArgs) {
+	public void preProcess(JSONObject preProcArgs) {
 
-		scriptPath = preProcArgs[0];
+		scriptPath = (String) preProcArgs.get("scriptPath");
 		oldStatesTable = new Hashtable<String, State>();
 		oldStates = new ArrayList<State>();
 		oldTransitions = new ArrayList<Transition>();
@@ -140,12 +141,16 @@ public class RIPRR extends RIPi18n {
 					statesTable.put(rawXML, currentState);
 					states.add(currentState);
 					currentState.setScreenShot(screenShot);
+					ImageHelper.getNodeImagesFromState(currentState);
 				} else {
 					// Discard state
 					sequentialNumber--;
 					Helper.deleteFile(screenShot);
 					Helper.deleteFile(snapShot);
 					//						currentState = sameState;
+					if(EmulatorHelper.isHome()) {
+						throw new RipException("Execution closed the app");
+					}
 					if(rippingOutsideApp) {
 						currentState = previousState;
 					}
@@ -187,6 +192,8 @@ public class RIPRR extends RIPi18n {
 				oldTransitions.remove(0);
 				executeTransition(tempTrans);
 				Thread.sleep(waitingTime);
+				String tranScreenshot = ImageHelper.takeTransitionScreenshot(tempTrans, transitions.size());
+				tempTrans.setScreenshot(tranScreenshot);
 				explore(currentState, tempTrans);
 			}
 
@@ -207,11 +214,11 @@ public class RIPRR extends RIPi18n {
 	}
 
 	public static void main(String[] args) {
-		if(args.length<4) {
-			System.err.println("Some arguments are missing, please provide apk location, outputfolder, boolean value if AUT is hybrid and executionScript from RIP");
+		if(args.length<1) {
+			System.err.println("Please provide config file location");
 		} else {
 			try {
-				new RIPRR(args[0], args[1], args[2], args[3]);
+				new RIPRR(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

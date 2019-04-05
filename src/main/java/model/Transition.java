@@ -6,6 +6,7 @@ public class Transition {
 	private State destination;
 	private TransitionType type;
 	private AndroidNode originElement;
+	private String screenshot;
 	
 	/**
 	 * Creates a transition with a known origin state and a type
@@ -65,6 +66,18 @@ public class Transition {
 	
 	public String toString() {
 		return origin.getId()+";"+destination.getId()+";"+type;
+	}
+
+	public String getScreenshot() {
+		return screenshot;
+	}
+
+	public void setScreenshot(String screenshot) {
+		this.screenshot = screenshot;
+	}
+
+	public AndroidNode getOriginElement() {
+		return originElement;
 	}
 	
 	

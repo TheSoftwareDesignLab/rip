@@ -10,14 +10,15 @@ import org.xml.sax.SAXException;
 
 import helper.EmulatorHelper;
 import helper.Helper;
+import helper.ImageHelper;
 import model.State;
 import model.Transition;
 
 public class RIPi18n extends RIPBase{
 
 
-	public RIPi18n(String apkPath, String outputFolder, String isHybrid, String[] args) throws RipException, IOException {
-		super(apkPath, outputFolder, isHybrid, args);
+	public RIPi18n(String configFilePath) throws RipException, IOException {
+		super(configFilePath);
 	}
 
 	@Override
@@ -51,11 +52,15 @@ public class RIPi18n extends RIPBase{
 					statesTable.put(rawXML, currentState);
 					states.add(currentState);
 					currentState.setScreenShot(screenShot);
+					ImageHelper.getNodeImagesFromState(currentState);
 				} else {
 					// Discard state
 					sequentialNumber--;
 					Helper.deleteFile(screenShot);
 					Helper.deleteFile(snapShot);
+					if(EmulatorHelper.isHome()) {
+						throw new RipException("Execution closed the app");
+					}
 					//						currentState = sameState;
 					if(rippingOutsideApp) {
 						currentState = previousState;
@@ -78,7 +83,7 @@ public class RIPi18n extends RIPBase{
 			boolean stateChanges = false;
 
 			// While no changes in in the state are detected
-			while (!stateChanges) {
+			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
 				// Waits until the executed transition changes the application current state
@@ -88,7 +93,9 @@ public class RIPi18n extends RIPBase{
 			}
 
 			// If the state changes, recursively explores the application
-			if (stateChanges) {
+			if (stateChanges && validExecution()) {
+				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
+				stateTransition.setScreenshot(tranScreenshot);
 				explore(currentState, stateTransition);
 			}
 
@@ -98,13 +105,17 @@ public class RIPi18n extends RIPBase{
 			// Error parsing the XML DOM
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException | RipException e) {
+		} catch (IOException e) {
 			// Error getting the current view hierarchy
 			e.printStackTrace();
+		} catch (RipException e) {
+			if(e.getMessage().equals("Execution closed the app")) {
+				System.out.println(e.getMessage());
+			} else {
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		}
@@ -125,11 +136,11 @@ public class RIPi18n extends RIPBase{
 	}
 
 	public static void main(String[] args) {
-		if(args.length<3) {
-			System.err.println("Some arguments are missing, please provide apk location and outputfolder");
+		if(args.length<1) {
+			System.err.println("Please provide config file location");
 		} else {
 			try {
-				new RIPi18n(args[0], args[1], args[2], args);
+				new RIPi18n(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

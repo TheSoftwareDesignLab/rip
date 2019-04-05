@@ -32,7 +32,7 @@ public class AndroidNode {
 			NamedNodeMap teemp = temp.getAttributes();
 			String [] classess = teemp.getNamedItem("class").getNodeValue().split("\\.");
 			String indexx = teemp.getNamedItem("index").getNodeValue();
-			xPath=indexx+"_"+classess[classess.length-1]+"/"+xPath;
+			xPath=indexx+"_"+classess[classess.length-1]+"|"+xPath;
 			temp = temp.getParentNode();
 		}
 	}
@@ -144,4 +144,11 @@ public class AndroidNode {
 		return enabled;
 	}
 
+	public int[] getPoint1() {
+		return point1;
+	}
+
+	public int[] getPoint2() {
+		return point2;
+	}
 }
