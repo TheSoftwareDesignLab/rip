@@ -1,0 +1,1006 @@
+
+ 2018, Universidad de los Andes
+ The Software Design Lab
+
+https://thesoftwaredesignlab.github.io/
+
+🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥
+🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥
+🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥
+🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥 
+🔥🔥   🔥🔥    🔥🔥  🔥🔥          
+🔥🔥    🔥🔥   🔥🔥  🔥🔥          
+🔥🔥     🔥🔥  🔥🔥  🔥🔥          
+ 
+-> CHEKING ANDROID VERSION
+[adb, shell, getprop, ro.build.version.release]
+
+- - - - - - - - - - - - - - - - - - -
+-> INSTALLING APK
+[adb, install, -r, ./com.evancharlton.mileage_3110.apk]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING PACKAGE NAME
+[/home/camilo/Android/Sdk/build-tools/28.0.3/aapt, dump, badging, ./com.evancharlton.mileage_3110.apk]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING MAIN ACTIVITY
+[/home/camilo/Android/Sdk/build-tools/28.0.3/aapt, dump, badging, ./com.evancharlton.mileage_3110.apk]
+
+- - - - - - - - - - - - - - - - - - -
+-> START ACTIVITY
+[adb, shell, am, start, -n, com.evancharlton.mileage/com.evancharlton.mileage.Mileage]
+
+- - - - - - - - - - - - - - - - - - -
+1 - 2 - GUI_CLICK_BUTTON
+2 - 3 - GUI_CLICK_BUTTON
+3 - 2 - GUI_CLICK_BUTTON
+2 - 4 - GUI_CLICK_BUTTON
+4 - 1 - GUI_CLICK_BUTTON
+1 - 4 - GUI_CLICK_BUTTON
+4 - 1 - GUI_CLICK_BUTTON
+1 - 3 - GUI_CLICK_BUTTON
+3 - 4 - GUI_CLICK_BUTTON
+4 - 5 - GUI_CLICK_BUTTON
+5 - 3 - GUI_CLICK_BUTTON
+3 - 6 - GUI_CLICK_BUTTON
+6 - 7 - GUI_CLICK_BUTTON
+7 - 6 - GUI_CLICK_BUTTON
+6 - 8 - GUI_CLICK_BUTTON
+8 - 6 - GUI_CLICK_BUTTON
+6 - 1 - GUI_CLICK_BUTTON
+1 - 3 - GUI_CLICK_BUTTON
+3 - 7 - GUI_CLICK_BUTTON
+7 - 8 - GUI_CLICK_BUTTON
+8 - 7 - GUI_CLICK_BUTTON
+7 - 1 - GUI_CLICK_BUTTON
+1 - 3 - GUI_CLICK_BUTTON
+3 - 8 - GUI_CLICK_BUTTON
+8 - 1 - GUI_CLICK_BUTTON
+1 - 6 - GUI_CLICK_BUTTON
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/1.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/1.png, ./output//1.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//1.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 1
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+1
+1: 1 - 2 - GUI_CLICK_BUTTON
+2: 2 - 3 - GUI_CLICK_BUTTON
+3: 3 - 2 - GUI_CLICK_BUTTON
+4: 2 - 4 - GUI_CLICK_BUTTON
+5: 4 - 1 - GUI_CLICK_BUTTON
+6: 1 - 4 - GUI_CLICK_BUTTON
+7: 4 - 1 - GUI_CLICK_BUTTON
+8: 1 - 3 - GUI_CLICK_BUTTON
+9: 3 - 4 - GUI_CLICK_BUTTON
+10: 4 - 5 - GUI_CLICK_BUTTON
+11: 5 - 3 - GUI_CLICK_BUTTON
+12: 3 - 6 - GUI_CLICK_BUTTON
+13: 6 - 7 - GUI_CLICK_BUTTON
+14: 7 - 6 - GUI_CLICK_BUTTON
+15: 6 - 8 - GUI_CLICK_BUTTON
+16: 8 - 6 - GUI_CLICK_BUTTON
+17: 6 - 1 - GUI_CLICK_BUTTON
+18: 1 - 3 - GUI_CLICK_BUTTON
+19: 3 - 7 - GUI_CLICK_BUTTON
+20: 7 - 8 - GUI_CLICK_BUTTON
+21: 8 - 7 - GUI_CLICK_BUTTON
+22: 7 - 1 - GUI_CLICK_BUTTON
+23: 1 - 3 - GUI_CLICK_BUTTON
+24: 3 - 8 - GUI_CLICK_BUTTON
+25: 8 - 1 - GUI_CLICK_BUTTON
+26: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 720, 1082]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/2.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/2.png, ./output//2.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//2.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 2
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+2
+1: 2 - 3 - GUI_CLICK_BUTTON
+2: 3 - 2 - GUI_CLICK_BUTTON
+3: 2 - 4 - GUI_CLICK_BUTTON
+4: 4 - 1 - GUI_CLICK_BUTTON
+5: 1 - 4 - GUI_CLICK_BUTTON
+6: 4 - 1 - GUI_CLICK_BUTTON
+7: 1 - 3 - GUI_CLICK_BUTTON
+8: 3 - 4 - GUI_CLICK_BUTTON
+9: 4 - 5 - GUI_CLICK_BUTTON
+10: 5 - 3 - GUI_CLICK_BUTTON
+11: 3 - 6 - GUI_CLICK_BUTTON
+12: 6 - 7 - GUI_CLICK_BUTTON
+13: 7 - 6 - GUI_CLICK_BUTTON
+14: 6 - 8 - GUI_CLICK_BUTTON
+15: 8 - 6 - GUI_CLICK_BUTTON
+16: 6 - 1 - GUI_CLICK_BUTTON
+17: 1 - 3 - GUI_CLICK_BUTTON
+18: 3 - 7 - GUI_CLICK_BUTTON
+19: 7 - 8 - GUI_CLICK_BUTTON
+20: 8 - 7 - GUI_CLICK_BUTTON
+21: 7 - 1 - GUI_CLICK_BUTTON
+22: 1 - 3 - GUI_CLICK_BUTTON
+23: 3 - 8 - GUI_CLICK_BUTTON
+24: 8 - 1 - GUI_CLICK_BUTTON
+25: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 720, 1321]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/3.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/3.png, ./output//3.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//3.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 3
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+3
+1: 3 - 2 - GUI_CLICK_BUTTON
+2: 2 - 4 - GUI_CLICK_BUTTON
+3: 4 - 1 - GUI_CLICK_BUTTON
+4: 1 - 4 - GUI_CLICK_BUTTON
+5: 4 - 1 - GUI_CLICK_BUTTON
+6: 1 - 3 - GUI_CLICK_BUTTON
+7: 3 - 4 - GUI_CLICK_BUTTON
+8: 4 - 5 - GUI_CLICK_BUTTON
+9: 5 - 3 - GUI_CLICK_BUTTON
+10: 3 - 6 - GUI_CLICK_BUTTON
+11: 6 - 7 - GUI_CLICK_BUTTON
+12: 7 - 6 - GUI_CLICK_BUTTON
+13: 6 - 8 - GUI_CLICK_BUTTON
+14: 8 - 6 - GUI_CLICK_BUTTON
+15: 6 - 1 - GUI_CLICK_BUTTON
+16: 1 - 3 - GUI_CLICK_BUTTON
+17: 3 - 7 - GUI_CLICK_BUTTON
+18: 7 - 8 - GUI_CLICK_BUTTON
+19: 8 - 7 - GUI_CLICK_BUTTON
+20: 7 - 1 - GUI_CLICK_BUTTON
+21: 1 - 3 - GUI_CLICK_BUTTON
+22: 3 - 8 - GUI_CLICK_BUTTON
+23: 8 - 1 - GUI_CLICK_BUTTON
+24: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 720, 1082]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+2
+1: 2 - 4 - GUI_CLICK_BUTTON
+2: 4 - 1 - GUI_CLICK_BUTTON
+3: 1 - 4 - GUI_CLICK_BUTTON
+4: 4 - 1 - GUI_CLICK_BUTTON
+5: 1 - 3 - GUI_CLICK_BUTTON
+6: 3 - 4 - GUI_CLICK_BUTTON
+7: 4 - 5 - GUI_CLICK_BUTTON
+8: 5 - 3 - GUI_CLICK_BUTTON
+9: 3 - 6 - GUI_CLICK_BUTTON
+10: 6 - 7 - GUI_CLICK_BUTTON
+11: 7 - 6 - GUI_CLICK_BUTTON
+12: 6 - 8 - GUI_CLICK_BUTTON
+13: 8 - 6 - GUI_CLICK_BUTTON
+14: 6 - 1 - GUI_CLICK_BUTTON
+15: 1 - 3 - GUI_CLICK_BUTTON
+16: 3 - 7 - GUI_CLICK_BUTTON
+17: 7 - 8 - GUI_CLICK_BUTTON
+18: 8 - 7 - GUI_CLICK_BUTTON
+19: 7 - 1 - GUI_CLICK_BUTTON
+20: 1 - 3 - GUI_CLICK_BUTTON
+21: 3 - 8 - GUI_CLICK_BUTTON
+22: 8 - 1 - GUI_CLICK_BUTTON
+23: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1080, 663]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/4.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/4.png, ./output//4.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//4.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 4
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+4
+1: 4 - 1 - GUI_CLICK_BUTTON
+2: 1 - 4 - GUI_CLICK_BUTTON
+3: 4 - 1 - GUI_CLICK_BUTTON
+4: 1 - 3 - GUI_CLICK_BUTTON
+5: 3 - 4 - GUI_CLICK_BUTTON
+6: 4 - 5 - GUI_CLICK_BUTTON
+7: 5 - 3 - GUI_CLICK_BUTTON
+8: 3 - 6 - GUI_CLICK_BUTTON
+9: 6 - 7 - GUI_CLICK_BUTTON
+10: 7 - 6 - GUI_CLICK_BUTTON
+11: 6 - 8 - GUI_CLICK_BUTTON
+12: 8 - 6 - GUI_CLICK_BUTTON
+13: 6 - 1 - GUI_CLICK_BUTTON
+14: 1 - 3 - GUI_CLICK_BUTTON
+15: 3 - 7 - GUI_CLICK_BUTTON
+16: 7 - 8 - GUI_CLICK_BUTTON
+17: 8 - 7 - GUI_CLICK_BUTTON
+18: 7 - 1 - GUI_CLICK_BUTTON
+19: 1 - 3 - GUI_CLICK_BUTTON
+20: 3 - 8 - GUI_CLICK_BUTTON
+21: 8 - 1 - GUI_CLICK_BUTTON
+22: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 999, 1495]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+1
+1: 1 - 4 - GUI_CLICK_BUTTON
+2: 4 - 1 - GUI_CLICK_BUTTON
+3: 1 - 3 - GUI_CLICK_BUTTON
+4: 3 - 4 - GUI_CLICK_BUTTON
+5: 4 - 5 - GUI_CLICK_BUTTON
+6: 5 - 3 - GUI_CLICK_BUTTON
+7: 3 - 6 - GUI_CLICK_BUTTON
+8: 6 - 7 - GUI_CLICK_BUTTON
+9: 7 - 6 - GUI_CLICK_BUTTON
+10: 6 - 8 - GUI_CLICK_BUTTON
+11: 8 - 6 - GUI_CLICK_BUTTON
+12: 6 - 1 - GUI_CLICK_BUTTON
+13: 1 - 3 - GUI_CLICK_BUTTON
+14: 3 - 7 - GUI_CLICK_BUTTON
+15: 7 - 8 - GUI_CLICK_BUTTON
+16: 8 - 7 - GUI_CLICK_BUTTON
+17: 7 - 1 - GUI_CLICK_BUTTON
+18: 1 - 3 - GUI_CLICK_BUTTON
+19: 3 - 8 - GUI_CLICK_BUTTON
+20: 8 - 1 - GUI_CLICK_BUTTON
+21: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1080, 663]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+4
+1: 4 - 1 - GUI_CLICK_BUTTON
+2: 1 - 3 - GUI_CLICK_BUTTON
+3: 3 - 4 - GUI_CLICK_BUTTON
+4: 4 - 5 - GUI_CLICK_BUTTON
+5: 5 - 3 - GUI_CLICK_BUTTON
+6: 3 - 6 - GUI_CLICK_BUTTON
+7: 6 - 7 - GUI_CLICK_BUTTON
+8: 7 - 6 - GUI_CLICK_BUTTON
+9: 6 - 8 - GUI_CLICK_BUTTON
+10: 8 - 6 - GUI_CLICK_BUTTON
+11: 6 - 1 - GUI_CLICK_BUTTON
+12: 1 - 3 - GUI_CLICK_BUTTON
+13: 3 - 7 - GUI_CLICK_BUTTON
+14: 7 - 8 - GUI_CLICK_BUTTON
+15: 8 - 7 - GUI_CLICK_BUTTON
+16: 7 - 1 - GUI_CLICK_BUTTON
+17: 1 - 3 - GUI_CLICK_BUTTON
+18: 3 - 8 - GUI_CLICK_BUTTON
+19: 8 - 1 - GUI_CLICK_BUTTON
+20: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 446, 1495]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+1
+1: 1 - 3 - GUI_CLICK_BUTTON
+2: 3 - 4 - GUI_CLICK_BUTTON
+3: 4 - 5 - GUI_CLICK_BUTTON
+4: 5 - 3 - GUI_CLICK_BUTTON
+5: 3 - 6 - GUI_CLICK_BUTTON
+6: 6 - 7 - GUI_CLICK_BUTTON
+7: 7 - 6 - GUI_CLICK_BUTTON
+8: 6 - 8 - GUI_CLICK_BUTTON
+9: 8 - 6 - GUI_CLICK_BUTTON
+10: 6 - 1 - GUI_CLICK_BUTTON
+11: 1 - 3 - GUI_CLICK_BUTTON
+12: 3 - 7 - GUI_CLICK_BUTTON
+13: 7 - 8 - GUI_CLICK_BUTTON
+14: 8 - 7 - GUI_CLICK_BUTTON
+15: 7 - 1 - GUI_CLICK_BUTTON
+16: 1 - 3 - GUI_CLICK_BUTTON
+17: 3 - 8 - GUI_CLICK_BUTTON
+18: 8 - 1 - GUI_CLICK_BUTTON
+19: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 360, 660]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+3
+1: 3 - 4 - GUI_CLICK_BUTTON
+2: 4 - 5 - GUI_CLICK_BUTTON
+3: 5 - 3 - GUI_CLICK_BUTTON
+4: 3 - 6 - GUI_CLICK_BUTTON
+5: 6 - 7 - GUI_CLICK_BUTTON
+6: 7 - 6 - GUI_CLICK_BUTTON
+7: 6 - 8 - GUI_CLICK_BUTTON
+8: 8 - 6 - GUI_CLICK_BUTTON
+9: 6 - 1 - GUI_CLICK_BUTTON
+10: 1 - 3 - GUI_CLICK_BUTTON
+11: 3 - 7 - GUI_CLICK_BUTTON
+12: 7 - 8 - GUI_CLICK_BUTTON
+13: 8 - 7 - GUI_CLICK_BUTTON
+14: 7 - 1 - GUI_CLICK_BUTTON
+15: 1 - 3 - GUI_CLICK_BUTTON
+16: 3 - 8 - GUI_CLICK_BUTTON
+17: 8 - 1 - GUI_CLICK_BUTTON
+18: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1080, 663]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+4
+1: 4 - 5 - GUI_CLICK_BUTTON
+2: 5 - 3 - GUI_CLICK_BUTTON
+3: 3 - 6 - GUI_CLICK_BUTTON
+4: 6 - 7 - GUI_CLICK_BUTTON
+5: 7 - 6 - GUI_CLICK_BUTTON
+6: 6 - 8 - GUI_CLICK_BUTTON
+7: 8 - 6 - GUI_CLICK_BUTTON
+8: 6 - 1 - GUI_CLICK_BUTTON
+9: 1 - 3 - GUI_CLICK_BUTTON
+10: 3 - 7 - GUI_CLICK_BUTTON
+11: 7 - 8 - GUI_CLICK_BUTTON
+12: 8 - 7 - GUI_CLICK_BUTTON
+13: 7 - 1 - GUI_CLICK_BUTTON
+14: 1 - 3 - GUI_CLICK_BUTTON
+15: 3 - 8 - GUI_CLICK_BUTTON
+16: 8 - 1 - GUI_CLICK_BUTTON
+17: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1003, 1143]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/5.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/5.png, ./output//5.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//5.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 5
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+5
+1: 5 - 3 - GUI_CLICK_BUTTON
+2: 3 - 6 - GUI_CLICK_BUTTON
+3: 6 - 7 - GUI_CLICK_BUTTON
+4: 7 - 6 - GUI_CLICK_BUTTON
+5: 6 - 8 - GUI_CLICK_BUTTON
+6: 8 - 6 - GUI_CLICK_BUTTON
+7: 6 - 1 - GUI_CLICK_BUTTON
+8: 1 - 3 - GUI_CLICK_BUTTON
+9: 3 - 7 - GUI_CLICK_BUTTON
+10: 7 - 8 - GUI_CLICK_BUTTON
+11: 8 - 7 - GUI_CLICK_BUTTON
+12: 7 - 1 - GUI_CLICK_BUTTON
+13: 1 - 3 - GUI_CLICK_BUTTON
+14: 3 - 8 - GUI_CLICK_BUTTON
+15: 8 - 1 - GUI_CLICK_BUTTON
+16: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 999, 1079]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+3
+1: 3 - 6 - GUI_CLICK_BUTTON
+2: 6 - 7 - GUI_CLICK_BUTTON
+3: 7 - 6 - GUI_CLICK_BUTTON
+4: 6 - 8 - GUI_CLICK_BUTTON
+5: 8 - 6 - GUI_CLICK_BUTTON
+6: 6 - 1 - GUI_CLICK_BUTTON
+7: 1 - 3 - GUI_CLICK_BUTTON
+8: 3 - 7 - GUI_CLICK_BUTTON
+9: 7 - 8 - GUI_CLICK_BUTTON
+10: 8 - 7 - GUI_CLICK_BUTTON
+11: 7 - 1 - GUI_CLICK_BUTTON
+12: 1 - 3 - GUI_CLICK_BUTTON
+13: 3 - 8 - GUI_CLICK_BUTTON
+14: 8 - 1 - GUI_CLICK_BUTTON
+15: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1253, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/6.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/6.png, ./output//6.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//6.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 6
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+6
+1: 6 - 7 - GUI_CLICK_BUTTON
+2: 7 - 6 - GUI_CLICK_BUTTON
+3: 6 - 8 - GUI_CLICK_BUTTON
+4: 8 - 6 - GUI_CLICK_BUTTON
+5: 6 - 1 - GUI_CLICK_BUTTON
+6: 1 - 3 - GUI_CLICK_BUTTON
+7: 3 - 7 - GUI_CLICK_BUTTON
+8: 7 - 8 - GUI_CLICK_BUTTON
+9: 8 - 7 - GUI_CLICK_BUTTON
+10: 7 - 1 - GUI_CLICK_BUTTON
+11: 1 - 3 - GUI_CLICK_BUTTON
+12: 3 - 8 - GUI_CLICK_BUTTON
+13: 8 - 1 - GUI_CLICK_BUTTON
+14: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 899, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/7.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/7.png, ./output//7.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//7.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 7
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+7
+1: 7 - 6 - GUI_CLICK_BUTTON
+2: 6 - 8 - GUI_CLICK_BUTTON
+3: 8 - 6 - GUI_CLICK_BUTTON
+4: 6 - 1 - GUI_CLICK_BUTTON
+5: 1 - 3 - GUI_CLICK_BUTTON
+6: 3 - 7 - GUI_CLICK_BUTTON
+7: 7 - 8 - GUI_CLICK_BUTTON
+8: 8 - 7 - GUI_CLICK_BUTTON
+9: 7 - 1 - GUI_CLICK_BUTTON
+10: 1 - 3 - GUI_CLICK_BUTTON
+11: 3 - 8 - GUI_CLICK_BUTTON
+12: 8 - 1 - GUI_CLICK_BUTTON
+13: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1253, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+6
+1: 6 - 8 - GUI_CLICK_BUTTON
+2: 8 - 6 - GUI_CLICK_BUTTON
+3: 6 - 1 - GUI_CLICK_BUTTON
+4: 1 - 3 - GUI_CLICK_BUTTON
+5: 3 - 7 - GUI_CLICK_BUTTON
+6: 7 - 8 - GUI_CLICK_BUTTON
+7: 8 - 7 - GUI_CLICK_BUTTON
+8: 7 - 1 - GUI_CLICK_BUTTON
+9: 1 - 3 - GUI_CLICK_BUTTON
+10: 3 - 8 - GUI_CLICK_BUTTON
+11: 8 - 1 - GUI_CLICK_BUTTON
+12: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 541, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE SCREENSHOT
+[adb, shell, screencap, /sdcard/8.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/8.png, ./output//8.png]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> PULL FILE
+[adb, pull, /sdcard/window_dump.xml, ./output//8.xml]
+
+- - - - - - - - - - - - - - - - - - -
+Current ST: 8
+pacName: com.evancharlton.mileage
+packageName: com.evancharlton.mileage
+8
+1: 8 - 6 - GUI_CLICK_BUTTON
+2: 6 - 1 - GUI_CLICK_BUTTON
+3: 1 - 3 - GUI_CLICK_BUTTON
+4: 3 - 7 - GUI_CLICK_BUTTON
+5: 7 - 8 - GUI_CLICK_BUTTON
+6: 8 - 7 - GUI_CLICK_BUTTON
+7: 7 - 1 - GUI_CLICK_BUTTON
+8: 1 - 3 - GUI_CLICK_BUTTON
+9: 3 - 8 - GUI_CLICK_BUTTON
+10: 8 - 1 - GUI_CLICK_BUTTON
+11: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1253, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+6
+1: 6 - 1 - GUI_CLICK_BUTTON
+2: 1 - 3 - GUI_CLICK_BUTTON
+3: 3 - 7 - GUI_CLICK_BUTTON
+4: 7 - 8 - GUI_CLICK_BUTTON
+5: 8 - 7 - GUI_CLICK_BUTTON
+6: 7 - 1 - GUI_CLICK_BUTTON
+7: 1 - 3 - GUI_CLICK_BUTTON
+8: 3 - 8 - GUI_CLICK_BUTTON
+9: 8 - 1 - GUI_CLICK_BUTTON
+10: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 186, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+1
+1: 1 - 3 - GUI_CLICK_BUTTON
+2: 3 - 7 - GUI_CLICK_BUTTON
+3: 7 - 8 - GUI_CLICK_BUTTON
+4: 8 - 7 - GUI_CLICK_BUTTON
+5: 7 - 1 - GUI_CLICK_BUTTON
+6: 1 - 3 - GUI_CLICK_BUTTON
+7: 3 - 8 - GUI_CLICK_BUTTON
+8: 8 - 1 - GUI_CLICK_BUTTON
+9: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1080, 492]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+3
+1: 3 - 7 - GUI_CLICK_BUTTON
+2: 7 - 8 - GUI_CLICK_BUTTON
+3: 8 - 7 - GUI_CLICK_BUTTON
+4: 7 - 1 - GUI_CLICK_BUTTON
+5: 1 - 3 - GUI_CLICK_BUTTON
+6: 3 - 8 - GUI_CLICK_BUTTON
+7: 8 - 1 - GUI_CLICK_BUTTON
+8: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 899, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+7
+1: 7 - 8 - GUI_CLICK_BUTTON
+2: 8 - 7 - GUI_CLICK_BUTTON
+3: 7 - 1 - GUI_CLICK_BUTTON
+4: 1 - 3 - GUI_CLICK_BUTTON
+5: 3 - 8 - GUI_CLICK_BUTTON
+6: 8 - 1 - GUI_CLICK_BUTTON
+7: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 541, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+8
+1: 8 - 7 - GUI_CLICK_BUTTON
+2: 7 - 1 - GUI_CLICK_BUTTON
+3: 1 - 3 - GUI_CLICK_BUTTON
+4: 3 - 8 - GUI_CLICK_BUTTON
+5: 8 - 1 - GUI_CLICK_BUTTON
+6: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 899, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+7
+1: 7 - 1 - GUI_CLICK_BUTTON
+2: 1 - 3 - GUI_CLICK_BUTTON
+3: 3 - 8 - GUI_CLICK_BUTTON
+4: 8 - 1 - GUI_CLICK_BUTTON
+5: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 186, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+1
+1: 1 - 3 - GUI_CLICK_BUTTON
+2: 3 - 8 - GUI_CLICK_BUTTON
+3: 8 - 1 - GUI_CLICK_BUTTON
+4: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 360, 492]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+3
+1: 3 - 8 - GUI_CLICK_BUTTON
+2: 8 - 1 - GUI_CLICK_BUTTON
+3: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 541, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+8
+1: 8 - 1 - GUI_CLICK_BUTTON
+2: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 186, 210]
+
+- - - - - - - - - - - - - - - - - - -
+-> TAKE XML SNAPSHOT
+[adb, shell, uiautomator, dump]
+
+- - - - - - - - - - - - - - - - - - -
+-> READ XML SNAPSHOT
+[adb, shell, cat, /sdcard/window_dump.xml]
+
+- - - - - - - - - - - - - - - - - - -
+-> GETTING CURRENT FOCUS
+[adb, shell, dumpsys, window, |, grep, -E, 'mCurrentFocus']
+
+- - - - - - - - - - - - - - - - - - -
+1
+1: 1 - 6 - GUI_CLICK_BUTTON
+-> TAP
+[adb, shell, input, tap, 1253, 210]
+
+- - - - - - - - - - - - - - - - - - -
+EXPLORATION FINISHED, 8 states discovered

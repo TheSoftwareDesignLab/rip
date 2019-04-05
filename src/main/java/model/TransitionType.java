@@ -1,5 +1,8 @@
 package model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public enum TransitionType {
     GUI_CLICK_BUTTON,
     GUI_RANDOM,
@@ -10,5 +13,12 @@ public enum TransitionType {
     ROTATE_LANDSCAPE,
     ROTATE_PORTRAIT,
     BUTTON_BACK,
-    FIRST_INTERACTION
+    FIRST_INTERACTION;
+	
+	public static Set<TransitionType> getUserTypeTransitions(){
+		Set<TransitionType> userTypes = new HashSet<TransitionType>();
+		userTypes.add(GUI_CLICK_BUTTON);
+		
+		return userTypes;
+	}
 }

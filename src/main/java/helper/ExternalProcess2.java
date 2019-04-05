@@ -44,7 +44,7 @@ public class ExternalProcess2 {
 		String output = IOUtils.toString(spb.getInputStream());
 		answer.add(output);
 		if (!output.startsWith("<?xml")) {
-			System.out.println(output);
+//			System.out.println(output);
 		}
 		String err = IOUtils.toString(spb.getErrorStream());
 		answer.add(err);

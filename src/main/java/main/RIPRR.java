@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 
 import helper.EmulatorHelper;
 import helper.Helper;
+import helper.ImageHelper;
 import model.AndroidNode;
 import model.State;
 import model.Transition;
@@ -32,14 +33,14 @@ public class RIPRR extends RIPi18n {
 
 	public ArrayList<Transition> oldTransitions;
 
-	public RIPRR(String apkPath, String outputFolder, String isHybrid, String scriptPath) throws RipException, IOException {
-		super(apkPath, outputFolder, isHybrid, new String[] {scriptPath});
+	public RIPRR(String configFilePath) throws RipException, IOException {
+		super(configFilePath);
 	}
 
 	@Override
-	public void preProcess(String[] preProcArgs) {
+	public void preProcess(JSONObject preProcArgs) {
 
-		scriptPath = preProcArgs[0];
+		scriptPath = (String) preProcArgs.get("scriptPath");
 		oldStatesTable = new Hashtable<String, State>();
 		oldStates = new ArrayList<State>();
 		oldTransitions = new ArrayList<Transition>();
@@ -69,14 +70,8 @@ public class RIPRR extends RIPi18n {
 				oldStates.add(tempState);
 				oldStatesTable.put(tempState.getRawXML(), tempState);
 			}
-			
+
 			JSONObject transitions = (JSONObject) obj.get(TRANSITIONS);
-			
-//			State initialState = new State(hybridApp, contextualExploration);
-//			initialState.setId(0);
-//			Transition initialTransition = new Transition(initialState, TransitionType.FIRST_INTERACTION);
-//			initialTransition.setDestination(oldStates.get(0));
-//			oldTransitions.add(initialTransition);
 
 			for (int i = 1; i < amountTransitions; i++) {
 				JSONObject currentTransition = (JSONObject) transitions.get(i+"");
@@ -94,7 +89,7 @@ public class RIPRR extends RIPi18n {
 				}
 				oldTransitions.add(tempTransition);
 			}
-			
+
 			for (int i = 0; i < oldTransitions.size(); i++) {
 				System.out.println(oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
 			}
@@ -106,10 +101,8 @@ public class RIPRR extends RIPi18n {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -134,10 +127,8 @@ public class RIPRR extends RIPi18n {
 
 			State foundState = findStateInGraph(currentState);
 			if (foundState != null) {
-				System.out.println("Ooopppss");
 				// State already exists
 				currentState = foundState;
-
 			} else {
 				// New state discovered
 				int currentStateId = getSequentialNumber();
@@ -145,18 +136,21 @@ public class RIPRR extends RIPi18n {
 				String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
 				String snapShot = EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
 				System.out.println("Current ST: " + currentState.getId());
-				//					State sameState = compareScreenShotWithExisting(screenShot);
 				rippingOutsideApp = isRippingOutsideApp(parsedXML);
 				if (!rippingOutsideApp) {
 					statesTable.put(rawXML, currentState);
 					states.add(currentState);
 					currentState.setScreenShot(screenShot);
+					ImageHelper.getNodeImagesFromState(currentState);
 				} else {
 					// Discard state
 					sequentialNumber--;
 					Helper.deleteFile(screenShot);
 					Helper.deleteFile(snapShot);
 					//						currentState = sameState;
+					if(EmulatorHelper.isHome()) {
+						throw new RipException("Execution closed the app");
+					}
 					if(rippingOutsideApp) {
 						currentState = previousState;
 					}
@@ -174,64 +168,34 @@ public class RIPRR extends RIPi18n {
 				transitions.add(executedTransition);
 			}
 
-//			Transition stateTransition = null;
-//			boolean stateChanges = false;
-			
 			Transition transToBeExec = oldTransitions.get(0);
 			AndroidNode transToBeExecAN = transToBeExec.getOriginNode();
-			
+
 			System.out.println(currentState.getId());
 			for (int i = 0; i < oldTransitions.size(); i++) {
 				System.out.println((i+1)+": "+oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
 			}
-			
+
 			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
 				return ;
 			} else {
-				System.out.println("YAY!");
 				Transition tempTrans = currentState.popTransition();
 				AndroidNode tempTransAN = tempTrans.getOriginNode();
 				while(tempTrans.getType().compareTo(transToBeExec.getType())!=0
 						|| !tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID())
 						|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
 						|| !tempTransAN.getText().equals(transToBeExecAN.getText())) {
-					System.out.println(tempTrans.getType().name()+" - "+transToBeExec.getType().name());
-					System.out.println(tempTransAN.getResourceID()+" - "+transToBeExecAN.getResourceID());
-					System.out.println(tempTransAN.getxPath());
-					System.out.println(transToBeExecAN.getxPath());
-					System.out.println(tempTransAN.getxPath().equals(transToBeExecAN.getxPath()));
-					System.out.println(tempTransAN.getText()+" - "+transToBeExecAN.getText());
 					tempTrans = currentState.popTransition();
 					tempTransAN = tempTrans.getOriginNode();
 				}
-				System.out.println("Ahora si fue");
-				System.out.println(tempTrans.getType().name()+" - "+transToBeExec.getType().name());
-				System.out.println(tempTransAN.getResourceID()+" - "+transToBeExecAN.getResourceID());
-				System.out.println(tempTransAN.getxPath());
-				System.out.println(transToBeExecAN.getxPath());
-				System.out.println(tempTransAN.getxPath().equals(transToBeExecAN.getxPath()));
-				System.out.println(tempTransAN.getText()+" - "+transToBeExecAN.getText());
 				oldTransitions.remove(0);
 				executeTransition(tempTrans);
 				Thread.sleep(waitingTime);
+				String tranScreenshot = ImageHelper.takeTransitionScreenshot(tempTrans, transitions.size());
+				tempTrans.setScreenshot(tranScreenshot);
 				explore(currentState, tempTrans);
 			}
-
-//			// While no changes in in the state are detected
-//			while (!stateChanges) {
-//				stateTransition = currentState.popTransition();
-//				executeTransition(stateTransition);
-//				// Waits until the executed transition changes the application current state
-//				Thread.sleep(waitingTime);
-//				// Checks if the application changes due to the executed transition
-//				stateChanges = stateChanges();
-//			}
-//
-//			// If the state changes, recursively explores the application
-//			if (stateChanges) {
-//				explore(currentState, stateTransition);
-//			}
 
 		} catch (NoSuchElementException e) {
 			// There are no more possible transitions in the current state
@@ -239,24 +203,22 @@ public class RIPRR extends RIPi18n {
 			// Error parsing the XML DOM
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException | RipException e) {
 			// Error getting the current view hierarchy
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		}
 	}
 
 	public static void main(String[] args) {
-		if(args.length<4) {
-			System.err.println("Some arguments are missing, please provide apk location, outputfolder, boolean value if AUT is hybrid and executionScript from RIP");
+		if(args.length<1) {
+			System.err.println("Please provide config file location");
 		} else {
 			try {
-				new RIPRR(args[0], args[1], args[2], args[3]);
+				new RIPRR(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

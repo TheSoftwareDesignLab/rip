@@ -2,6 +2,8 @@ package main;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
@@ -15,6 +17,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -31,7 +35,7 @@ import model.TransitionType;
 
 public class RIPBase {
 	
-	public static final Object AMOUNT_TRANSITIONS = "amountTransitions";
+	public static Object AMOUNT_TRANSITIONS = "amountTransitions";
 	public static String STATES = "states";
 	public static String TRANSITIONS = "transitions";
 	public static String AMOUNT_STATES = "amountStates";
@@ -119,10 +123,25 @@ public class RIPBase {
 	public String pacName;
 
 	public boolean rippingOutsideApp;
+	
+	public String configFilePath;
+	
+	public JSONObject params;
+	
+	private String executionMode;
+	
+	private int maxIterations = 10000;
+	
+	private int maxTime = 1000;
+	
+	private long startTime;
 
-	public RIPBase(String apkPath, String outputFolder, String isHybrid, String[] preProcArgs) throws RipException, IOException {
+	public RIPBase(String configFilePath) throws RipException, IOException {
 		printRIPInitialMessage();
-		hybridApp = Boolean.parseBoolean(isHybrid);
+		this.configFilePath = configFilePath;
+		params = readConfigFile();
+		startTime = System.currentTimeMillis();
+		
 		pacName = "";
 		isRunning = true;
 		statesTable = new Hashtable<>();
@@ -130,7 +149,6 @@ public class RIPBase {
 		transitions = new ArrayList<>();
 		waitingTime = 500;
 
-		folderName = outputFolder;
 		File newFolder = new File(folderName);
 		newFolder.mkdirs();
 
@@ -140,7 +158,6 @@ public class RIPBase {
 		} catch (IOException | RipException e) {
 			e.printStackTrace();
 		}
-		apkLocation = apkPath;
 		// Installs the APK in the device
 		appInstalled = EmulatorHelper.installAPK(apkLocation);
 
@@ -176,7 +193,7 @@ public class RIPBase {
 			jsConsoleReader.start();
 		}
 
-		preProcess(preProcArgs);
+		preProcess(params);
 
 		Transition initialTransition = new Transition(null, TransitionType.FIRST_INTERACTION);
 		State initialState = new State(hybridApp, contextualExploration);
@@ -190,11 +207,47 @@ public class RIPBase {
 		}
 	}
 
+	private JSONObject readConfigFile() {
+		
+//		String apkPath, String outputFolder, String isHybrid, String[] preProcArgs
+		JSONParser jsonParser = new JSONParser();
+        JSONObject obj = null;
+        try (FileReader reader = new FileReader(configFilePath))
+        {
+            //Read JSON file
+            obj = (JSONObject) jsonParser.parse(reader);
+            
+            apkLocation = (String) obj.get("apkPath");
+            folderName = (String) obj.get("outputFolder");
+            hybridApp = (Boolean) obj.get("isHybrid");
+            executionMode = (String) obj.get("executionMode");
+            
+            JSONObject execParams = (JSONObject) obj.get("executionParams");         
+            switch (executionMode) {
+			case "events":
+				maxIterations = Math.toIntExact((long) execParams.get("events"));
+				break;
+			case "time":
+				maxTime = Math.toIntExact((long) execParams.get("time"));
+				break;
+			default:
+				break;
+			}
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return obj;
+	}
+
 	/**
 	 * This method allows developers to execute a previous processing before starting the ripping process
-	 * @param preProcArgs 
+	 * @param params2 
 	 */
-	public void preProcess(String[] preProcArgs) {
+	public void preProcess(JSONObject params2) {
 
 		//Insert specific implementation
 
@@ -243,13 +296,15 @@ public class RIPBase {
 			transition.put("stState", tempTransition.getOrigin().getId());
 			transition.put("dsState", tempTransition.getDestination().getId());
 			transition.put("tranType", tempTransition.getType().name());
+			transition.put("screenshot", tempTransition.getScreenshot());
 			if(tempTransition.getOriginNode()!=null) {
 				JSONObject androidNode = new JSONObject();
 				androidNode.put("resourceID", tempTransition.getOriginNode().getResourceID());
 				androidNode.put("name", tempTransition.getOriginNode().getName());
 				androidNode.put("text", tempTransition.getOriginNode().getText());
 				androidNode.put("xpath", tempTransition.getOriginNode().getxPath());
-				androidNode.put("bounds", tempTransition.getOriginNode().getCentralX()+"-"+tempTransition.getOriginNode().getCentralY());
+				androidNode.put("bounds", "["+tempTransition.getOriginNode().getPoint1()[0]+","+tempTransition.getOriginNode().getPoint1()[1]+"]["+
+						tempTransition.getOriginNode().getPoint2()[0]+","+tempTransition.getOriginNode().getPoint2()[1]+"]");
 				transition.put("androidNode", androidNode);
 			}			
 			resultTransitions.put(""+i,transition);
@@ -366,6 +421,7 @@ public class RIPBase {
 				// New state discovered
 				currentState.setId(getSequentialNumber());
 				String screenShot = EmulatorHelper.takeAndPullScreenshot(""+currentState.getId(), folderName);
+				String snapShot = EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
 				System.out.println("Current ST: " + currentState.getId());
 				State sameState = compareScreenShotWithExisting(screenShot);
 				rippingOutsideApp = isRippingOutsideApp(parsedXML);
@@ -373,11 +429,16 @@ public class RIPBase {
 					statesTable.put(rawXML, currentState);
 					states.add(currentState);
 					currentState.setScreenShot(screenShot);
+					ImageHelper.getNodeImagesFromState(currentState);
 				} else {
 					// Discard state
 					sequentialNumber--;
 					Helper.deleteFile(screenShot);
+					Helper.deleteFile(snapShot);
 					currentState = sameState;
+					if(EmulatorHelper.isHome()) {
+						throw new RipException("Execution closed the app");
+					}
 					if(rippingOutsideApp) {
 						currentState = previousState;
 					}
@@ -400,9 +461,10 @@ public class RIPBase {
 			boolean stateChanges = false;
 
 			// While no changes in in the state are detected
-			while (!stateChanges) {
+			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
+				maxIterations--;
 				// Waits until the executed transition changes the application current state
 				Thread.sleep(waitingTime);
 				// Checks if the application changes due to the executed transition
@@ -410,7 +472,9 @@ public class RIPBase {
 			}
 
 			// If the state changes, recursively explores the application
-			if (stateChanges) {
+			if (stateChanges && validExecution()) {
+				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
+				stateTransition.setScreenshot(tranScreenshot);
 				explore(currentState, stateTransition);
 			}
 
@@ -421,10 +485,25 @@ public class RIPBase {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (IOException | RipException e) {
+		} catch (IOException e) {
 			// Error getting the current view hierarchy
 			e.printStackTrace();
+		} catch (RipException e) {
+			if(e.getMessage().equals("Execution closed the app")) {
+				System.out.println(e.getMessage());
+			} else {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		} 
+	}
+
+	public boolean validExecution() {
+		long currentTime = System.currentTimeMillis();
+		long elapsedTime = currentTime-startTime;
+		long maxTimeMillis = maxTime*60*1000;
+		return (elapsedTime<maxTimeMillis && maxIterations>0);
 	}
 
 	public static void printRIPInitialMessage() {
@@ -438,15 +517,14 @@ public class RIPBase {
 	}
 
 	public static void main(String[] args) {
-		if(args.length<3) {
-			System.err.println("Some arguments are missing, please provide apk location and outputfolder");
+		if(args.length<1) {
+			System.err.println("Please provide config file location");
 		} else {
 			try {
-				new RIPBase(args[0], args[1], args[2], args);
+				new RIPBase(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

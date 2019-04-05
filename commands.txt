@@ -1,0 +1,13 @@
+Ubuntu 
+
+cd ..
+
+gradle baserip && rm test/RIP.jar && cp build/libs/RIP.jar test/
+gradle ripi18n && rm test/RIPi18n.jar && cp build/libs/RIPi18n.jar test/
+gradle riprr && rm test/RIPRR.jar && cp build/libs/RIPRR.jar test/
+
+cd test
+
+java -jar RIP.jar ../rip_config.json
+java -jar RIPi18n.jar ../rip_config.json
+java -jar RIPRR.jar ../rip_config.json

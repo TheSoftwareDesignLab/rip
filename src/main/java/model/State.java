@@ -47,7 +47,7 @@ public class State {
 	/**
 	 * List of the state elements
 	 */
-	private List<AndroidNode> buttonNodes;
+	private List<AndroidNode> stateNodes;
 
 	/**
 	 * Stack of possible transitions of the state. This stack is created based on
@@ -66,7 +66,7 @@ public class State {
 	private List<Transition> inboundTransitions = new ArrayList<Transition>();
 
 	private List<HybridError> hybridErrors;
-	
+
 	private String screenShot;
 
 
@@ -82,7 +82,7 @@ public class State {
 		this.hybrid = hybrid;
 		this.contextualChanges = contextualChanges;
 		possibleTransitions = new ArrayDeque<Transition>();
-		buttonNodes = new ArrayList<AndroidNode>();
+		stateNodes = new ArrayList<AndroidNode>();
 		hybridErrors = new ArrayList<HybridError>();
 		outboundTransitions = new ArrayList<Transition>();
 		inboundTransitions = new ArrayList<Transition>();
@@ -125,11 +125,11 @@ public class State {
 	public Transition popTransition() throws NoSuchElementException {
 		return possibleTransitions.pop();
 	}
-	
+
 	public void addInboundTransition(Transition pTransition) {
 		inboundTransitions.add(pTransition);
 	}
-	
+
 	public void addOutboundTransition(Transition pTransition) {
 		outboundTransitions.add(pTransition);
 	}
@@ -139,7 +139,7 @@ public class State {
 	 * the state
 	 */
 	public void generatePossibleTransition() {
-		
+
 		possibleTransitions.push(new Transition(this, TransitionType.BUTTON_BACK));
 
 		// Add the possible contextual changes in the transitions
@@ -160,19 +160,12 @@ public class State {
 		NodeList allNodes = parsedXML.getElementsByTagName("node");
 		Node currentNode;
 		AndroidNode newAndroidNode;
-		NamedNodeMap attributes;
 		for (int i = 0; i < allNodes.getLength(); i++) {
 			currentNode = allNodes.item(i);
-			attributes = currentNode.getAttributes();
-			for (int j = 0; j < attributes.getLength(); j++) {
-				Node attribute = attributes.item(j);
-				newAndroidNode = new AndroidNode(this, currentNode);
-				if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
-					possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
-					buttonNodes.add(newAndroidNode);
-					break;
-				}
-				
+			newAndroidNode = new AndroidNode(this, currentNode);
+			stateNodes.add(newAndroidNode);
+			if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
+				possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
 			}
 		}
 	}
@@ -181,7 +174,7 @@ public class State {
 		hybridErrors.add(error);
 
 	}
-	
+
 	public void setScreenShot(String screenShot) {
 		this.screenShot = screenShot;
 	}
@@ -189,7 +182,7 @@ public class State {
 	public String getScreenShot() {
 		return screenShot;
 	}
-	
+
 	public boolean hasRemainingTransitions() {
 		return !possibleTransitions.isEmpty();
 	}
@@ -199,15 +192,19 @@ public class State {
 	}
 
 	public AndroidNode getAndroidNode(String resourceID, String xpath, String text) {
-		
-		for (int i = 0; i < buttonNodes.size(); i++) {
-			AndroidNode temp = buttonNodes.get(i);
+
+		for (int i = 0; i < stateNodes.size(); i++) {
+			AndroidNode temp = stateNodes.get(i);
 			if(temp.getxPath().equals(xpath)&&temp.getResourceID().equals(resourceID)&&temp.getText().equals(text)) {
 				return temp;
 			}
 		}
 		return null;
-		
+
 	}
-	
+
+	public List<AndroidNode> getStateNodes() {
+		return stateNodes;
+	}
+
 }

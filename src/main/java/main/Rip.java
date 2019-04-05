@@ -1827,7 +1827,7 @@ public class Rip {
 		 *
 		 * ExternalProcess.getServices("'com.ppg.spunky_java'");
 		 *
-		 * } catch (Exception e) { // TODO Auto-generated catch block
+		 * } catch (Exception e) { 
 		 * e.printStackTrace(); }
 		 */
 

@@ -68,7 +68,6 @@ public class App {
 			try {
 				server.stop();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			server.destroy();
