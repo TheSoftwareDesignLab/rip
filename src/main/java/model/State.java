@@ -167,7 +167,6 @@ public class State {
 			if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
 				possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
 			} if (newAndroidNode.isEditableText()) {
-				System.out.println("Entra a GUI INPUT TEXT " + newAndroidNode.getResourceID());
 				possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
 			}
 		}
