@@ -164,14 +164,11 @@ public class State {
 			currentNode = allNodes.item(i);
 			newAndroidNode = new AndroidNode(this, currentNode);
 			stateNodes.add(newAndroidNode);
-			System.out.println("clase del nodo " + newAndroidNode.getpClass());
 			if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
-				System.out.println("Entra a CLICK");
-
 				possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
 			} if (newAndroidNode.isEditableText()) {
-				System.out.println("Entra a GUI INPUT TEXT");
-				possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT));
+				System.out.println("Entra a GUI INPUT TEXT " + newAndroidNode.getResourceID());
+				possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
 			}
 		}
 	}

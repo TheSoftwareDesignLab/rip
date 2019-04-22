@@ -554,7 +554,7 @@ public class EmulatorHelper {
 	 * @param input
 	 *            is the string that the users wants to write
 	 */
-	public static void enterInput(String input) throws Exception {
+	public static void enterInput(String input) throws RipException, IOException {
 		String newString = input.replace(" ", "%s");
 		List<String> commands = Arrays.asList("adb", "shell", "input", "text", newString);
 		ExternalProcess2.executeProcess(commands, "INPUT TEXT", null, null);
