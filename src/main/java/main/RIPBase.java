@@ -133,7 +133,11 @@ public class RIPBase {
 	
 	private int maxIterations = 10000;
 	
+	private int executedIterations = 0;
+	
 	private int maxTime = 1000;
+	
+	private int elapsedTime = 0;
 	
 	private long startTime;
 
@@ -202,7 +206,7 @@ public class RIPBase {
 		explore(initialState, initialTransition);
 
 		buildFiles();
-		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered");
+		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, "+executedIterations+" events executed, in "+elapsedTime+" minutes");
 		if(jsConsoleReader != null) {
 			jsConsoleReader.kill();
 		}
@@ -602,6 +606,7 @@ public class RIPBase {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
 				maxIterations--;
+				executedIterations++;
 				// Waits until the executed transition changes the application current state
 				Thread.sleep(waitingTime);
 				// Checks if the application changes due to the executed transition
@@ -639,7 +644,7 @@ public class RIPBase {
 
 	public boolean validExecution() {
 		long currentTime = System.currentTimeMillis();
-		long elapsedTime = currentTime-startTime;
+		elapsedTime = (int)(currentTime-startTime)/60000;
 		long maxTimeMillis = maxTime*60*1000;
 		return (elapsedTime<maxTimeMillis && maxIterations>0);
 	}
