@@ -128,6 +128,16 @@ public class AndroidNode {
 		return pClass.toLowerCase().contains("button");
 	}
 
+	public boolean isEditableText() {
+		switch(pClass) {
+			case "android.widget.EditText":
+				return true;
+		}
+
+		return pClass.toLowerCase().contains("EditText");
+
+	}
+
 	public int getCentralX() {
 		return centralPoint[0];
 	}

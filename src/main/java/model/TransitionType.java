@@ -6,6 +6,8 @@ import java.util.Set;
 public enum TransitionType {
     GUI_CLICK_BUTTON,
     GUI_RANDOM,
+    GUI_INPUT_TEXT,
+    GUI_INPUT_NUMBER,
     CONTEXT_INTERNET_ON,
     CONTEXT_INTERNET_OFF,
     CONTEXT_LOCATION_ON,
