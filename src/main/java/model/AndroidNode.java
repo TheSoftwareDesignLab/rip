@@ -129,6 +129,7 @@ public class AndroidNode {
 	}
 
 	public boolean isEditableText() {
+		System.out.println("isEditText " + pClass + " "+ pClass.toLowerCase().contains("EditText") );
 		switch(pClass) {
 			case "android.widget.EditText":
 				return true;
