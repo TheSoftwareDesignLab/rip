@@ -171,6 +171,13 @@ public class State {
 					possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
 				}
 			}
+			if (newAndroidNode.isScrollable() ) {
+				if(newAndroidNode.getpClass().contains("ViewPager")) {
+					possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
+				} else {
+					possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+				}
+			}
 		}
 	}
 

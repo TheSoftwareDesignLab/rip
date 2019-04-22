@@ -5,6 +5,8 @@ import java.util.Set;
 
 public enum TransitionType {
     GUI_CLICK_BUTTON,
+    SWIPE,
+    SCROLL,
     GUI_RANDOM,
     GUI_INPUT_TEXT,
     GUI_INPUT_NUMBER,
@@ -20,7 +22,13 @@ public enum TransitionType {
 	public static Set<TransitionType> getUserTypeTransitions(){
 		Set<TransitionType> userTypes = new HashSet<TransitionType>();
 		userTypes.add(GUI_CLICK_BUTTON);
-		
+		return userTypes;
+	}
+	
+	public static Set<TransitionType> getScrollTransitions(){
+		Set<TransitionType> userTypes = new HashSet<TransitionType>();
+		userTypes.add(SCROLL);
+		userTypes.add(SWIPE);
 		return userTypes;
 	}
 }

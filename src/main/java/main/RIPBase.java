@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -272,6 +273,7 @@ public class RIPBase {
 
 	@SuppressWarnings("unchecked")
 	public void buildFiles() throws IOException {
+		
 
 		JSONObject resultFile = new JSONObject();
 		resultFile.put(AMOUNT_STATES,statesTable.size());
@@ -304,6 +306,27 @@ public class RIPBase {
 				androidNode.put("name", tempTransition.getOriginNode().getName());
 				androidNode.put("text", tempTransition.getOriginNode().getText());
 				androidNode.put("xpath", tempTransition.getOriginNode().getxPath());
+				if(tempTransition.getType()==TransitionType.SCROLL || tempTransition.getType()==TransitionType.SWIPE) {
+					int[] p1 = tempTransition.getOriginNode().getPoint1();
+					int[] p2 = tempTransition.getOriginNode().getPoint2();
+					
+					int tapX = p1[0];
+					int tapX2 = (int) (p2[0] / 3) * 2;
+
+					int tapY = p1[1];
+					int tapY2 = (int) (p2[1] / 3) * 2;
+
+					String tX = String.valueOf(tapX);
+					String tX2 = String.valueOf(tapX2);
+					String tY = String.valueOf(tapY);
+					String tY2 = String.valueOf(tapY2);
+					
+					if(tempTransition.getType()==TransitionType.SCROLL) {
+						androidNode.put("action", "["+tX2+","+tY2+"]["+tX2+","+tY+"]");
+					} else {
+						androidNode.put("action", "["+tX2+","+tY2+"]["+tX+","+tY2+"]");
+					}
+				}
 				androidNode.put("bounds", "["+tempTransition.getOriginNode().getPoint1()[0]+","+tempTransition.getOriginNode().getPoint1()[1]+"]["+
 						tempTransition.getOriginNode().getPoint2()[0]+","+tempTransition.getOriginNode().getPoint2()[1]+"]");
 				transition.put("androidNode", androidNode);
@@ -313,6 +336,83 @@ public class RIPBase {
 		resultFile.put(TRANSITIONS, resultTransitions);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "result.json"));
 		writer.write(resultFile.toJSONString());
+		writer.close();
+		
+		buildTreeJSON();
+		buildSequentialJSON();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void buildSequentialJSON() throws IOException {
+		JSONObject graph = new JSONObject();
+		JSONArray links = new JSONArray();
+		
+		JSONArray resultStates = new JSONArray();
+		for (int i = 0; i < states.size(); i++) {
+			State tempState = states.get(i);
+			JSONObject state = new JSONObject();
+			state.put("name", tempState.getActivityName());
+			state.put("image", (new File(tempState.getScreenShot())).getName());
+			resultStates.add(state);
+		}
+		graph.put("nodes", resultStates);
+		
+		JSONArray resultTransitions = new JSONArray();
+		for (int i = 0; i < transitions.size(); i++) {
+			Transition tempTransition = transitions.get(i);
+			JSONObject transition = new JSONObject();
+
+			transition.put("id", i);
+			String fileName = tempTransition.getScreenshot()==null?tempTransition.getDestination().getScreenShot():tempTransition.getScreenshot();
+			transition.put("image", (new File(fileName)).getName());	
+			resultTransitions.add(transition);
+		}
+		graph.put("links", resultTransitions);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "sequential.json"));
+		writer.write(graph.toJSONString());
+		writer.close();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void buildTreeJSON() throws IOException {
+		
+		JSONObject graph = new JSONObject();
+		JSONArray links = new JSONArray();
+		
+		JSONArray resultStates = new JSONArray();
+		for (int i = 0; i < states.size(); i++) {
+			State tempState = states.get(i);
+			JSONObject state = new JSONObject();
+			state.put("id", tempState.getId());
+			state.put("name", "("+tempState.getId()+") "+tempState.getActivityName());
+			state.put("activityName", tempState.getActivityName());
+			state.put("imageName", (new File(tempState.getScreenShot())).getName());
+			resultStates.add(state);
+		}
+		JSONObject state = new JSONObject();
+		state.put("id", states.size());
+		state.put("name", "("+(states.size()-1)+") End of execution");
+		state.put("activityName", "End of execution");
+		state.put("imageName", "N/A");
+		resultStates.add(state);
+		graph.put("nodes", resultStates);
+		
+		JSONArray resultTransitions = new JSONArray();
+		for (int i = 0; i < transitions.size(); i++) {
+			Transition tempTransition = transitions.get(i);
+			JSONObject transition = new JSONObject();
+
+			transition.put("source", tempTransition.getOrigin().getId());
+			transition.put("target", tempTransition.getDestination().getId());
+			transition.put("id", i);
+			transition.put("tranType", tempTransition.getType().name());
+			String fileName = tempTransition.getScreenshot()==null?tempTransition.getDestination().getScreenShot():tempTransition.getScreenshot();
+			transition.put("imageName", (new File(fileName)).getName());	
+			resultTransitions.add(transition);
+		}
+		graph.put("links", resultTransitions);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "tree.json"));
+		writer.write(graph.toJSONString());
 		writer.close();
 	}
 
@@ -381,16 +481,24 @@ public class RIPBase {
 			String numInput = String.valueOf(rm.nextInt(100));
 			EmulatorHelper.enterInput(numInput);
 		}
-
 		EmulatorHelper.goBack();
 	}
 
-	public TransitionType executeTransition(Transition transition) throws IOException, RipException, Exception {
+	public TransitionType executeTransition(Transition transition) throws IOException, RipException {
+		AndroidNode origin;
 		switch (transition.getType()) {
 		case GUI_CLICK_BUTTON:
-			AndroidNode origin = transition.getOriginNode();
+			origin = transition.getOriginNode();
 			tap(origin);
 			return TransitionType.GUI_CLICK_BUTTON;
+		case SCROLL:
+			origin = transition.getOriginNode();
+			scroll(origin, false);
+			return TransitionType.SCROLL;
+		case SWIPE:
+			origin = transition.getOriginNode();
+			scroll(origin, true);
+			return TransitionType.SWIPE;
 		case CONTEXT_INTERNET_OFF:
 			EmulatorHelper.turnInternet(false);
 			return TransitionType.CONTEXT_INTERNET_OFF;
@@ -421,6 +529,35 @@ public class RIPBase {
 
 	}
 
+	private void scroll(AndroidNode origin, boolean isSwipe) {
+		
+		int[] p1 = origin.getPoint1();
+		int[] p2 = origin.getPoint2();
+		
+		int tapX = p1[0];
+		int tapX2 = (int) (p2[0] / 3) * 2;
+
+		int tapY = p1[1];
+		int tapY2 = (int) (p2[1] / 3) * 2;
+
+		String tX = String.valueOf(tapX);
+		String tX2 = String.valueOf(tapX2);
+		String tY = String.valueOf(tapY);
+		String tY2 = String.valueOf(tapY2);
+		
+		try {
+			// Is vertical swipe
+			if (!isSwipe) {
+				EmulatorHelper.scroll(tX2, tY2, tX2, tY, "1000");
+			} else {
+				EmulatorHelper.scroll(tX2, tY2, tX, tY2, "1000");
+			}
+		} catch (Exception e) {
+			System.out.println("CANNOT SCROLL");
+		}
+		
+	}
+
 	public void explore(State previousState, Transition executedTransition) {
 		currentState = new State(hybridApp, contextualExploration);
 		try {
@@ -430,7 +567,6 @@ public class RIPBase {
 			String activity = EmulatorHelper.getCurrentFocus();
 			currentState.setActivityName(activity);
 			currentState.setParsedXML(parsedXML);
-			
 			currentState.setRawXML(rawXML);
 
 			State foundState = findStateInGraph(currentState);
@@ -496,6 +632,7 @@ public class RIPBase {
 			if (stateChanges && validExecution()) {
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
+				maxIterations--;
 				explore(currentState, stateTransition);
 			}
 

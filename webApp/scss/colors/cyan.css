@@ -1,0 +1,64 @@
+::-moz-selection {
+  /* Code for Firefox */
+  background-color: #00bcd4; }
+
+::selection {
+  background-color: #00bcd4; }
+
+a:hover,
+.sticky-header .nav-list li a,
+.sticky-header .nav-list li a::before,
+.twitter-item a:hover,
+.mdl-textfield--floating-label.is-focused .mdl-textfield__label,
+.mdl-textfield--floating-label.is-dirty .mdl-textfield__label,
+.mdl-textfield--floating-label.has-placeholder .mdl-textfield__label {
+  color: #00bcd4; }
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:active:hover,
+.btn-primary:active:focus,
+.mdl-button--raised:focus:not(:active),
+.btn-primary,
+.section-title,
+.section-title .section-anchor,
+.service-item:hover .icon::after,
+.team-member .skill-bar,
+.slick-dots .slick-active button,
+.portfolio-filter li .active,
+.portfolio-item .hover::after,
+.portfolio-item .hover-inner a,
+.news-slider-nav .hentry,
+.news-slider-nav .slick-arrow,
+.price-table:hover .price-head,
+.site-header.primary-bg,
+.price-table:hover .price-foot,
+.mdl-textfield__label::after {
+  background-color: #00bcd4; }
+
+.is-sticky .site-header.primary-bg {
+  background-color: #00d3ee; }
+
+.slick-dots li {
+  border-color: #00bcd4; }
+
+.sticky-header .nav-list li::after {
+  border-right-color: #00bcd4; }
+
+.scalabilty {
+  border-top-color: #00bcd4; }
+
+.news-slider-for::after {
+  border-bottom-color: #00bcd4; }
+
+/*============================================================
+	Mobile (Portrait) Design for a width of 320px
+==============================================================*/
+@media only screen and (max-width: 767px) {
+  .sticky-header .nav-list li a {
+    color: rgba(0, 0, 0, 0.6); }
+    .sticky-header .nav-list li a:hover {
+      color: #00bcd4; } }
+
+/*# sourceMappingURL=cyan.css.map */
