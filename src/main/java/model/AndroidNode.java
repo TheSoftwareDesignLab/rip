@@ -21,6 +21,7 @@ public class AndroidNode {
 	private String name="";
 	private String xPath="";
 	private String index="";
+	private boolean scrollable;
 
 	public AndroidNode(State state, Node domNode) {
 		this.state = state;
@@ -57,15 +58,22 @@ public class AndroidNode {
 					break;
 				case CLASS:
 					pClass = attributeValue;
+					break;
 				case ENABLED:
 					enabled = true;
 					break;
 				case RESOURCE_ID:
 					resourceID = attributeValue;
+					break;
 				case TEXT:
 					text = attributeValue;
+					break;
 				case INDEX:
 					index = attributeValue;
+					break;
+				case SCROLLABLE:
+					scrollable = Boolean.parseBoolean(attributeValue);
+					break;
 				}
 			}
 			else {
@@ -82,6 +90,10 @@ public class AndroidNode {
 
 	public String getResourceID() {
 		return resourceID;
+	}
+
+	public boolean isScrollable() {
+		return scrollable;
 	}
 
 	public String getText() {
