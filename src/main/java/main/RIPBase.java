@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -472,6 +473,20 @@ public class RIPBase {
 	public void tap(AndroidNode node) throws IOException, RipException {
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
+	public void enterInput(AndroidNode node) throws IOException, RipException {
+		int type = EmulatorHelper.checkInputType();
+		Random rm = new Random();
+
+		if (type == 1) {
+			String input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
+					+ (char) (rm.nextInt(26) + 'a');
+			EmulatorHelper.enterInput(input);
+		} else {
+			String numInput = String.valueOf(rm.nextInt(100));
+			EmulatorHelper.enterInput(numInput);
+		}
+		EmulatorHelper.goBack();
+	}
 
 	public TransitionType executeTransition(Transition transition) throws IOException, RipException {
 		AndroidNode origin;
@@ -508,6 +523,11 @@ public class RIPBase {
 			return TransitionType.CONTEXT_LOCATION_ON;
 		case BUTTON_BACK:
 			EmulatorHelper.goBack();
+		case GUI_INPUT_TEXT:
+			AndroidNode originInput = transition.getOriginNode();
+			tap(originInput);
+			enterInput(originInput);
+
 		}
 		return null;
 

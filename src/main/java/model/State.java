@@ -165,7 +165,11 @@ public class State {
 			newAndroidNode = new AndroidNode(this, currentNode);
 			stateNodes.add(newAndroidNode);
 			if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
-				possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+				if (newAndroidNode.isEditableText()) {
+					possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
+				} else {
+					possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+				}
 			}
 			if (newAndroidNode.isScrollable() ) {
 				if(newAndroidNode.getpClass().contains("ViewPager")) {
