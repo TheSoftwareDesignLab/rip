@@ -387,6 +387,7 @@ public class RIPBase {
             state.put("name", "("+tempState.getId()+") "+tempState.getActivityName());
             state.put("activityName", tempState.getActivityName());
             state.put("imageName", (new File(tempState.getScreenShot())).getName());
+            state.put("model", tempState.getDomainModel());
             resultStates.add(state);
         }
         JSONObject state = new JSONObject();

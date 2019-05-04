@@ -7,6 +7,9 @@ import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import oldModel.OldDomainEntity;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -69,6 +72,10 @@ public class State {
 
 	private String screenShot;
 
+	/**
+	 * The domain model of the state
+	 */
+	private List<Domain> domainModel;
 
 	/**
 	 * Creates a new state
@@ -86,6 +93,7 @@ public class State {
 		hybridErrors = new ArrayList<HybridError>();
 		outboundTransitions = new ArrayList<Transition>();
 		inboundTransitions = new ArrayList<Transition>();
+		domainModel = new ArrayList<Domain>();
 
 	}
 
@@ -164,6 +172,9 @@ public class State {
 			currentNode = allNodes.item(i);
 			newAndroidNode = new AndroidNode(this, currentNode);
 			stateNodes.add(newAndroidNode);
+			if(newAndroidNode.isDomainAttribute()) {
+				loadDomainModel(newAndroidNode);
+			}
 			if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
 				if (newAndroidNode.isEditableText()) {
 					possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
@@ -179,6 +190,22 @@ public class State {
 				}
 			}
 		}
+	}
+
+	private void loadDomainModel(AndroidNode androidNode) {
+		String field = androidNode.getResourceID();
+		String name = field;
+		Domain.Type type =  androidNode.getType();
+		if(field.equals("")) {
+			field = "BLANK";
+		}
+
+/*		// Special password case
+		if (attributes.getNamedItem("password").getNodeValue().equals("true")) {
+			type = Domain.Type.PASSWORD;
+		}*/
+		Domain modelD = new Domain(name, type, field);
+		domainModel.add(modelD);
 	}
 
 	public void addError(HybridError error) {
@@ -216,6 +243,28 @@ public class State {
 
 	public List<AndroidNode> getStateNodes() {
 		return stateNodes;
+	}
+
+	public JSONArray getDomainModel() {
+
+		JSONArray model = new JSONArray();
+		for (Domain attribute : domainModel) {
+			JSONObject attributeJSON = new JSONObject();
+
+			attributeJSON.put("name", attribute.getName());
+			attributeJSON.put("field", attribute.getField());
+			attributeJSON.put("type", attribute.getType().toString());
+/*			if (attribute.getValues() != null) {
+				attributeJSON.put("values", attribute.getValues());
+			}*/
+			model.add(attributeJSON);
+
+		}
+		return model;
+	}
+
+	public void addToDomainModel(Domain domainModel) {
+		this.domainModel.add(domainModel);
 	}
 
 }
