@@ -202,8 +202,8 @@ folder.onchange = function () {
                 for (j = 0; j < seqJson.nodes.length; j += 1) {
                     var node = seqJson.nodes[j];
                     //console.log(node, 'Node');
-                    orderedImageNames.push(node.image);
-                    dicByImgName[node.image] = node;
+                    orderedImageNames[parseInt(node.image.split(".")[0],10)-1]=node.image;
+                    dicByImgName[parseInt(node.image.split(".")[0],10)-1] = node;
                     //var linkimagename = seqJson.links[j].image.replace("./generated/testtt/", "")
                     //pushImage(nodeimagename);
                     //pushImage(linkimagename);
@@ -267,8 +267,9 @@ folder.onchange = function () {
         });
         var ul = document.getElementById("flipsterUL");
         orderedImageNames.reverse().forEach(imageName => {
+            imageName = parseInt(imageName.split(".")[0],10)-1
             console.log('FileName', imageName)
-            let file = imgDic[imageName];
+            let file = imgDic[(imageName+1)+".png"];
             console.log('FILE', file);
             var reader = new FileReader();
             reader.onload = (function (theFile) {
