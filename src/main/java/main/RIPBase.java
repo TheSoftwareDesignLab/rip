@@ -357,6 +357,11 @@ public class RIPBase {
 			JSONObject state = new JSONObject();
 			state.put("name", tempState.getActivityName());
 			state.put("image", (new File(tempState.getScreenShot())).getName());
+			state.put("battery", tempState.getBattery());
+			state.put("wifi", tempState.isWifiStatus());
+			state.put("memory", tempState.getMemory());
+			state.put("cpu", tempState.getCpu());
+			state.put("airplane", tempState.isAirplane());
 			resultStates.add(state);
 		}
 		graph.put("nodes", resultStates);
@@ -391,6 +396,11 @@ public class RIPBase {
 			state.put("name", "("+tempState.getId()+") "+tempState.getActivityName());
 			state.put("activityName", tempState.getActivityName());
 			state.put("imageName", (new File(tempState.getScreenShot())).getName());
+			state.put("battery", tempState.getBattery());
+			state.put("wifi", tempState.isWifiStatus());
+			state.put("memory", tempState.getMemory());
+			state.put("cpu", tempState.getCpu());
+			state.put("airplane", tempState.isAirplane());
 			resultStates.add(state);
 		}
 		JSONObject state = new JSONObject();
@@ -398,6 +408,11 @@ public class RIPBase {
 		state.put("name", "("+(states.size()-1)+") End of execution");
 		state.put("activityName", "End of execution");
 		state.put("imageName", "N/A");
+		state.put("battery", "N/A");
+		state.put("wifi", "N/A");
+		state.put("memory", "N/A");
+		state.put("cpu", "N/A");
+		state.put("airplane", "N/A");
 		resultStates.add(state);
 		graph.put("nodes", resultStates);
 		
@@ -473,7 +488,7 @@ public class RIPBase {
 	public void tap(AndroidNode node) throws IOException, RipException {
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
-	public void enterInput(AndroidNode node) throws IOException, RipException {
+	public int enterInput(AndroidNode node) throws IOException, RipException {
 		int type = EmulatorHelper.checkInputType();
 		Random rm = new Random();
 
@@ -486,6 +501,7 @@ public class RIPBase {
 			EmulatorHelper.enterInput(numInput);
 		}
 		EmulatorHelper.goBack();
+		return type;
 	}
 
 	public TransitionType executeTransition(Transition transition) throws IOException, RipException {
@@ -523,10 +539,12 @@ public class RIPBase {
 			return TransitionType.CONTEXT_LOCATION_ON;
 		case BUTTON_BACK:
 			EmulatorHelper.goBack();
+			return TransitionType.BUTTON_BACK;
 		case GUI_INPUT_TEXT:
 			AndroidNode originInput = transition.getOriginNode();
 			tap(originInput);
-			enterInput(originInput);
+			int type = enterInput(originInput);
+			return (type==1)?TransitionType.GUI_INPUT_TEXT:TransitionType.GUI_INPUT_NUMBER;
 
 		}
 		return null;
@@ -590,6 +608,7 @@ public class RIPBase {
 					statesTable.put(rawXML, currentState);
 					states.add(currentState);
 					currentState.setScreenShot(screenShot);
+					currentState.retrieveContext(packageName);
 					ImageHelper.getNodeImagesFromState(currentState);
 				} else {
 					// Discard state

@@ -12,6 +12,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import helper.EmulatorHelper;
+
 public class State {
 
 	/**
@@ -43,6 +45,8 @@ public class State {
 	 * Contextual changes will generated in the state?
 	 */
 	private boolean contextualChanges;
+	
+	private int battery;
 
 	/**
 	 * List of the state elements
@@ -69,6 +73,14 @@ public class State {
 
 	private String screenShot;
 
+	private boolean wifiStatus;
+
+	private double cpu;
+
+	private double memory;
+
+	private boolean airplane;
+
 
 	/**
 	 * Creates a new state
@@ -86,6 +98,7 @@ public class State {
 		hybridErrors = new ArrayList<HybridError>();
 		outboundTransitions = new ArrayList<Transition>();
 		inboundTransitions = new ArrayList<Transition>();
+		
 
 	}
 
@@ -193,6 +206,47 @@ public class State {
 	public String getScreenShot() {
 		return screenShot;
 	}
+	
+
+	public int getBattery() {
+		return battery;
+	}
+
+	public void setBattery(int battery) {
+		this.battery = battery;
+	}
+
+	public boolean isWifiStatus() {
+		return wifiStatus;
+	}
+
+	public void setWifiStatus(boolean wifiStatus) {
+		this.wifiStatus = wifiStatus;
+	}
+
+	public double getCpu() {
+		return cpu;
+	}
+
+	public void setCpu(double cpu) {
+		this.cpu = cpu;
+	}
+
+	public double getMemory() {
+		return memory;
+	}
+
+	public void setMemory(double memory) {
+		this.memory = memory;
+	}
+
+	public boolean isAirplane() {
+		return airplane;
+	}
+
+	public void setAirplane(boolean airplane) {
+		this.airplane = airplane;
+	}
 
 	public boolean hasRemainingTransitions() {
 		return !possibleTransitions.isEmpty();
@@ -216,6 +270,15 @@ public class State {
 
 	public List<AndroidNode> getStateNodes() {
 		return stateNodes;
+	}
+
+	public void retrieveContext(String packageName) throws Exception {
+		// TODO Auto-generated method stub
+		battery = EmulatorHelper.showBatteryLevel();
+		wifiStatus = EmulatorHelper.isWifiEnabled();
+		cpu = EmulatorHelper.showCPUUsage(packageName);
+		memory = EmulatorHelper.showMemoryUsage(packageName);
+		airplane = EmulatorHelper.isAirplaneModeOn();
 	}
 
 }

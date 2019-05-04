@@ -5,7 +5,7 @@
 	"executionMode":"dfs",
 	"scriptPath":"./outputt/result.json",
 	"executionParams":{
-		"events":10000,
+		"events":10,
 		"time":10000
 	}
 }

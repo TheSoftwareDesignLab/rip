@@ -141,6 +141,7 @@ public class RIPRR extends RIPi18n {
 					statesTable.put(rawXML, currentState);
 					states.add(currentState);
 					currentState.setScreenShot(screenShot);
+					currentState.retrieveContext(packageName);
 					ImageHelper.getNodeImagesFromState(currentState);
 				} else {
 					// Discard state

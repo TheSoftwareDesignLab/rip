@@ -156,6 +156,11 @@ function drawGraph1(graph) {
                 document.getElementById("activityName").innerHTML = object.tranType;
             } else {
                 document.getElementById("activityName").innerHTML = object.name;
+                document.getElementById("batteryGr").innerHTML = object.battery+"%"
+                document.getElementById("wifiGr").innerHTML = object.wifi
+                document.getElementById("memoryGr").innerHTML = object.memory+"kB"
+                document.getElementById("cpuGr").innerHTML = object.cpu+"%"
+                document.getElementById("airplaneGr").innerHTML = object.airplane
             }
             // document.getElementById("activityName").innerHTML = object.name;
             if (document.getElementById(object.imageName) && object['imageName']) {
