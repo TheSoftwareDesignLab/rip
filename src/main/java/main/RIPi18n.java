@@ -88,7 +88,7 @@ public class RIPi18n extends RIPBase{
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
 				// Waits until the executed transition changes the application current state
-				Thread.sleep(waitingTime);
+				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
 				stateChanges = stateChanges();
 			}

@@ -153,7 +153,7 @@ public class RIPBase {
 		statesTable = new Hashtable<>();
 		states = new ArrayList<>();
 		transitions = new ArrayList<>();
-		waitingTime = 500;
+		waitingTime = 1000;
 
 		File newFolder = new File(folderName);
 		newFolder.mkdirs();
@@ -647,7 +647,7 @@ public class RIPBase {
 				maxIterations--;
 				executedIterations++;
 				// Waits until the executed transition changes the application current state
-				Thread.sleep(waitingTime);
+				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
 				stateChanges = stateChanges();
 			}

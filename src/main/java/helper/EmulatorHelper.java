@@ -241,6 +241,31 @@ public class EmulatorHelper {
 		}
 		return ans;
 	}
+	
+	public static void isEventIdle() throws IOException, InterruptedException {
+		// "adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"
+		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"});
+		Process pss;
+		boolean termino = false;
+		System.out.println("waiting for emulator's event idle state");
+		while (!termino) {
+			pss = pBB.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(pss.getInputStream()));
+			String line;
+			String resp = "";
+			while ((line = reader.readLine())!=null) {
+				resp += line;
+			}
+			pss.waitFor();
+			if(resp.contains("IDLE")) {
+				termino = true;
+				Thread.sleep(500);
+				System.out.println("Emulator now is in event idle state");
+			} else {
+				Thread.sleep(2000);
+			}
+		}
+	}
 
 	/**
 	 * Gets the current orientation of the accelerometer
