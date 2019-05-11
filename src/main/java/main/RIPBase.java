@@ -36,8 +36,8 @@ import model.Transition;
 import model.TransitionType;
 
 public class RIPBase {
-	
-	public static Object AMOUNT_TRANSITIONS = "amountTransitions";
+
+    public static Object AMOUNT_TRANSITIONS = "amountTransitions";
 	public static String STATES = "states";
 	public static String TRANSITIONS = "transitions";
 	public static String AMOUNT_STATES = "amountStates";
@@ -216,29 +216,29 @@ public class RIPBase {
 	private JSONObject readConfigFile() {
 		
 //		String apkPath, String outputFolder, String isHybrid, String[] preProcArgs
-		JSONParser jsonParser = new JSONParser();
+        JSONParser jsonParser = new JSONParser();
         JSONObject obj = null;
         try (FileReader reader = new FileReader(configFilePath))
         {
             //Read JSON file
             obj = (JSONObject) jsonParser.parse(reader);
-            
+
             apkLocation = (String) obj.get("apkPath");
             folderName = (String) obj.get("outputFolder");
             hybridApp = (Boolean) obj.get("isHybrid");
             executionMode = (String) obj.get("executionMode");
-            
-            JSONObject execParams = (JSONObject) obj.get("executionParams");         
+
+            JSONObject execParams = (JSONObject) obj.get("executionParams");
             switch (executionMode) {
-			case "events":
-				maxIterations = Math.toIntExact((long) execParams.get("events"));
-				break;
-			case "time":
-				maxTime = Math.toIntExact((long) execParams.get("time"));
-				break;
-			default:
-				break;
-			}
+                case "events":
+                    maxIterations = Math.toIntExact((long) execParams.get("events"));
+                    break;
+                case "time":
+                    maxTime = Math.toIntExact((long) execParams.get("time"));
+                    break;
+                default:
+                    break;
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -400,7 +400,8 @@ public class RIPBase {
 			state.put("wifi", tempState.isWifiStatus());
 			state.put("memory", tempState.getMemory());
 			state.put("cpu", tempState.getCpu());
-			state.put("airplane", tempState.isAirplane());
+            state.put("airplane", tempState.isAirplane());
+            state.put("model", tempState.getDomainModel());
 			resultStates.add(state);
 		}
 		JSONObject state = new JSONObject();

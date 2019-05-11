@@ -23,6 +23,7 @@ function loadNewProject() {
     }
 }
 
+
 /*
 Main function that detects file load
 */
@@ -109,7 +110,7 @@ folder.onchange = function () {
                         }
                     }
                 });
-                // loadDomainModel(treeJson);
+                loadDomainModel(treeJson);
                 drawGraph1(treeJson);
             };
         })(treeJson);
@@ -148,7 +149,7 @@ folder.onchange = function () {
                     divContent.classList.add('panel-body');
                     element.model.forEach(attribute => {
                         var hAttribute = document.createElement('h5');
-                        hAttribute.innerText = attribute.name + ' : ' + attribute.type;
+                        hAttribute.innerText = attribute.field + ' : ' + attribute.type;
                         divContent.appendChild(hAttribute);
                     });
 

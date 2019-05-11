@@ -1,7 +1,11 @@
 package model;
 
+import oldModel.OldDomainEntity;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AndroidNode {
 
@@ -23,6 +27,8 @@ public class AndroidNode {
 	private String index="";
 	private boolean scrollable;
 
+	private Domain.Type type;
+
 	public AndroidNode(State state, Node domNode) {
 		this.state = state;
 		loadAttributesFromDom(domNode);
@@ -37,6 +43,8 @@ public class AndroidNode {
 			temp = temp.getParentNode();
 		}
 	}
+
+
 
 	public void loadAttributesFromDom(Node domNode) {
 		NamedNodeMap attributes = domNode.getAttributes();
@@ -140,8 +148,32 @@ public class AndroidNode {
 		return pClass.toLowerCase().contains("button");
 	}
 
+	public boolean isDomainAttribute() {
+		switch (pClass) {
+			case "android.widget.CheckBox":
+				type = Domain.Type.BOOLEAN;
+				return true;
+
+			case "android.widget.EditText":
+				type = Domain.Type.STRING;
+				return true;
+
+			case "android.widget.Button":
+				type = Domain.Type.BUTTON;
+				return true;
+
+			case "android.widget.RadioGroup":
+				type = Domain.Type.LIST;
+				return true;
+		}
+
+		return false;
+
+	}
+
 	public boolean isEditableText() {
-		switch(pClass) {
+
+		switch (pClass) {
 			case "android.widget.EditText":
 				return true;
 		}
@@ -160,6 +192,10 @@ public class AndroidNode {
 	
 	public String getpClass() {
 		return pClass;
+	}
+
+	public Domain.Type getType() {
+		return type;
 	}
 
 	public boolean isEnabled() {
