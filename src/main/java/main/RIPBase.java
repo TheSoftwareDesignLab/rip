@@ -394,7 +394,7 @@ public class RIPBase {
 			JSONObject state = new JSONObject();
 			state.put("id", tempState.getId());
 			state.put("name", "("+tempState.getId()+") "+tempState.getActivityName());
-			state.put("activityName", tempState.getActivityName());
+			state.put("activityName", tempState.getActivityName().split("/")[1]);
 			state.put("imageName", (new File(tempState.getScreenShot())).getName());
 			state.put("battery", tempState.getBattery());
 			state.put("wifi", tempState.isWifiStatus());
