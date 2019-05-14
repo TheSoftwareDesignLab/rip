@@ -35,6 +35,7 @@ public class RIPRR extends RIPi18n {
 
 	public RIPRR(String configFilePath) throws RipException, IOException {
 		super(configFilePath);
+		waitingTime = 1000;
 	}
 
 	@Override
@@ -110,9 +111,7 @@ public class RIPRR extends RIPi18n {
 
 	@Override
 	public void explore(State previousState, Transition executedTransition) {
-		if(oldTransitions.size()==0) {
-			return;
-		}
+		
 		currentState = new State(hybridApp, contextualExploration);
 		try {
 			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
@@ -168,6 +167,9 @@ public class RIPRR extends RIPi18n {
 				previousState.addOutboundTransition(executedTransition);
 				transitions.add(executedTransition);
 			}
+			if(oldTransitions.size()==0) {
+				return;
+			}
 
 			Transition transToBeExec = oldTransitions.get(0);
 			AndroidNode transToBeExecAN = transToBeExec.getOriginNode();
@@ -192,7 +194,8 @@ public class RIPRR extends RIPi18n {
 				}
 				oldTransitions.remove(0);
 				executeTransition(tempTrans);
-				Thread.sleep(waitingTime);
+				// Waits until the executed transition changes the application current state
+				EmulatorHelper.isEventIdle();
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(tempTrans, transitions.size());
 				tempTrans.setScreenshot(tranScreenshot);
 				explore(currentState, tempTrans);

@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -37,7 +38,7 @@ import model.TransitionType;
 
 public class RIPBase {
 
-    public static Object AMOUNT_TRANSITIONS = "amountTransitions";
+	public static Object AMOUNT_TRANSITIONS = "amountTransitions";
 	public static String STATES = "states";
 	public static String TRANSITIONS = "transitions";
 	public static String AMOUNT_STATES = "amountStates";
@@ -125,35 +126,37 @@ public class RIPBase {
 	public String pacName;
 
 	public boolean rippingOutsideApp;
-	
+
 	public String configFilePath;
-	
+
 	public JSONObject params;
-	
+
 	private String executionMode;
-	
+
 	private int maxIterations = 10000;
-	
+
 	private int executedIterations = 0;
-	
+
 	private int maxTime = 1000;
-	
+
 	private int elapsedTime = 0;
-	
+
 	private long startTime;
+	
+	private long finishTime;
 
 	public RIPBase(String configFilePath) throws RipException, IOException {
+		startTime = System.currentTimeMillis();
 		printRIPInitialMessage();
 		this.configFilePath = configFilePath;
 		params = readConfigFile();
 		startTime = System.currentTimeMillis();
-		
+
 		pacName = "";
 		isRunning = true;
 		statesTable = new Hashtable<>();
 		states = new ArrayList<>();
 		transitions = new ArrayList<>();
-		waitingTime = 500;
 
 		File newFolder = new File(folderName);
 		newFolder.mkdirs();
@@ -214,39 +217,39 @@ public class RIPBase {
 	}
 
 	private JSONObject readConfigFile() {
-		
-//		String apkPath, String outputFolder, String isHybrid, String[] preProcArgs
-        JSONParser jsonParser = new JSONParser();
-        JSONObject obj = null;
-        try (FileReader reader = new FileReader(configFilePath))
-        {
-            //Read JSON file
-            obj = (JSONObject) jsonParser.parse(reader);
 
-            apkLocation = (String) obj.get("apkPath");
-            folderName = (String) obj.get("outputFolder");
-            hybridApp = (Boolean) obj.get("isHybrid");
-            executionMode = (String) obj.get("executionMode");
+		//		String apkPath, String outputFolder, String isHybrid, String[] preProcArgs
+		JSONParser jsonParser = new JSONParser();
+		JSONObject obj = null;
+		try (FileReader reader = new FileReader(configFilePath))
+		{
+			//Read JSON file
+			obj = (JSONObject) jsonParser.parse(reader);
 
-            JSONObject execParams = (JSONObject) obj.get("executionParams");
-            switch (executionMode) {
-                case "events":
-                    maxIterations = Math.toIntExact((long) execParams.get("events"));
-                    break;
-                case "time":
-                    maxTime = Math.toIntExact((long) execParams.get("time"));
-                    break;
-                default:
-                    break;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return obj;
+			apkLocation = (String) obj.get("apkPath");
+			folderName = (String) obj.get("outputFolder");
+			hybridApp = (Boolean) obj.get("isHybrid");
+			executionMode = (String) obj.get("executionMode");
+
+			JSONObject execParams = (JSONObject) obj.get("executionParams");
+			switch (executionMode) {
+			case "events":
+				maxIterations = Math.toIntExact((long) execParams.get("events"));
+				break;
+			case "time":
+				maxTime = Math.toIntExact((long) execParams.get("time"));
+				break;
+			default:
+				break;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return obj;
 	}
 
 	/**
@@ -276,8 +279,8 @@ public class RIPBase {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void buildFiles() throws IOException {
-		
+	public void buildFiles() throws IOException, RipException {
+
 
 		JSONObject resultFile = new JSONObject();
 		resultFile.put(AMOUNT_STATES,statesTable.size());
@@ -313,7 +316,7 @@ public class RIPBase {
 				if(tempTransition.getType()==TransitionType.SCROLL || tempTransition.getType()==TransitionType.SWIPE) {
 					int[] p1 = tempTransition.getOriginNode().getPoint1();
 					int[] p2 = tempTransition.getOriginNode().getPoint2();
-					
+
 					int tapX = p1[0];
 					int tapX2 = (int) (p2[0] / 3) * 2;
 
@@ -324,7 +327,7 @@ public class RIPBase {
 					String tX2 = String.valueOf(tapX2);
 					String tY = String.valueOf(tapY);
 					String tY2 = String.valueOf(tapY2);
-					
+
 					if(tempTransition.getType()==TransitionType.SCROLL) {
 						androidNode.put("action", "["+tX2+","+tY2+"]["+tX2+","+tY+"]");
 					} else {
@@ -341,16 +344,37 @@ public class RIPBase {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "result.json"));
 		writer.write(resultFile.toJSONString());
 		writer.close();
-		
+
 		buildTreeJSON();
 		buildSequentialJSON();
+		buildMetaJSON();
+	}
+
+	private void buildMetaJSON() throws IOException, RipException {
+		// TODO Auto-generated method stub
+		JSONObject graph = new JSONObject();
+		graph.put("executionMethod", executionMode);
+		graph.put("maxEvents", maxIterations+"");
+		graph.put("execEvents", executedIterations+"");
+		graph.put("maxTime", maxTime+"");
+		graph.put("elapsedTime", elapsedTime+"");
+		graph.put("startingDate", (new Date(startTime))+"");
+		graph.put("finishDate", (new Date(System.currentTimeMillis()))+"");
+		graph.put("apk", packageName);
+		graph.put("androidVersion", EmulatorHelper.getAndroidVersion());
+		graph.put("deviceResolution", EmulatorHelper.getDeviceResolution()+"");
+		graph.put("currentOrientation", (EmulatorHelper.getCurrentOrientation()==0)?"Portrait":"Lanscape");
+		graph.put("deviceDimensions", EmulatorHelper.getScreenDimensions());
+		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "meta.json"));
+		writer.write(graph.toJSONString());
+		writer.close();
 	}
 
 	@SuppressWarnings("unchecked")
 	private void buildSequentialJSON() throws IOException {
 		JSONObject graph = new JSONObject();
 		JSONArray links = new JSONArray();
-		
+
 		JSONArray resultStates = new JSONArray();
 		for (int i = 0; i < states.size(); i++) {
 			State tempState = states.get(i);
@@ -365,7 +389,7 @@ public class RIPBase {
 			resultStates.add(state);
 		}
 		graph.put("nodes", resultStates);
-		
+
 		JSONArray resultTransitions = new JSONArray();
 		for (int i = 0; i < transitions.size(); i++) {
 			Transition tempTransition = transitions.get(i);
@@ -384,10 +408,10 @@ public class RIPBase {
 
 	@SuppressWarnings("unchecked")
 	private void buildTreeJSON() throws IOException {
-		
+
 		JSONObject graph = new JSONObject();
 		JSONArray links = new JSONArray();
-		
+
 		JSONArray resultStates = new JSONArray();
 		for (int i = 0; i < states.size(); i++) {
 			State tempState = states.get(i);
@@ -400,8 +424,8 @@ public class RIPBase {
 			state.put("wifi", tempState.isWifiStatus());
 			state.put("memory", tempState.getMemory());
 			state.put("cpu", tempState.getCpu());
-            state.put("airplane", tempState.isAirplane());
-            state.put("model", tempState.getDomainModel());
+			state.put("airplane", tempState.isAirplane());
+			state.put("model", tempState.getDomainModel());
 			resultStates.add(state);
 		}
 		JSONObject state = new JSONObject();
@@ -416,14 +440,14 @@ public class RIPBase {
 		state.put("airplane", "N/A");
 		resultStates.add(state);
 		graph.put("nodes", resultStates);
-		
+
 		JSONArray resultTransitions = new JSONArray();
 		for (int i = 0; i < transitions.size(); i++) {
 			Transition tempTransition = transitions.get(i);
 			JSONObject transition = new JSONObject();
 
-			transition.put("source", tempTransition.getOrigin().getId());
-			transition.put("target", tempTransition.getDestination().getId());
+			transition.put("source", tempTransition.getOrigin().getId()-1);
+			transition.put("target", tempTransition.getDestination().getId()-1);
 			transition.put("id", i);
 			transition.put("tranType", tempTransition.getType().name());
 			String fileName = tempTransition.getScreenshot()==null?tempTransition.getDestination().getScreenShot():tempTransition.getScreenshot();
@@ -464,7 +488,7 @@ public class RIPBase {
 			State state = states.get(i);
 			double percentage = ImageHelper.compareImage(new File(state.getScreenShot()), existing);
 			System.out.println(percentage + " " + state.getId());
-			if (percentage >= 97.5) {
+			if (percentage >= 98.5) {
 				System.out.println("Same!");
 				return state;
 			}
@@ -553,10 +577,10 @@ public class RIPBase {
 	}
 
 	private void scroll(AndroidNode origin, boolean isSwipe) {
-		
+
 		int[] p1 = origin.getPoint1();
 		int[] p2 = origin.getPoint2();
-		
+
 		int tapX = p1[0];
 		int tapX2 = (int) (p2[0] / 3) * 2;
 
@@ -567,7 +591,7 @@ public class RIPBase {
 		String tX2 = String.valueOf(tapX2);
 		String tY = String.valueOf(tapY);
 		String tY2 = String.valueOf(tapY2);
-		
+
 		try {
 			// Is vertical swipe
 			if (!isSwipe) {
@@ -578,7 +602,7 @@ public class RIPBase {
 		} catch (Exception e) {
 			System.out.println("CANNOT SCROLL");
 		}
-		
+
 	}
 
 	public void explore(State previousState, Transition executedTransition) {
@@ -596,6 +620,7 @@ public class RIPBase {
 			if (foundState != null) {
 				// State already exists
 				currentState = foundState;
+				System.out.println("State Already Exists");
 
 			} else {
 				// New state discovered
@@ -645,10 +670,9 @@ public class RIPBase {
 			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
-				maxIterations--;
 				executedIterations++;
 				// Waits until the executed transition changes the application current state
-				Thread.sleep(waitingTime);
+				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
 				stateChanges = stateChanges();
 			}
@@ -657,7 +681,7 @@ public class RIPBase {
 			if (stateChanges && validExecution()) {
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
-				maxIterations--;
+				executedIterations++;
 				explore(currentState, stateTransition);
 			}
 
@@ -685,8 +709,7 @@ public class RIPBase {
 	public boolean validExecution() {
 		long currentTime = System.currentTimeMillis();
 		elapsedTime = (int)(currentTime-startTime)/60000;
-		long maxTimeMillis = maxTime*60*1000;
-		return (elapsedTime<maxTimeMillis && maxIterations>0);
+		return (elapsedTime<maxTime && (maxIterations-executedIterations)>0);
 	}
 
 	public static void printRIPInitialMessage() {

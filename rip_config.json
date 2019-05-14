@@ -2,14 +2,10 @@
 	"apkPath":"./com.evancharlton.mileage_3110.apk",
 	"outputFolder":"./test/output/",
 	"isHybrid":false,
-	"executionMode":"events",
+	"executionMode":"time",
 	"scriptPath":"./test/outputt/result.json",
 	"executionParams":{
-<<<<<<< HEAD
-		"events":100,
-=======
-		"events":10,
->>>>>>> d1c365cdb31442edcc3f86cbe46bd87b86e5d054
-		"time":10000
+		"events":50,
+		"time":2
 	}
 }
