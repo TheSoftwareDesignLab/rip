@@ -4,7 +4,7 @@ var folder = document.getElementById("myInput");
 var images = [];
 var imgDic = {};
 var images2 = [];
-let dicByImgName = {};
+let dicByImgName = [];
 
 let metaJson = {};
 let treeJson = {};
@@ -57,7 +57,7 @@ folder.onchange = function () {
         }
     }
 
-    // readMeta();
+    readMeta();
     // readLog();
     readSequential();
     readTree();
@@ -89,20 +89,23 @@ folder.onchange = function () {
             };
         })(logJson);
 
-        reader.readAsText(logJson);
+        reader.readAsText(logJsonlinks);
     }
 
     function readTree() {
         var reader = new FileReader();
 
-        // Closure to capture the file information.
+        // Closure to capture thelinksfile information.
         reader.onload = (function (theFile) {
             return function (e) {
                 // Render thumbnail.
                 JsonObj = JSON.parse(e.target.result);
                 treeJson = JsonObj;
                 //graph1Object = transformTreeToD3(treeJson);
+                console.log(treeJson.links)
+                treeJson.links = treeJson.links.splice(1)
                 treeJson.links.forEach(element => {
+                    console.log(element)
                     if (!element.name) {
                         if (element.actions) {
                             element.name = element.actions[element.actions.length - 1];
@@ -135,7 +138,7 @@ folder.onchange = function () {
                 } else {
                     addedAct.push(name);
 
-                   // console.log("added acts", addedAct);
+                    // console.log("added acts", addedAct);
 
                     var nDiv = document.createElement('div');
                     nDiv.classList.add('col-md-3');
@@ -202,8 +205,8 @@ folder.onchange = function () {
                 for (j = 0; j < seqJson.nodes.length; j += 1) {
                     var node = seqJson.nodes[j];
                     //console.log(node, 'Node');
-                    orderedImageNames[parseInt(node.image.split(".")[0],10)-1]=node.image;
-                    dicByImgName[parseInt(node.image.split(".")[0],10)-1] = node;
+                    dicByImgName[parseInt(node.image.split(".")[0], 10) - 1] = node;
+                    orderedImageNames[parseInt(node.image.split(".")[0], 10) - 1] = node.image;
                     //var linkimagename = seqJson.links[j].image.replace("./generated/testtt/", "")
                     //pushImage(nodeimagename);
                     //pushImage(linkimagename);
@@ -229,8 +232,10 @@ folder.onchange = function () {
         var apkSplit = meta.apk.split('/');
         document.getElementById("apkName").innerText = apkSplit[apkSplit.length - 1];
         document.getElementById("executionMethod").innerText = "Execution method: " + meta.executionMethod;
-        document.getElementById("projectName").innerText = "Project name: " + meta.projectName;
-        document.getElementById("numberOfEvents").innerText = "Number of events: " + meta.numberOfEvents;
+        document.getElementById("time").innerText = "Execution Time (min): " + meta.elapsedTime;
+        document.getElementById("maxTime").innerText = "Max Execution Time (min): " + meta.maxTime;
+        document.getElementById("numberOfEvents").innerText = "Number of events: " + meta.execEvents;
+        document.getElementById("maxNumberOfEvents").innerText = "Max Number of events: " + meta.maxEvents;
         document.getElementById("startingDate").innerText = "Execution started: " + meta.startingDate;
         document.getElementById("finishDate").innerText = "Execution finished: " + meta.finishDate;
 
@@ -245,7 +250,9 @@ folder.onchange = function () {
         var image = current.getElementsByTagName('img');
         var imageId = image[0].id;
         var currentView = dicByImgName[imageId];
-        //console.log(currentView);
+        var previousImageId = (parseInt(imageId) - 1)+""
+        var nextImageId = (parseInt(imageId) + 1)+""
+        // console.log(imageId);
 
         //Current view
         document.getElementById("currName").innerText = currentView['name'];
@@ -253,7 +260,39 @@ folder.onchange = function () {
         document.getElementById("currWifi").innerText = currentView['wifi'] ? 'ON' : 'OFF';
         document.getElementById("currMemory").innerText = currentView['memory'] + ' kB';
         document.getElementById("currCpu").innerText = currentView['cpu'] + '%';
-        document.getElementById("currAirplane").innerText = currentView['airplane'] ? 'ON' : 'OFF';;
+        document.getElementById("currAirplane").innerText = currentView['airplane'] ? 'ON' : 'OFF';
+
+        //Previous view
+        if(parseInt(imageId)>0){
+            var prevView = dicByImgName[previousImageId];
+            document.getElementById("prevBattery").innerText = prevView['battery'] + '%';
+            document.getElementById("prevWifi").innerText = prevView['wifi'] ? 'ON' : 'OFF';
+            document.getElementById("prevMemory").innerText = prevView['memory'] + ' kB';
+            document.getElementById("prevCpu").innerText = prevView['cpu'] + '%';
+            document.getElementById("prevAirplane").innerText = prevView['airplane'] ? 'ON' : 'OFF';
+        } else {
+            document.getElementById("prevBattery").innerText = "-";
+            document.getElementById("prevWifi").innerText = "-";
+            document.getElementById("prevMemory").innerText = "-";
+            document.getElementById("prevCpu").innerText = "-";
+            document.getElementById("prevAirplane").innerText = "-";
+        }
+
+        //Next view
+        if(parseInt(imageId)<dicByImgName.length-1){
+            var nextView = dicByImgName[nextImageId];
+            document.getElementById("nextBattery").innerText = nextView['battery'] + '%';
+            document.getElementById("nextWifi").innerText = nextView['wifi'] ? 'ON' : 'OFF';
+            document.getElementById("nextMemory").innerText = nextView['memory'] + ' kB';
+            document.getElementById("nextCpu").innerText = nextView['cpu'] + '%';
+            document.getElementById("nextAirplane").innerText = nextView['airplane'] ? 'ON' : 'OFF';
+        } else {
+            document.getElementById("nextBattery").innerText = "-";
+            document.getElementById("nextWifi").innerText = "-";
+            document.getElementById("nextMemory").innerText = "-";
+            document.getElementById("nextCpu").innerText = "-";
+            document.getElementById("nextAirplane").innerText = "-";
+        }
 
 
     }
@@ -266,27 +305,37 @@ folder.onchange = function () {
             start: 0
         });
         var ul = document.getElementById("flipsterUL");
-        orderedImageNames.reverse().forEach(imageName => {
-            imageName = parseInt(imageName.split(".")[0],10)-1
-            console.log('FileName', imageName)
-            let file = imgDic[(imageName+1)+".png"];
-            console.log('FILE', file);
-            var reader = new FileReader();
-            reader.onload = (function (theFile) {
-                return function (e) {
-                    var li = document.createElement("li");
-                    var imgHTML = document.createElement("img");
-                    imgHTML.src = e.target.result;
-                    imgHTML.height = "500";
-                    imgHTML.setAttribute("id", imageName);
-                    li.appendChild(imgHTML);
-                    ul.appendChild(li);
-                    flip.flipster('index');
-                };
-            })(file);
+        promises = []
+        orderedImageNames.forEach(imageName => {
+            //console.log(imageName)
+            imageName = parseInt(imageName.split(".")[0], 10) - 1
+            //console.log('FileName', imageName)
+            let file = imgDic[(imageName + 1) + ".png"];
+            //console.log('FILE', file);
 
-            reader.readAsDataURL(file);
+            async function readFileAsDataURL(file) {
+                promises[imageName] = new Promise((resolve) => {
+                    let fileReader = new FileReader();
+                    fileReader.onload = (e) => resolve(fileReader.result);
+                    fileReader.readAsDataURL(file);
+                });
+            }
+            readFileAsDataURL(file)
         });
+        Promise.all(promises).then(values => {
+            // console.log(values)
+            values.forEach((element,ind) => {
+                var li = document.createElement("li");
+                var imgHTML = document.createElement("img");
+                imgHTML.src = element;
+                imgHTML.height = "500";
+                imgHTML.setAttribute("id", ind);
+                $(li).append(imgHTML);
+                $(ul).append(li);
+                // console.log(ul)
+                flip.flipster('index');
+            });
+        })
 
         if (document.getElementById("dumy1")) {
             document.getElementById("dumy1").remove();

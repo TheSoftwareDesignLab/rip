@@ -58,10 +58,10 @@ function drawGraph1(graph) {
 
     var layout = d3.layout.force()
         .size([width - margin, height - margin])
-        .charge(-120)
+        .charge(-820)
         .linkDistance(function (d, i) {
             // console.log(d)
-            return (d.source.id == d.target.id) ? 50 : 100;
+            return (d.source.id == d.target.id) ? 70 : 120;
         })
         .nodes(graph.nodes)
         .links(graph.links)
