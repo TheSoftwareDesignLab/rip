@@ -17,7 +17,7 @@ import model.Transition;
 public class RIPi18n extends RIPBase{
 
 
-	public RIPi18n(String configFilePath) throws RipException, IOException {
+	public RIPi18n(String configFilePath) throws Exception {
 		super(configFilePath);
 	}
 
@@ -145,6 +145,9 @@ public class RIPi18n extends RIPBase{
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

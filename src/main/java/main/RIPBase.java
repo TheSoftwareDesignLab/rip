@@ -145,7 +145,7 @@ public class RIPBase {
 	
 	private long finishTime;
 
-	public RIPBase(String configFilePath) throws RipException, IOException {
+	public RIPBase(String configFilePath) throws Exception {
 		startTime = System.currentTimeMillis();
 		printRIPInitialMessage();
 		this.configFilePath = configFilePath;
@@ -279,7 +279,7 @@ public class RIPBase {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void buildFiles() throws IOException, RipException {
+	public void buildFiles() throws Exception {
 
 
 		JSONObject resultFile = new JSONObject();
@@ -350,6 +350,7 @@ public class RIPBase {
 		buildMetaJSON();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void buildMetaJSON() throws IOException, RipException {
 		// TODO Auto-generated method stub
 		JSONObject graph = new JSONObject();
@@ -407,10 +408,9 @@ public class RIPBase {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void buildTreeJSON() throws IOException {
+	private void buildTreeJSON() throws Exception {
 
 		JSONObject graph = new JSONObject();
-		JSONArray links = new JSONArray();
 
 		JSONArray resultStates = new JSONArray();
 		for (int i = 0; i < states.size(); i++) {
@@ -454,6 +454,15 @@ public class RIPBase {
 			transition.put("imageName", (new File(fileName)).getName());	
 			resultTransitions.add(transition);
 		}
+		Transition tempTransition = transitions.get(transitions.size()-1);
+		Transition finalTrans = new Transition(tempTransition.getDestination(), TransitionType.FINISH_EXECUTION);
+		JSONObject transition = new JSONObject();
+		transition.put("source", tempTransition.getDestination().getId()-1);
+		transition.put("target", states.size());
+		transition.put("id", transitions.size());
+		transition.put("tranType", TransitionType.FINISH_EXECUTION.name());
+		transition.put("imageName", ImageHelper.takeTransitionScreenshot(finalTrans, transitions.size()));
+		resultTransitions.add(transition);
 		graph.put("links", resultTransitions);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "tree.json"));
 		writer.write(graph.toJSONString());
@@ -488,7 +497,7 @@ public class RIPBase {
 			State state = states.get(i);
 			double percentage = ImageHelper.compareImage(new File(state.getScreenShot()), existing);
 			System.out.println(percentage + " " + state.getId());
-			if (percentage >= 98.5) {
+			if (percentage >= 97.5) {
 				System.out.println("Same!");
 				return state;
 			}
@@ -639,7 +648,13 @@ public class RIPBase {
 				} else {
 					// Discard state
 					sequentialNumber--;
-					Helper.deleteFile(screenShot);
+					if(sameState != null) {
+						Helper.deleteFile(sameState.getScreenShot());
+						File newScreen = new File(screenShot);
+						newScreen.renameTo(new File(sameState.getScreenShot()));
+					} else {
+						Helper.deleteFile(screenShot);						
+					}
 					Helper.deleteFile(snapShot);
 					currentState = sameState;
 					if(EmulatorHelper.isHome()) {
@@ -731,6 +746,8 @@ public class RIPBase {
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

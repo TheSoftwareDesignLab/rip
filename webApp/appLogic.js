@@ -102,8 +102,10 @@ folder.onchange = function () {
                 JsonObj = JSON.parse(e.target.result);
                 treeJson = JsonObj;
                 //graph1Object = transformTreeToD3(treeJson);
-                console.log(treeJson.links)
                 treeJson.links = treeJson.links.splice(1)
+                treeJson.links = treeJson.links.filter(value => {
+                    return value.target!=value.source
+                })
                 treeJson.links.forEach(element => {
                     console.log(element)
                     if (!element.name) {

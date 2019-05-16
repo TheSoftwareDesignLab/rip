@@ -150,7 +150,7 @@ function drawGraph1(graph) {
         .on("mouseover", function (object) {
             var sel = d3.select(this);
             sel.classed("hovered", true);
-            addTooltip(sel);
+            //addTooltip(sel);
 
             if (object['target']) {
                 document.getElementById("activityName").innerHTML = object.tranType;
@@ -392,8 +392,6 @@ function drawGraph2(graph) {
 
 // Draws nodes on plot
 function drawNodes(nodes) {
-    // used to assign nodes color by group
-    var color = d3.scale.category20();
 
     // https://github.com/mbostock/d3/wiki/Force-Layout#wiki-nodes
     d3.select("#plot").selectAll(".node")
@@ -414,7 +412,7 @@ function drawNodes(nodes) {
             return sizeFunction(this);
         })
         .style("fill", function (d, i) {
-            return color(d.id);
+            return colorFunction(this);
         })
         .on("mouseover", function (d, i) {
             addTooltip(d3.select(this));
@@ -425,10 +423,22 @@ function drawNodes(nodes) {
 }
 
 function sizeFunction(node) {
-    if (node.id.startsWith("(0)")) {
+    if (node.id.startsWith("(1)") || node.id.includes("End of")) {
         return 20;
     }
     return 10;
+}
+
+function colorFunction(node) {
+    // used to assign nodes color by group
+    var color = d3.scale.category20();
+
+    if (node.id.startsWith("(1)")) {
+        return "#00FF00";
+    } else if(node.id.includes("End of")){
+        return "#ff0000"
+    }
+    return color(node.id);
 }
 
 

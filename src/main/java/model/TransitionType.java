@@ -17,7 +17,8 @@ public enum TransitionType {
     ROTATE_LANDSCAPE,
     ROTATE_PORTRAIT,
     BUTTON_BACK,
-    FIRST_INTERACTION;
+    FIRST_INTERACTION,
+    FINISH_EXECUTION;
 	
 	public static Set<TransitionType> getUserTypeTransitions(){
 		Set<TransitionType> userTypes = new HashSet<TransitionType>();

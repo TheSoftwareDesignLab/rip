@@ -23,7 +23,7 @@ import model.State;
 import model.Transition;
 import model.TransitionType;
 
-public class RIPRR extends RIPi18n {
+public class RIPRR extends RIPBase {
 
 	public String scriptPath;
 
@@ -33,9 +33,8 @@ public class RIPRR extends RIPi18n {
 
 	public ArrayList<Transition> oldTransitions;
 
-	public RIPRR(String configFilePath) throws RipException, IOException {
+	public RIPRR(String configFilePath) throws Exception {
 		super(configFilePath);
-		waitingTime = 1000;
 	}
 
 	@Override
@@ -115,7 +114,7 @@ public class RIPRR extends RIPi18n {
 		currentState = new State(hybridApp, contextualExploration);
 		try {
 			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
-			rawXML = processXML(rawXML);
+//			rawXML = processXML(rawXML);
 			Document parsedXML;
 			parsedXML = loadXMLFromString(rawXML);
 
@@ -226,6 +225,9 @@ public class RIPRR extends RIPi18n {
 			} catch (RipException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
