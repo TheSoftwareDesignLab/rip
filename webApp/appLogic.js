@@ -58,7 +58,7 @@ folder.onchange = function () {
     }
 
     readMeta();
-    // readLog();
+    readLog();
     readSequential();
     readTree();
 
@@ -89,7 +89,7 @@ folder.onchange = function () {
             };
         })(logJson);
 
-        reader.readAsText(logJsonlinks);
+        reader.readAsText(logJson);
     }
 
     function readTree() {

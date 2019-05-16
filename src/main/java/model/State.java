@@ -304,9 +304,12 @@ public class State {
 		JSONArray model = new JSONArray();
 		for (Domain attribute : domainModel) {
 			JSONObject attributeJSON = new JSONObject();
+			String[] fields = attribute.getField().split("/");
+			String field = attribute.getField();
+			if(fields.length>1) { field = fields[1];}
 
 			attributeJSON.put("name", attribute.getName());
-			attributeJSON.put("field", attribute.getField());
+			attributeJSON.put("field", field);
 			attributeJSON.put("type", attribute.getType().toString());
 /*			if (attribute.getValues() != null) {
 				attributeJSON.put("values", attribute.getValues());
