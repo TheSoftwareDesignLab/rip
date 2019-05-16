@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -161,7 +162,9 @@ public class RIPBase {
 		File newFolder = new File(folderName);
 		newFolder.mkdirs();
 
-		// Captures the Android version of the device
+        Helper.getInstance(folderName);
+
+        // Captures the Android version of the device
 		try {
 			version = EmulatorHelper.getAndroidVersion();
 		} catch (IOException | RipException e) {
@@ -732,7 +735,10 @@ public class RIPBase {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			} finally {
+                Helper.getInstance("./").closeStream();
+
+            }
 		}
 	}
 }

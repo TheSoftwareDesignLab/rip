@@ -4,10 +4,7 @@ package helper;
 	adb logcat chromium:D SystemWebViewClient:D *:S
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +48,9 @@ public class ExternalProcess2 {
 		System.out.println(err);
 		answer.add(commandName);
 		System.out.println("- - - - - - - - - - - - - - - - - - -");
+
+		Helper.getInstance("./").logMessage(commandName, Arrays.toString(commands.toArray(new String[]{})), err);
+
 		if (!err.equals("")) {
 			throw new RipException(err);
 		}

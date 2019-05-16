@@ -1,10 +1,6 @@
 package helper;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,9 +22,10 @@ public class EmulatorHelper {
 	public static boolean installAPK(String pathAPK) {
 
 		try {
+
 			List<String> commands = Arrays.asList("adb", "install", "-r", pathAPK);
 			ExternalProcess2.executeProcess(commands, "INSTALLING APK", "Installation complete", "App could not be installed");
-			Helper.logMessage("INSTALL APP", new String[] { pathAPK }, null);
+			Helper.logMessage("INSTALL APP",  pathAPK , null);
 			return true;
 
 		} catch (Exception e) {
@@ -848,7 +845,7 @@ public class EmulatorHelper {
 	 */
 	public static String getAndroidVersion() throws IOException, RipException {
 		List<String> commands = Arrays.asList("adb", "shell", "getprop", "ro.build.version.release");
-		List<String> answer = ExternalProcess2.executeProcess(commands, "CHEKING ANDROID VERSION", null, null);
+		List<String> answer = ExternalProcess2.executeProcess(commands, "CHECKING ANDROID VERSION", null, null);
 		String answ = answer.get(0).replaceAll("\\s+", "");
 
 		return answ;
