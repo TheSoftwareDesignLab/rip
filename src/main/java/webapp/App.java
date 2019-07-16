@@ -8,7 +8,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-import static helper.ExternalProcess.executeProcess;
+import static helper.ExternalProcess2.executeProcess;
 
 
 public class App {

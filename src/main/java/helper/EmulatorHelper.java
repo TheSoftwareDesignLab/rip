@@ -14,7 +14,7 @@ public class EmulatorHelper {
 	/**
 	 * Installs an apk file in a device.
 	 * 
-	 * @param Path
+	 * @param pathAPK
 	 *            is where apk is stored
 	 * @throws Exception
 	 *             if the app is already installed
@@ -29,7 +29,8 @@ public class EmulatorHelper {
 			return true;
 
 		} catch (Exception e) {
-//			logMessage("INSTALL APP", new String[] { pathAPK }, e.getMessage());
+			//Michael Osorio
+			Helper.logMessage("APP ALREADY INSTALLED APP", pathAPK, e.getMessage());
 			return false;
 		}
 	}
@@ -75,7 +76,7 @@ public class EmulatorHelper {
 
 		List<String> commands = Arrays.asList("adb", "uninstall", packageName);
 		ExternalProcess2.executeProcess(commands, "UNINSTALL APK", "Uninstall complete", "APK could not be uninstalled");
-		System.out.println("🗑️️ UNINSTALL COMPLETE");
+		System.out.println("ðŸ—‘ï¸�ï¸� UNINSTALL COMPLETE");
 
 	}
 	
@@ -254,6 +255,7 @@ public class EmulatorHelper {
 				resp += line;
 			}
 			pss.waitFor();
+			
 			if(resp.contains("IDLE")) {
 				termino = true;
 				Thread.sleep(500);
@@ -393,7 +395,7 @@ public class EmulatorHelper {
 	public static void showRecents() {
 
 		try {
-			System.out.println("📱️ RECENTS \n [adb shell input keyevent 187] \n ");
+			System.out.println("ðŸ“±ï¸� RECENTS \n [adb shell input keyevent 187] \n ");
 			List<String> commands = Arrays.asList("adb", "shell", "input", "keyevent", "187");
 			ExternalProcess2.executeProcess(commands, "RECENT", null, null);
 		} catch (Exception e) {
@@ -419,7 +421,7 @@ public class EmulatorHelper {
 	 */
 	public static void getEmulators() throws Exception {
 
-		System.out.println("📱️ LISTING EMULATORS \n [emulator -list-avds] \n ");
+		System.out.println("ðŸ“±ï¸� LISTING EMULATORS \n [emulator -list-avds] \n ");
 		List<String> commands = Arrays.asList("~/Library/Android/sdk/tools/emulator", "-list-avds");
 		ExternalProcess2.executeProcess(commands, "LIST EMULATORS", null, null);
 	}
@@ -599,7 +601,6 @@ public class EmulatorHelper {
 		String route = temp[0].split("UI hierchary dumped to: ")[1].replaceAll("(\\r)", "");
 		
 		String screenCapName = id+".xml";
-		String filename = "/sdcard/"+screenCapName;
 		String local = folderName + File.separator + screenCapName;
 		pullFile(route, local);
 
@@ -721,7 +722,7 @@ public class EmulatorHelper {
 	/**
 	 * Shows the battery temperature
 	 * 
-	 * @return temperature of the battery in ªC
+	 * @return temperature of the battery in ÂªC
 	 * @throws Exception
 	 *             is there i no device or emulator
 	 */

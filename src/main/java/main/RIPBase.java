@@ -18,7 +18,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -100,7 +100,7 @@ public class RIPBase {
 	public ArrayList<State> states;
 
 	public ArrayList<Transition> transitions;
-
+	
 	/*
 	 * Device information
 	 */
@@ -110,44 +110,74 @@ public class RIPBase {
 	 */
 	public String version;
 
+	/**
+	 * Device resolution
+	 */
 	public int resolution;
 
+	/**
+	 * Device dimensions
+	 */
 	public String dimensions;
 
+	/**
+	 * Device sensors
+	 */
 	public String sensors;
 
+	/**
+	 * Device services
+	 */
 	public String services;
 
+	/**
+	 * Auxiliary writer
+	 */
 	public FileWriter out;
 
+	/**
+	 * Writing Time
+	 */
 	public int waitingTime;
 
+	/**
+	 * Indicates if rip is running
+	 */
 	public boolean isRunning;
-
+	/**
+	 *
+	 */
 	public String pacName;
-
+	/**
+	 * Indicates if the ripping is doing outside the app
+	 */
 	public boolean rippingOutsideApp;
 
+	/**
+	 * location path to the configuration file
+	 */
 	public String configFilePath;
 
 	public JSONObject params;
-
+	/**
+	 * Indicates the execution mode -events- time- complete
+	 */
 	private String executionMode;
 
 	private int maxIterations = 10000;
 
-	private int executedIterations = 0;
+	public int executedIterations = 0;
 
 	private int maxTime = 1000;
 
 	private int elapsedTime = 0;
 
 	private long startTime;
-	
+
 	private long finishTime;
 
 	public RIPBase(String configFilePath) throws Exception {
-		startTime = System.currentTimeMillis();
+
 		printRIPInitialMessage();
 		this.configFilePath = configFilePath;
 		params = readConfigFile();
@@ -158,18 +188,19 @@ public class RIPBase {
 		statesTable = new Hashtable<>();
 		states = new ArrayList<>();
 		transitions = new ArrayList<>();
+		
+		new File(folderName).mkdirs();
 
-		File newFolder = new File(folderName);
-		newFolder.mkdirs();
 
-        Helper.getInstance(folderName);
+		Helper.getInstance(folderName);
 
-        // Captures the Android version of the device
+		// Captures the Android version of the device
 		try {
 			version = EmulatorHelper.getAndroidVersion();
 		} catch (IOException | RipException e) {
 			e.printStackTrace();
 		}
+
 		// Installs the APK in the device
 		appInstalled = EmulatorHelper.installAPK(apkLocation);
 
@@ -188,6 +219,7 @@ public class RIPBase {
 			EmulatorHelper.startActivity(packageName, mainActivity);
 			ProgressBar pb = new ProgressBar("Waiting for the app", 100);
 			pb.start();
+			//El for estaba definido como (int i = 5; i > 0; i--)
 			for (int i = 5; i > 0; i--) {
 				pb.stepBy(20);
 				TimeUnit.SECONDS.sleep(1);
@@ -221,7 +253,6 @@ public class RIPBase {
 
 	private JSONObject readConfigFile() {
 
-		//		String apkPath, String outputFolder, String isHybrid, String[] preProcArgs
 		JSONParser jsonParser = new JSONParser();
 		JSONObject obj = null;
 		try (FileReader reader = new FileReader(configFilePath))
@@ -284,11 +315,11 @@ public class RIPBase {
 	@SuppressWarnings("unchecked")
 	public void buildFiles() throws Exception {
 
-
 		JSONObject resultFile = new JSONObject();
 		resultFile.put(AMOUNT_STATES,statesTable.size());
 		resultFile.put(AMOUNT_TRANSITIONS, transitions.size());
 
+		//States - Estados
 		JSONObject resultStates = new JSONObject();
 		for (int i = 0; i < states.size(); i++) {
 			State tempState = states.get(i);
@@ -297,10 +328,10 @@ public class RIPBase {
 			state.put("activityName", tempState.getActivityName());
 			state.put("rawXML", tempState.getRawXML());
 			state.put("screenShot", tempState.getScreenShot());
-			resultStates.put(""+tempState.getId(), state);
+			resultStates.put(tempState.getId()+"", state);
 		}
 		resultFile.put(STATES, resultStates);
-
+		//Transitions - Transiciones
 		JSONObject resultTransitions = new JSONObject();
 		for (int i = 0; i < transitions.size(); i++) {
 			Transition tempTransition = transitions.get(i);
@@ -341,7 +372,7 @@ public class RIPBase {
 						tempTransition.getOriginNode().getPoint2()[0]+","+tempTransition.getOriginNode().getPoint2()[1]+"]");
 				transition.put("androidNode", androidNode);
 			}			
-			resultTransitions.put(""+i,transition);
+			resultTransitions.put(i+"",transition);
 		}
 		resultFile.put(TRANSITIONS, resultTransitions);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "result.json"));
@@ -355,7 +386,6 @@ public class RIPBase {
 
 	@SuppressWarnings("unchecked")
 	private void buildMetaJSON() throws IOException, RipException {
-		// TODO Auto-generated method stub
 		JSONObject graph = new JSONObject();
 		graph.put("executionMethod", executionMode);
 		graph.put("maxEvents", maxIterations+"");
@@ -377,8 +407,6 @@ public class RIPBase {
 	@SuppressWarnings("unchecked")
 	private void buildSequentialJSON() throws IOException {
 		JSONObject graph = new JSONObject();
-		JSONArray links = new JSONArray();
-
 		JSONArray resultStates = new JSONArray();
 		for (int i = 0; i < states.size(); i++) {
 			State tempState = states.get(i);
@@ -473,8 +501,7 @@ public class RIPBase {
 	}
 
 	public int getSequentialNumber() {
-		sequentialNumber++;
-		return sequentialNumber;
+		return ++sequentialNumber;
 	}
 
 	public boolean isRippingOutsideApp(Document parsedXML) throws IOException, RipException {
@@ -488,6 +515,7 @@ public class RIPBase {
 		// Is exploring outside the application
 		if (!currentPackage.equals(pacName)) {
 			System.out.println("Ripping outside");
+			System.out.println("Going back");
 			EmulatorHelper.goBack();
 			return true;
 		}
@@ -514,8 +542,7 @@ public class RIPBase {
 	 * @param pState
 	 */
 	public State findStateInGraph(State pState) {
-		State found = statesTable.get(pState.getRawXML());
-		return found;
+		return statesTable.get(pState.getRawXML());
 	}
 
 	public boolean isRunning() {
@@ -618,31 +645,31 @@ public class RIPBase {
 	}
 
 	public void explore(State previousState, Transition executedTransition) {
+		System.out.println("NEW STATE EXPLORATION STARTED");
 		currentState = new State(hybridApp, contextualExploration);
 		try {
 			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
-			Document parsedXML;
-			parsedXML = loadXMLFromString(rawXML);
-			String activity = EmulatorHelper.getCurrentFocus();
-			currentState.setActivityName(activity);
-			currentState.setParsedXML(parsedXML);
 			currentState.setRawXML(rawXML);
-
 			State foundState = findStateInGraph(currentState);
 			if (foundState != null) {
 				// State already exists
 				currentState = foundState;
 				System.out.println("State Already Exists");
-
 			} else {
-				// New state discovered
+				// New state discovered?
 				currentState.setId(getSequentialNumber());
-				String screenShot = EmulatorHelper.takeAndPullScreenshot(""+currentState.getId(), folderName);
-				String snapShot = EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
-				System.out.println("Current ST: " + currentState.getId());
-				State sameState = compareScreenShotWithExisting(screenShot);
+				Document parsedXML = loadXMLFromString(rawXML);
+				currentState.setParsedXML(parsedXML);
+				String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
 				rippingOutsideApp = isRippingOutsideApp(parsedXML);
+				State sameState = compareScreenShotWithExisting(screenShot);
 				if (sameState == null && !rippingOutsideApp) {
+					// New state discovered!!
+					//Take the snapshot, print the state id number and some more things
+					String activity = EmulatorHelper.getCurrentFocus();
+					currentState.setActivityName(activity);
+					EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
+					System.out.println("Current ST: " + currentState.getId());
 					statesTable.put(rawXML, currentState);
 					states.add(currentState);
 					currentState.setScreenShot(screenShot);
@@ -652,28 +679,31 @@ public class RIPBase {
 					// Discard state
 					sequentialNumber--;
 					if(sameState != null) {
+						System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
 						Helper.deleteFile(sameState.getScreenShot());
 						File newScreen = new File(screenShot);
 						newScreen.renameTo(new File(sameState.getScreenShot()));
+						currentState = sameState;
 					} else {
 						Helper.deleteFile(screenShot);						
 					}
-					Helper.deleteFile(snapShot);
-					currentState = sameState;
+
 					if(EmulatorHelper.isHome()) {
 						throw new RipException("Execution closed the app");
 					}
 					if(rippingOutsideApp) {
+						System.out.println("Getting back to the previous state, ripping outside the app");
 						currentState = previousState;
 					}
 				}
 			}
 
-			if (currentState.hasRemainingTransitions() && !rippingOutsideApp) {
-				previousState.addPossibleTransition(executedTransition);
-			}
+
 
 			if (!rippingOutsideApp) {
+				if (currentState.hasRemainingTransitions()) {
+					previousState.addPossibleTransition(executedTransition);
+				}
 				currentState.addInboundTransition(executedTransition);
 				previousState.addOutboundTransition(executedTransition);
 				executedTransition.setDestination(currentState);
@@ -684,7 +714,7 @@ public class RIPBase {
 			Transition stateTransition = null;
 			boolean stateChanges = false;
 
-			// While no changes in in the state are detected
+			// While no changes in the state are detected
 			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
@@ -753,9 +783,9 @@ public class RIPBase {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-                Helper.getInstance("./").closeStream();
+				Helper.getInstance("./").closeStream();
 
-            }
+			}
 		}
 	}
 }
