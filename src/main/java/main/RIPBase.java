@@ -166,7 +166,7 @@ public class RIPBase {
 
 	private int maxIterations = 10000;
 
-	public int executedIterations = 0;
+	protected int executedIterations = 0;
 
 	private int maxTime = 1000;
 

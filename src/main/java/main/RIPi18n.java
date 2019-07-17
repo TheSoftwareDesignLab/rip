@@ -39,14 +39,14 @@ public class RIPi18n extends RIPBase{
 			if (foundState != null) {
 				// State already exists
 				currentState = foundState;
-
+				System.out.println("State Already Exists");
 			} else {
 				// New state discovered
 				currentState.setId(getSequentialNumber());
 				String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
 				String snapShot = EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
 				System.out.println("Current ST: " + currentState.getId());
-				//					State sameState = compareScreenShotWithExisting(screenShot);
+				//State sameState = compareScreenShotWithExisting(screenShot);
 				rippingOutsideApp = isRippingOutsideApp(parsedXML);
 				if (!rippingOutsideApp) {
 					statesTable.put(rawXML, currentState);
@@ -62,7 +62,6 @@ public class RIPi18n extends RIPBase{
 					if(EmulatorHelper.isHome()) {
 						throw new RipException("Execution closed the app");
 					}
-					//						currentState = sameState;
 					if(rippingOutsideApp) {
 						currentState = previousState;
 					}
@@ -87,6 +86,7 @@ public class RIPi18n extends RIPBase{
 			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
+				executedIterations++;
 				// Waits until the executed transition changes the application current state
 				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
@@ -97,6 +97,7 @@ public class RIPi18n extends RIPBase{
 			if (stateChanges && validExecution()) {
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
+				executedIterations++;
 				explore(currentState, stateTransition);
 			}
 
@@ -118,8 +119,7 @@ public class RIPi18n extends RIPBase{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-		}
+		} 
 	}	
 
 	public String processXML(String rawXML) {
