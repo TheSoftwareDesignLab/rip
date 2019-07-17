@@ -731,7 +731,6 @@ public class RIPBase {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
 				ifKeyboardHideKeyboard();
-				EmulatorHelper.isEventIdle();
 				executedIterations++;
 				// Waits until the executed transition changes the application current state
 				EmulatorHelper.isEventIdle();
