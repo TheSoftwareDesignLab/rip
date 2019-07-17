@@ -65,7 +65,14 @@ public class Transition {
 	}
 	
 	public String toString() {
-		return origin.getId()+";"+destination.getId()+";"+type;
+		if(origin != null && destination != null){
+			return origin.getId()+";"+destination.getId()+";"+type;
+		} else if(origin != null){
+			return origin.getId() + ";" + destination +";" + type;
+		}
+		else{
+			return  origin + ";" + destination.getId()+ ";" + type;
+		}
 	}
 
 	public String getScreenshot() {
@@ -79,8 +86,5 @@ public class Transition {
 	public AndroidNode getOriginElement() {
 		return originElement;
 	}
-	
-	
-	
 
 }

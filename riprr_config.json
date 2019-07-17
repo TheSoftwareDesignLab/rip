@@ -1,0 +1,11 @@
+	{
+	"apkPath":"./Spunky.apk",
+	"outputFolder":"./outputRR/",
+	"isHybrid":false,
+	"executionMode":"dfs",
+	"scriptPath":"./output/result.json",
+	"executionParams":{
+		"events":10000,
+		"time":10000
+	}
+}

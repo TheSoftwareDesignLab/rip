@@ -58,9 +58,9 @@ public class ImageHelper {
 	}
 
 	public static String takeTransitionScreenshot(Transition stateTransition, int transitionId) throws Exception {
-
 		State actual = stateTransition.getOrigin();
-		File screen = new File(actual.getScreenShot());
+		String screenShot = actual.getScreenShot();
+		File screen = new File(screenShot);
 		BufferedImage img;
 		if(TransitionType.getUserTypeTransitions().contains(stateTransition.getType())) {
 

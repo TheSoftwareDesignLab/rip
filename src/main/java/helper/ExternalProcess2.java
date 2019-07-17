@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
-
-import main.Rip;
 import main.RipException;
 
 public class ExternalProcess2 {
@@ -31,24 +29,32 @@ public class ExternalProcess2 {
 	 * @throws Exception
 	 *             if it is not possible to generate the process builder
 	 */
-	public static List<String> executeProcess(List<String> commands, String commandName, String onSuccessMessage,
-			String onErrorMessage) throws IOException, RipException {
+	public static List<String> executeProcess(List<String> commands,
+											  String commandName, String onSuccessMessage,
+											  String onErrorMessage) throws IOException, RipException {
 		List<String> answer = new ArrayList<String>();
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		System.out.println("-> " + commandName);
 		System.out.println(commands.toString());
 		Process spb = pb.start();
-		String output = IOUtils.toString(spb.getInputStream());
-		answer.add(output);
-		if (!output.startsWith("<?xml")) {
-//			System.out.println(output);
+		String output = IOUtils.toString(spb.getInputStream(), "UTF-8");
+		String err = IOUtils.toString(spb.getErrorStream(), "UTF-8");
+		while(err.contains("null root node")) {
+			pb = new ProcessBuilder(commands);
+			spb = pb.start();
+			output = IOUtils.toString(spb.getInputStream(), "UTF-8");
+			err = IOUtils.toString(spb.getErrorStream(), "UTF-8");
 		}
-		String err = IOUtils.toString(spb.getErrorStream());
+		answer.add(output);
+		
+//		if (!output.startsWith("<?xml") || output.equals("")) {
+//			System.out.println("answer added ----------------: " + output);
+//		}
+		
 		answer.add(err);
 		System.out.println(err);
 		answer.add(commandName);
 		System.out.println("- - - - - - - - - - - - - - - - - - -");
-
 		Helper.getInstance("./").logMessage(commandName, Arrays.toString(commands.toArray(new String[]{})), err);
 
 		if (!err.equals("")) {
@@ -65,4 +71,5 @@ public class ExternalProcess2 {
 		return answer;
 	}
 
+	
 }

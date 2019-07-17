@@ -1,17 +1,14 @@
 package model;
 
-import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import oldModel.OldDomainEntity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -60,7 +57,7 @@ public class State {
 	 * Stack of possible transitions of the state. This stack is created based on
 	 * the XML properties of the GUI and the contextual changes.
 	 */
-	private Deque<Transition> possibleTransitions = new ArrayDeque<Transition>();
+	private Deque<Transition> possibleTransitions = new ArrayDeque();
 
 	/**
 	 * Array of outbound transitions
@@ -292,7 +289,6 @@ public class State {
 			}
 		}
 		return null;
-
 	}
 
 	public List<AndroidNode> getStateNodes() {
