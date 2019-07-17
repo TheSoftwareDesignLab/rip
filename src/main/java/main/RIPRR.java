@@ -311,33 +311,34 @@ public class RIPRR extends RIPBase {
 			}
 			//Ending execution due to current node has a different id to the next transition id expected to be executed
 			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
+				//TODO Eliminar los sysout que puse
+				System.out.println("SALIENDO DE EJECUCIÓN. ESTADO DE INICIO != AL ACTUAL");
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
 				return ;
 			} else {
 				////Take the next transition in the current state
 				Transition tempTrans = currentState.popTransition();
 				AndroidNode tempTransAN = tempTrans.getOriginNode();
-
 				//TODO aquí cambié un compareTo por el equals
 				//Check 1. same type between the transition and the expected transition
 				//	2. same android id source 3. same android node xPath 4. same android node text
-				if(tempTrans.getType() != TransitionType.BUTTON_BACK){
+				if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
 					while(!(tempTrans.getType().equals(transToBeExec.getType()))
 							|| !transToBeExecAN.getResourceID().equals(tempTransAN.getResourceID())
-							|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
-							|| !tempTransAN.getText().equals(transToBeExecAN.getText())) {
+							|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())) {
 						//If just one of those conditions is false get the next possible transition in the current state
+                        executeTransition(tempTrans);
 						tempTrans = currentState.popTransition();
 						tempTransAN = tempTrans.getOriginNode();
 					}
 				}else{
 					while(!(tempTrans.getType().equals(transToBeExec.getType()))) {
 						//If just one of those conditions is false get the next possible transition in the current state
+                        executeTransition(tempTrans);
 						tempTrans = currentState.popTransition();
 						tempTransAN = tempTrans.getOriginNode();
 					}
 				}
-
 				//Execute the transition
 				executeTransition(tempTrans);
 				//Remove the transition

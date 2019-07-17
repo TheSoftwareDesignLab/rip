@@ -1,6 +1,5 @@
 package model;
 
-import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;

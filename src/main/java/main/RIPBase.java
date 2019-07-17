@@ -528,6 +528,7 @@ public class RIPBase {
 			State state = states.get(i);
 			double percentage = ImageHelper.compareImage(new File(state.getScreenShot()), existing);
 			System.out.println(percentage + " " + state.getId());
+			//TODO Cambié el valor de 97.5 a 98.5
 			if (percentage >= 97.5) {
 				System.out.println("Same!");
 				return state;
