@@ -34,6 +34,8 @@ public class RIPRR extends RIPBase {
 
 	public ArrayList<Transition> oldTransitions;
 
+	AndroidNode transToBeExecAN;
+
 	public RIPRR(String configFilePath) throws Exception {
 		super(configFilePath);
 	}
@@ -111,131 +113,13 @@ public class RIPRR extends RIPBase {
 
 	}
 
-//	@Override
-//	public void explore(State previousState, Transition executedTransition) {
-//		System.out.println("NEW STATE EXPLORATION STARTED");
-//		currentState = new State(hybridApp, contextualExploration);
-//		try {
-//			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
-//			currentState.setRawXML(rawXML);
-//			State foundState = findStateInGraph(currentState);
-//			if (foundState != null) {
-//				// State already exists
-//				currentState = foundState;
-//				System.out.println("State Already Exists");
-//			} else {
-//				// New state discovered
-//				currentState.setId(getSequentialNumber());
-//				Document parsedXML = loadXMLFromString(rawXML);
-//				currentState.setParsedXML(parsedXML);
-//				String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
-//				rippingOutsideApp = isRippingOutsideApp(parsedXML);
-//				State sameState = compareScreenShotWithExisting(screenShot);
-//				if (sameState == null && !rippingOutsideApp) {
-//					//New state
-//					String activity = EmulatorHelper.getCurrentFocus();
-//					currentState.setActivityName(activity);
-//					EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
-//					System.out.println("Current ST: " + currentState.getId());
-//					statesTable.put(rawXML, currentState);
-//					states.add(currentState);
-//					currentState.setScreenShot(screenShot);
-//					currentState.retrieveContext(packageName);
-//					ImageHelper.getNodeImagesFromState(currentState);
-//				} else {
-//					// Discard state
-//					sequentialNumber--;
-//					if(sameState != null) {
-//						System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
-//						Helper.deleteFile(sameState.getScreenShot());
-//						File newScreen = new File(screenShot);
-//						newScreen.renameTo(new File(sameState.getScreenShot()));
-//						currentState = sameState;
-//					} else {
-//						Helper.deleteFile(screenShot);
-//					}
-//					if(EmulatorHelper.isHome()) {
-//						throw new RipException("Execution closed the app");
-//					}
-//					if(rippingOutsideApp) {
-//						currentState = previousState;
-//					}
-//				}
-//			}
-//
-//			if (!rippingOutsideApp) {
-//				if (currentState.hasRemainingTransitions()) {
-//					previousState.addPossibleTransition(executedTransition);
-//				}
-//				executedTransition.setDestination(currentState);
-//				executedTransition.setOrigin(previousState);
-//				currentState.addInboundTransition(executedTransition);
-//				previousState.addOutboundTransition(executedTransition);
-//				transitions.add(executedTransition);
-//			}
-//
-//			if(oldTransitions.size()==0) {
-//				System.out.println("OLDTRANSITIONS EMPTY");
-//				return;
-//			}
-//
-//			Transition transToBeExec = oldTransitions.get(0);
-//			AndroidNode transToBeExecAN = transToBeExec.getOriginNode();
-//
-//
-//			System.out.println(currentState.getId());
-//			for (int i = 0; i < oldTransitions.size(); i++) {
-//				System.out.println((i+1)+": "+oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
-//			}
-//
-//			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
-//				//TODO Eliminar los sysout que puse
-//				System.out.println("SALIENDO DE EJECUCIÓN. ESTADO DE INICIO != AL ACTUAL");
-//				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
-//				return ;
-//			} else {
-//				Transition tempTrans = currentState.popTransition();
-//				AndroidNode tempTransAN = tempTrans.getOriginNode();
-//				//TODO aquí cambié un compareTo por el equals
-//				while(!(tempTrans.getType().equals(transToBeExec.getType()))
-//						|| !transToBeExecAN.getResourceID().equals(tempTransAN.getResourceID())
-//						|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
-//						|| !tempTransAN.getText().equals(transToBeExecAN.getText())) {
-//					tempTrans = currentState.popTransition();
-//					tempTransAN = tempTrans.getOriginNode();
-//					System.out.println("ENTROOOOOOOOO!!!");
-//				}
-//
-//				oldTransitions.remove(0);
-//				executeTransition(tempTrans);
-//				executedIterations++;
-//				// Waits until the executed transition changes the application current state
-//				EmulatorHelper.isEventIdle();
-//				String tranScreenshot = ImageHelper.takeTransitionScreenshot(tempTrans, transitions.size());
-//				tempTrans.setScreenshot(tranScreenshot);
-//				explore(currentState, tempTrans);
-//			}
-//
-//		} catch (NoSuchElementException e) {
-//			// There are no more possible transitions in the current state
-//		} catch (ParserConfigurationException | SAXException e) {
-//			// Error parsing the XML DOM
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (IOException | RipException e) {
-//			// Error getting the current view hierarchy
-//			e.printStackTrace();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//		}
-//	}
 	@Override
 	public void explore(State previousState, Transition executedTransition){
 		System.out.println("NEW STATE EXPLORATION STARTED");
 		currentState = new State(hybridApp,contextualExploration);
 		try{
+			ifKeyboardHideKeyboard();
+			EmulatorHelper.isEventIdle();
 			currentState.setId(getSequentialNumber());
 			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
 			Document parsedXML = loadXMLFromString(rawXML);
@@ -302,7 +186,7 @@ public class RIPRR extends RIPBase {
 
 			//Get the next old transition to be executed and the node where it is expected to be done
 			Transition transToBeExec = oldTransitions.get(0);
-			AndroidNode transToBeExecAN = transToBeExec.getOriginNode();
+			transToBeExecAN = transToBeExec.getOriginNode();
 
 			System.out.println(currentState.getId());
 			//Print all the remaining transitions
@@ -311,7 +195,6 @@ public class RIPRR extends RIPBase {
 			}
 			//Ending execution due to current node has a different id to the next transition id expected to be executed
 			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
-				//TODO Eliminar los sysout que puse
 				System.out.println("SALIENDO DE EJECUCIÓN. ESTADO DE INICIO != AL ACTUAL");
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
 				return ;
@@ -324,10 +207,13 @@ public class RIPRR extends RIPBase {
 				//	2. same android id source 3. same android node xPath 4. same android node text
 				if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
 					while(!(tempTrans.getType().equals(transToBeExec.getType()))
-							|| !transToBeExecAN.getResourceID().equals(tempTransAN.getResourceID())
-							|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())) {
+							|| !tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID())
+							|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
+							) {
 						//If just one of those conditions is false get the next possible transition in the current state
                         executeTransition(tempTrans);
+						ifKeyboardHideKeyboard();
+						EmulatorHelper.isEventIdle();
 						tempTrans = currentState.popTransition();
 						tempTransAN = tempTrans.getOriginNode();
 					}
@@ -335,12 +221,16 @@ public class RIPRR extends RIPBase {
 					while(!(tempTrans.getType().equals(transToBeExec.getType()))) {
 						//If just one of those conditions is false get the next possible transition in the current state
                         executeTransition(tempTrans);
+						ifKeyboardHideKeyboard();
+						EmulatorHelper.isEventIdle();
 						tempTrans = currentState.popTransition();
 						tempTransAN = tempTrans.getOriginNode();
 					}
 				}
 				//Execute the transition
 				executeTransition(tempTrans);
+				ifKeyboardHideKeyboard();
+				EmulatorHelper.isEventIdle();
 				//Remove the transition
 				oldTransitions.remove(0);
 				//Add one to the iteration counter
@@ -351,6 +241,7 @@ public class RIPRR extends RIPBase {
 				tempTrans.setScreenshot(tranScreenshot);
 				//explore recursively
 				explore(currentState, tempTrans);
+
 			}
 		} catch (NoSuchElementException e) {
 			// There are no more possible transitions in the current state
@@ -367,6 +258,7 @@ public class RIPRR extends RIPBase {
 		} finally {
 		}
 	}
+
 	public static void main(String[] args) {
 		if(args.length<1) {
 			System.err.println("Please provide config file location");

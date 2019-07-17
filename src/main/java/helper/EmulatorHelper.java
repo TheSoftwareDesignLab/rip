@@ -98,7 +98,6 @@ public class EmulatorHelper {
 
 		List<String> commands = Arrays.asList("adb", "shell", "am", "start", "-n", packageName + "/" + activity);
 		ExternalProcess2.executeProcess(commands, "START ACTIVITY", "Activity launched", "Activity could not be started");
-
 	}
 	
 	/**
