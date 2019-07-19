@@ -219,7 +219,6 @@ public class RIPBase {
 			EmulatorHelper.startActivity(packageName, mainActivity);
 			ProgressBar pb = new ProgressBar("Waiting for the app", 100);
 			pb.start();
-			//El for estaba definido como (int i = 5; i > 0; i--)
 			for (int i = 5; i > 0; i--) {
 				pb.stepBy(20);
 				TimeUnit.SECONDS.sleep(1);
@@ -449,7 +448,12 @@ public class RIPBase {
 			JSONObject state = new JSONObject();
 			state.put("id", tempState.getId());
 			state.put("name", "("+tempState.getId()+") "+tempState.getActivityName());
-			state.put("activityName", tempState.getActivityName().split("/")[1]);
+
+			if(tempState.getActivityName().split("/").length > 1){
+				state.put("activityName", tempState.getActivityName().split("/")[1]);
+			}else{
+				state.put("activityName", tempState.getActivityName().split("/")[0]);
+			}
 			state.put("imageName", (new File(tempState.getScreenShot())).getName());
 			state.put("battery", tempState.getBattery());
 			state.put("wifi", tempState.isWifiStatus());
@@ -528,7 +532,6 @@ public class RIPBase {
 			State state = states.get(i);
 			double percentage = ImageHelper.compareImage(new File(state.getScreenShot()), existing);
 			System.out.println(percentage + " " + state.getId());
-			//TODO Cambié el valor de 97.5 a 98.5
 			if (percentage >= 97.5) {
 				System.out.println("Same!");
 				return state;
@@ -556,17 +559,27 @@ public class RIPBase {
 	public int enterInput(AndroidNode node) throws IOException, RipException {
 		int type = EmulatorHelper.checkInputType();
 		Random rm = new Random();
-
+		String input = "";
 		if (type == 1) {
-			String input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
+			input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
 					+ (char) (rm.nextInt(26) + 'a');
-			EmulatorHelper.enterInput(input);
 		} else {
-			String numInput = String.valueOf(rm.nextInt(100));
-			EmulatorHelper.enterInput(numInput);
+			input = String.valueOf(rm.nextInt(100));
 		}
+		EmulatorHelper.enterInput(input);
 		EmulatorHelper.goBack();
 		return type;
+	}
+	public void ifKeyboardHideKeyboard(){
+		try {
+			if(EmulatorHelper.isKeyboardOpen()){
+				EmulatorHelper.goBack();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (RipException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public TransitionType executeTransition(Transition transition) throws IOException, RipException {
@@ -616,7 +629,7 @@ public class RIPBase {
 
 	}
 
-	private void scroll(AndroidNode origin, boolean isSwipe) {
+	public void scroll(AndroidNode origin, boolean isSwipe) {
 
 		int[] p1 = origin.getPoint1();
 		int[] p2 = origin.getPoint2();
@@ -649,57 +662,55 @@ public class RIPBase {
 		System.out.println("NEW STATE EXPLORATION STARTED");
 		currentState = new State(hybridApp, contextualExploration);
 		try {
+			ifKeyboardHideKeyboard();
+			EmulatorHelper.isEventIdle();
+			currentState.setId(getSequentialNumber());
 			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
+			Document parsedXML = loadXMLFromString(rawXML);
+			String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
 			currentState.setRawXML(rawXML);
+			currentState.setParsedXML(parsedXML);
+			//Conditions for find a new state
+			rippingOutsideApp = isRippingOutsideApp(parsedXML);
 			State foundState = findStateInGraph(currentState);
-			if (foundState != null) {
+			State sameState = compareScreenShotWithExisting(screenShot);
+
+			if (foundState != null || sameState != null || rippingOutsideApp) {
 				// State already exists
-				currentState = foundState;
-				System.out.println("State Already Exists");
-			} else {
-				// New state discovered?
-				currentState.setId(getSequentialNumber());
-				Document parsedXML = loadXMLFromString(rawXML);
-				currentState.setParsedXML(parsedXML);
-				String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
-				rippingOutsideApp = isRippingOutsideApp(parsedXML);
-				State sameState = compareScreenShotWithExisting(screenShot);
-				if (sameState == null && !rippingOutsideApp) {
-					// New state discovered!!
-					//Take the snapshot, print the state id number and some more things
-					String activity = EmulatorHelper.getCurrentFocus();
-					currentState.setActivityName(activity);
-					EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
-					System.out.println("Current ST: " + currentState.getId());
-					statesTable.put(rawXML, currentState);
-					states.add(currentState);
-					currentState.setScreenShot(screenShot);
-					currentState.retrieveContext(packageName);
-					ImageHelper.getNodeImagesFromState(currentState);
-				} else {
-					// Discard state
-					sequentialNumber--;
-					if(sameState != null) {
-						System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
-						Helper.deleteFile(sameState.getScreenShot());
-						File newScreen = new File(screenShot);
-						newScreen.renameTo(new File(sameState.getScreenShot()));
-						currentState = sameState;
-					} else {
-						Helper.deleteFile(screenShot);						
-					}
-
-					if(EmulatorHelper.isHome()) {
-						throw new RipException("Execution closed the app");
-					}
-					if(rippingOutsideApp) {
-						System.out.println("Getting back to the previous state, ripping outside the app");
-						currentState = previousState;
-					}
+				String reason = "";
+				if(foundState != null){
+					currentState = foundState;
+					Helper.deleteFile(screenShot);
+					reason = "Found state in graph";
+				}else if(sameState != null){
+					System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
+					Helper.deleteFile(sameState.getScreenShot());
+					File newScreen = new File(screenShot);
+					newScreen.renameTo(new File(sameState.getScreenShot()));
+					currentState = sameState;
+					reason = "Found state by images";
+				}else{
+					Helper.deleteFile(screenShot);
+					currentState = previousState;
+					reason = "Ripping out side the app";
 				}
+				sequentialNumber--;
+				if(EmulatorHelper.isHome()) {
+					throw new RipException("Execution closed the app");
+				}
+				System.out.println("State Already Exists: " + reason);
+			} else {
+				//New State
+				String activity = EmulatorHelper.getCurrentFocus();
+				EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
+				System.out.println("Current ST: " + currentState.getId());
+				currentState.setActivityName(activity);
+				statesTable.put(rawXML, currentState);
+				states.add(currentState);
+				currentState.setScreenShot(screenShot);
+				currentState.retrieveContext(packageName);
+				ImageHelper.getNodeImagesFromState(currentState);
 			}
-
-
 
 			if (!rippingOutsideApp) {
 				if (currentState.hasRemainingTransitions()) {
@@ -719,6 +730,7 @@ public class RIPBase {
 			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
+				ifKeyboardHideKeyboard();
 				executedIterations++;
 				// Waits until the executed transition changes the application current state
 				EmulatorHelper.isEventIdle();
@@ -732,6 +744,7 @@ public class RIPBase {
 				stateTransition.setScreenshot(tranScreenshot);
 				executedIterations++;
 				explore(currentState, stateTransition);
+
 			}
 
 		} catch (NoSuchElementException e) {

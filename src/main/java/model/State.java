@@ -141,6 +141,7 @@ public class State {
 	}
 
 	public Transition popTransition() throws NoSuchElementException {
+		System.out.println("Transitions remaining: " + possibleTransitions);
 		return possibleTransitions.pop();
 	}
 
@@ -200,6 +201,7 @@ public class State {
 				}
 			}
 		}
+		System.out.println("POSSIBLE TRANSITIONS GENERATED: " + possibleTransitions);
 	}
 
 	private void loadDomainModel(AndroidNode androidNode) {

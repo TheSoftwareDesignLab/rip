@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./com.evancharlton.mileage_3110.apk",
+	"apkPath":"./com.android.keepass-aligned-debugSigned.apk",
 	"outputFolder":"./outputRR/",
 	"isHybrid":false,
 	"executionMode":"dfs",
