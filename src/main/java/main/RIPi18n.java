@@ -25,6 +25,7 @@ public class RIPi18n extends RIPBase{
 	public void explore(State previousState, Transition executedTransition) {
 		currentState = new State(hybridApp, contextualExploration);
 		try {
+			ifKeyboardHideKeyboard();
 			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
 			rawXML = processXML(rawXML);
 			Document parsedXML;
@@ -87,6 +88,7 @@ public class RIPi18n extends RIPBase{
 				stateTransition = currentState.popTransition();
 				executeTransition(stateTransition);
 				executedIterations++;
+				ifKeyboardHideKeyboard();
 				// Waits until the executed transition changes the application current state
 				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
@@ -123,7 +125,7 @@ public class RIPi18n extends RIPBase{
 	}	
 
 	public String processXML(String rawXML) {
-		return rawXML.replaceAll("(text|focused|checked)=\"[^\"]*\"", "");
+		return rawXML.replaceAll("(text|focused|checked|password)=\"[^\"]*\"", "");
 	}
 
 	@Override
