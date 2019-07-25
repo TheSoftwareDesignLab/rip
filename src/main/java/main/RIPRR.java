@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -118,66 +119,8 @@ public class RIPRR extends RIPBase {
 		System.out.println("NEW STATE EXPLORATION STARTED");
 		currentState = new State(hybridApp,contextualExploration);
 		try{
-			ifKeyboardHideKeyboard();
-			EmulatorHelper.isEventIdle();
-			currentState.setId(getSequentialNumber());
-			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
-			Document parsedXML = loadXMLFromString(rawXML);
-			String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
-			currentState.setRawXML(rawXML);
-			currentState.setParsedXML(parsedXML);
-			//Conditions for find a new state
-			rippingOutsideApp = isRippingOutsideApp(parsedXML);
-			State foundState = findStateInGraph(currentState);
-			State sameState = compareScreenShotWithExisting(screenShot);
-
-			if (foundState != null || sameState != null || rippingOutsideApp) {
-				// State already exists
-				String reason = "";
-				if(foundState != null){
-					currentState = foundState;
-					Helper.deleteFile(screenShot);
-					reason = "Found state in graph";
-				}else if(sameState != null){
-					System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
-					Helper.deleteFile(sameState.getScreenShot());
-					File newScreen = new File(screenShot);
-					newScreen.renameTo(new File(sameState.getScreenShot()));
-					currentState = sameState;
-					reason = "Found state by images";
-				}else{
-					Helper.deleteFile(screenShot);
-					currentState = previousState;
-					reason = "Ripping out side the app";
-				}
-				sequentialNumber--;
-				if(EmulatorHelper.isHome()) {
-					throw new RipException("Execution closed the app");
-				}
-				System.out.println("State Already Exists: " + reason);
-			} else {
-				//New State
-				String activity = EmulatorHelper.getCurrentFocus();
-				EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
-				System.out.println("Current ST: " + currentState.getId());
-				currentState.setActivityName(activity);
-				statesTable.put(rawXML, currentState);
-				states.add(currentState);
-				currentState.setScreenShot(screenShot);
-				currentState.retrieveContext(packageName);
-				ImageHelper.getNodeImagesFromState(currentState);
-			}
-			//Add out and in bound transitions to the previous state and the current one respectively
-			if (!rippingOutsideApp) {
-				if (currentState.hasRemainingTransitions()) {
-					previousState.addPossibleTransition(executedTransition);
-				}
-				executedTransition.setDestination(currentState);
-				executedTransition.setOrigin(previousState);
-				currentState.addInboundTransition(executedTransition);
-				previousState.addOutboundTransition(executedTransition);
-				transitions.add(executedTransition);
-			}
+			//Process the current state to discover whether is an already existing state or a new one
+			processState(previousState,executedTransition);
 			//End execution if the old transitions are already done
 			if(oldTransitions.size()==0) {
 				System.out.println("OLD TRANSITIONS EMPTY");
@@ -229,13 +172,12 @@ public class RIPRR extends RIPBase {
 				}
 				//Execute the transition
 				executeTransition(tempTrans);
-				ifKeyboardHideKeyboard();
-				EmulatorHelper.isEventIdle();
 				//Remove the transition
 				oldTransitions.remove(0);
 				//Add one to the iteration counter
 				executedIterations++;
 				// Waits until the executed transition changes the application current state
+				ifKeyboardHideKeyboard();
 				EmulatorHelper.isEventIdle();
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(tempTrans, transitions.size());
 				tempTrans.setScreenshot(tranScreenshot);
@@ -258,6 +200,25 @@ public class RIPRR extends RIPBase {
 		} finally {
 		}
 	}
+
+//	@Override
+//	public int enterInput(AndroidNode node) throws IOException, RipException {
+//		int type = EmulatorHelper.checkInputType();
+//		Random rm = new Random();
+//		String input = "";
+//		Transition nextTransition = null;
+//		for (Transition oldTransition: oldTransitions) {
+//			AndroidNode oldTransitionAN = oldTransition.getOriginElement();
+//			if(oldTransitionAN.getType().equals(node.getType())
+//					&& oldTransitionAN.getResourceID().equals(node.getResourceID())
+//				&& oldTransitionAN.getxPath().equals(node.getxPath())){
+//
+//			}
+//		}
+//		EmulatorHelper.enterInput(input);
+//		//EmulatorHelper.goBack();
+//		return type;
+//	}
 
 	public static void main(String[] args) {
 		if(args.length<1) {

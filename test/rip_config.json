@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./com.android.keepass-aligned-debugSigned.apk",
+	"apkPath":"./com.whatsapp.apk",
 	"outputFolder":"./output/",
 	"isHybrid":false,
 	"executionMode":"dfs",
