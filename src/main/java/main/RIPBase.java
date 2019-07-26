@@ -7,11 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,6 +20,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -297,10 +295,7 @@ public class RIPBase {
 
 	public boolean stateChanges() throws IOException, RipException {
 		String rawXML = EmulatorHelper.getCurrentViewHierarchy();
-		if (rawXML.equals(currentState.getRawXML())) {
-			return false;
-		}
-		return true;
+		return !rawXML.equals(currentState.getRawXML());
 	}
 
 	public static Document loadXMLFromString(String xml)
@@ -557,6 +552,7 @@ public class RIPBase {
 	public void tap(AndroidNode node) throws IOException, RipException {
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
+
 	public int enterInput(AndroidNode node) throws IOException, RipException {
 		int type = EmulatorHelper.checkInputType();
 		Random rm = new Random();
@@ -567,9 +563,8 @@ public class RIPBase {
 		} else {
 			input = String.valueOf(rm.nextInt(100));
 		}
+		EmulatorHelper.moveToEndInput();
 		EmulatorHelper.enterInput(input);
-		//TODO Comenté esta linea porque creo que es para cerrar el teclado pero eso lo hacemos cada que ejecutamos cualquier cosa.
-		//EmulatorHelper.goBack();
 		return type;
 	}
 
@@ -626,7 +621,6 @@ public class RIPBase {
 			tap(originInput);
 			int type = enterInput(originInput);
 			return (type==1)?TransitionType.GUI_INPUT_TEXT:TransitionType.GUI_INPUT_NUMBER;
-
 		}
 		return null;
 
@@ -681,15 +675,14 @@ public class RIPBase {
 				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
 				stateChanges = stateChanges();
+				System.out.println("STATE CHANGED: " + stateChanges + " EXECUTED ITERATIONS: " + executedIterations);
 			}
-
 			// If the state changes, recursively explores the application
-			if (stateChanges && validExecution()) {
+			if (validExecution()){
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
 				executedIterations++;
 				explore(currentState, stateTransition);
-
 			}
 
 		} catch (NoSuchElementException e) {
@@ -751,6 +744,22 @@ public class RIPBase {
 				Helper.deleteFile(sameState.getScreenShot());
 				File newScreen = new File(screenShot);
 				newScreen.renameTo(new File(sameState.getScreenShot()));
+				//Change the XML of the state because it could have some change and because of that it was not found in the graph
+				sameState.setRawXML(rawXML);
+				sameState.setParsedXML(parsedXML);
+				NodeList allNodes = sameState.getParsedXML().getElementsByTagName("node");
+				List<AndroidNode> androidNodes = sameState.getStateNodes();
+				//Change the nodes' state information because of any change i.e a text change
+				for (AndroidNode androidNode: androidNodes){
+					for(int i = 0; i < allNodes.getLength(); i++){
+						Node currentNode = allNodes.item(i);
+						AndroidNode auxAndroidNode = new AndroidNode(sameState, currentNode);
+						if(androidNode.getResourceID().equals(auxAndroidNode.getResourceID())
+								&& androidNode.getxPath().equals(auxAndroidNode.getxPath())){
+							androidNode.loadAttributesFromDom(currentNode);
+						}
+					}
+				}
 				currentState = sameState;
 				reason = "Found state by images";
 			}else{
@@ -765,6 +774,7 @@ public class RIPBase {
 			System.out.println("State Already Exists: " + reason);
 		} else {
 			//New State
+			currentState.generatePossibleTransition();
 			String activity = EmulatorHelper.getCurrentFocus();
 			EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
 			System.out.println("Current ST: " + currentState.getId());
@@ -794,7 +804,7 @@ public class RIPBase {
 		return (elapsedTime<maxTime && (maxIterations-executedIterations)>0);
 	}
 
-	public static void printRIPInitialMessage() {
+	public void printRIPInitialMessage() {
 		System.out.println("\n 2018, Universidad de los Andes\n The Software Design Lab\n");
 		System.out.println("https://thesoftwaredesignlab.github.io/\n");
 		String s = String.join("\n", "🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥", "🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥",

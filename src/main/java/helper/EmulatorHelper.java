@@ -1340,4 +1340,8 @@ public class EmulatorHelper {
 		}
 	}
 
+	public static void moveToEndInput() throws IOException, RipException {
+		List<String> commands = Arrays.asList("adb","shell","input","keyevent","KEYCODE_MOVE_END");
+		ExternalProcess2.executeProcess(commands,"MOVE TO END OF INPUT FIELD", null, null);
+	}
 }

@@ -145,7 +145,6 @@ public class RIPRR extends RIPBase {
 				////Take the next transition in the current state
 				Transition tempTrans = currentState.popTransition();
 				AndroidNode tempTransAN = tempTrans.getOriginNode();
-				//TODO aquí cambié un compareTo por el equals
 				//Check 1. same type between the transition and the expected transition
 				//	2. same android id source 3. same android node xPath 4. same android node text
 				if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
@@ -220,6 +219,21 @@ public class RIPRR extends RIPBase {
 //		return type;
 //	}
 
+	@Override
+	public void printRIPInitialMessage() {
+		System.out.println("\n 2018, Universidad de los Andes\n The Software Design Lab\n");
+		System.out.println("https://thesoftwaredesignlab.github.io/\n");
+		String s = String.join("\n",
+				"🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥"
+				, "🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥",
+				"🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  "
+				, "🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   ",
+				"🔥🔥   🔥🔥    🔥🔥  🔥🔥           🔥🔥   🔥🔥    🔥🔥   🔥🔥         "
+				, "🔥🔥    🔥🔥   🔥🔥  🔥🔥           🔥🔥    🔥🔥   🔥🔥    🔥🔥   "
+				,"🔥🔥     🔥🔥  🔥🔥  🔥🔥           🔥🔥     🔥🔥  🔥🔥     🔥🔥  ", " ");
+		System.out.println(s);
+	}
+
 	public static void main(String[] args) {
 		if(args.length<1) {
 			System.err.println("Please provide config file location");
@@ -231,7 +245,6 @@ public class RIPRR extends RIPBase {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

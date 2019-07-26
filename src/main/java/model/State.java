@@ -129,7 +129,6 @@ public class State {
 
 	public void setParsedXML(Document parsedXML) {
 		this.parsedXML = parsedXML;
-		generatePossibleTransition();
 	}
 
 	public String getRawXML() {
@@ -319,7 +318,6 @@ public class State {
 	}
 
 	public void retrieveContext(String packageName) throws Exception {
-		// TODO Auto-generated method stub
 		battery = EmulatorHelper.showBatteryLevel();
 		wifiStatus = EmulatorHelper.isWifiEnabled();
 		cpu = EmulatorHelper.showCPUUsage(packageName);

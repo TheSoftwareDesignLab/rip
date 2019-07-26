@@ -7,6 +7,8 @@ import org.w3c.dom.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+import static model.AndroidNodeProperty.RESOURCE_ID;
+
 public class AndroidNode {
 
 	public static String TRUE = "true";
@@ -43,8 +45,6 @@ public class AndroidNode {
 			temp = temp.getParentNode();
 		}
 	}
-
-
 
 	public void loadAttributesFromDom(Node domNode) {
 		NamedNodeMap attributes = domNode.getAttributes();
