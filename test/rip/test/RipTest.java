@@ -21,7 +21,6 @@ public class RipTest extends TestCase{
 			ExternalProcess.installAPK("android app/app-debug.apk");
 			ExternalProcess.startActivity("com.example.lanabeji.dailyexpenses/com.example.lanabeji.dailyexpenses.MainActivity");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./com.whatsapp.apk",
+	"apkPath":"./Spunky.apk",
 	"outputFolder":"./outputRR/",
 	"isHybrid":false,
 	"executionMode":"dfs",
