@@ -675,7 +675,6 @@ public class RIPBase {
 				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
 				stateChanges = stateChanges();
-				System.out.println("STATE CHANGED: " + stateChanges + " EXECUTED ITERATIONS: " + executedIterations);
 			}
 			// If the state changes, recursively explores the application
 			if (validExecution()){

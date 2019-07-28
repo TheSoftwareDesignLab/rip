@@ -1344,4 +1344,9 @@ public class EmulatorHelper {
 		List<String> commands = Arrays.asList("adb","shell","input","keyevent","KEYCODE_MOVE_END");
 		ExternalProcess2.executeProcess(commands,"MOVE TO END OF INPUT FIELD", null, null);
 	}
+
+	public static void deleteOneEntrance()throws  IOException, RipException{
+		List<String> commands = Arrays.asList("adb","shell","input","keyevent","KEYCODE_DEL");
+		ExternalProcess2.executeProcess(commands,"DELETING ONE ENTRANCE IN INPUT FIELD", null, null);
+	}
 }

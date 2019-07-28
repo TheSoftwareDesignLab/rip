@@ -28,6 +28,7 @@ public class AndroidNode {
 	private String xPath="";
 	private String index="";
 	private boolean scrollable;
+	private String originalText = "";
 
 	private Domain.Type type;
 
@@ -75,6 +76,7 @@ public class AndroidNode {
 					break;
 				case TEXT:
 					text = attributeValue;
+					originalText = text;
 					break;
 				case INDEX:
 					index = attributeValue;
@@ -208,5 +210,15 @@ public class AndroidNode {
 
 	public int[] getPoint2() {
 		return point2;
+	}
+
+	public String toString(){
+		return "STATE: " + state + ", INTERACTED: " + interacted + ", CLICKEABLE: " + clickable + ",\n CENTRAL POINT: " + centralPoint + ", POINT1: " + point1 +
+				",\n POINT2: " + point2 + ", pCLASS: " + pClass +", ENABLED: " + enabled+",\n RESOURCEID: " +resourceID +", TEXT: " + text + ", NAME: " + name  +
+				",\n xPATH: " +xPath + ", INDEX:" + index +", SCROLLABLE: " + scrollable;
+	}
+
+	public String getOriginalText(){
+		return originalText;
 	}
 }

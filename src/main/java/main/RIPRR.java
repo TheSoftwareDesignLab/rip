@@ -34,6 +34,7 @@ public class RIPRR extends RIPBase {
 	public ArrayList<State> oldStates;
 
 	public ArrayList<Transition> oldTransitions;
+	public ArrayList<Transition> oldTransitionsCopy;
 
 	AndroidNode transToBeExecAN;
 
@@ -59,8 +60,6 @@ public class RIPRR extends RIPBase {
 
 			int amountStates = Math.toIntExact((long) obj.get(AMOUNT_STATES));
 			int amountTransitions = Math.toIntExact((long) obj.get(AMOUNT_TRANSITIONS));
-			System.out.println("AMOUNT STATES: " +amountStates);
-			System.out.println("AMOUNT TRANSITIONS: " +amountTransitions);
 			JSONObject states = (JSONObject) obj.get(STATES);
 
 			for (int i = 0; i < amountStates; i++) {
@@ -71,12 +70,10 @@ public class RIPRR extends RIPBase {
 				tempState.setId(Math.toIntExact((long) currentState.get("id")));
 				Document parsedXML = loadXMLFromString(tempState.getRawXML());
 				tempState.setParsedXML(parsedXML);
+				tempState.generatePossibleTransition();
 				oldStates.add(tempState);
 				oldStatesTable.put(tempState.getRawXML(), tempState);
 			}
-			System.out.println("AMOUNT STATES OLDSTATES: " +oldStates.size());
-			System.out.println("AMOUNT STATES OLDSTATESTABLE: " +oldStatesTable.size());
-
 			JSONObject transitions = (JSONObject) obj.get(TRANSITIONS);
 
 			for (int i = 1; i < amountTransitions; i++) {
@@ -86,6 +83,7 @@ public class RIPRR extends RIPBase {
 				int destState = Math.toIntExact((long) currentTransition.get("dsState"));
 				Transition tempTransition = new Transition(oldStates.get(originState - 1), tType);
 				tempTransition.setDestination(oldStates.get(destState - 1));
+
 				if (currentTransition.containsKey("androidNode")) {
 					JSONObject androidNode = (JSONObject) currentTransition.get("androidNode");
 					String resourceID = (String) androidNode.get("resourceID");
@@ -95,7 +93,7 @@ public class RIPRR extends RIPBase {
 				}
 				oldTransitions.add(tempTransition);
 			}
-
+			oldTransitionsCopy = (ArrayList<Transition>) oldTransitions.clone();
 			for (int i = 0; i < oldTransitions.size(); i++) {
 				System.out.println(oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
 			}
@@ -129,6 +127,7 @@ public class RIPRR extends RIPBase {
 
 			//Get the next old transition to be executed and the node where it is expected to be done
 			Transition transToBeExec = oldTransitions.get(0);
+
 			transToBeExecAN = transToBeExec.getOriginNode();
 
 			System.out.println(currentState.getId());
@@ -148,10 +147,10 @@ public class RIPRR extends RIPBase {
 				//Check 1. same type between the transition and the expected transition
 				//	2. same android id source 3. same android node xPath 4. same android node text
 				if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
-					while(!(tempTrans.getType().equals(transToBeExec.getType()))
+					while( !(tempTrans.getType().equals(transToBeExec.getType()))
 							|| !tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID())
 							|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
-							) {
+						) {
 						//If just one of those conditions is false get the next possible transition in the current state
                         executeTransition(tempTrans);
 						ifKeyboardHideKeyboard();
@@ -200,24 +199,32 @@ public class RIPRR extends RIPBase {
 		}
 	}
 
-//	@Override
-//	public int enterInput(AndroidNode node) throws IOException, RipException {
-//		int type = EmulatorHelper.checkInputType();
-//		Random rm = new Random();
-//		String input = "";
-//		Transition nextTransition = null;
-//		for (Transition oldTransition: oldTransitions) {
-//			AndroidNode oldTransitionAN = oldTransition.getOriginElement();
-//			if(oldTransitionAN.getType().equals(node.getType())
-//					&& oldTransitionAN.getResourceID().equals(node.getResourceID())
-//				&& oldTransitionAN.getxPath().equals(node.getxPath())){
-//
-//			}
-//		}
-//		EmulatorHelper.enterInput(input);
-//		//EmulatorHelper.goBack();
-//		return type;
-//	}
+	@Override
+	public int enterInput(AndroidNode node) throws IOException, RipException {
+		int type = EmulatorHelper.checkInputType();
+		String input = "+";
+		Transition old = null;
+		for (Transition oldTransition: oldTransitionsCopy) {
+			AndroidNode oldTransitionAN = oldTransition.getOriginElement();
+			//TODO No se puede usar el Tipo porque lanza nullPointer
+			if(oldTransitionAN != null
+					&& oldTransitionAN.getResourceID().equals(node.getResourceID())
+					&& oldTransitionAN.getxPath().equals(node.getxPath())
+					&& oldTransitionAN.getType().equals(node.getType())
+			){
+				input = oldTransitionAN.getText();
+				old = oldTransition;
+			}
+		}
+		if(old != null){oldTransitionsCopy.remove(old);}
+		EmulatorHelper.moveToEndInput();
+		for(int i =0; i < node.getText().length(); i++){
+			EmulatorHelper.deleteOneEntrance();
+		}
+		EmulatorHelper.enterInput(input);
+		//EmulatorHelper.goBack();
+		return type;
+	}
 
 	@Override
 	public void printRIPInitialMessage() {
