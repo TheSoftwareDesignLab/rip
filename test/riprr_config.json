@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./Spunky.apk",
+	"apkPath":"./org.adaway.apk",
 	"outputFolder":"./outputRR/",
 	"isHybrid":false,
 	"executionMode":"dfs",

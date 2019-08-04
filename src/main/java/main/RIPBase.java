@@ -199,6 +199,7 @@ public class RIPBase {
 			e.printStackTrace();
 		}
 
+
 		// Installs the APK in the device
 		appInstalled = EmulatorHelper.installAPK(apkLocation);
 
@@ -242,6 +243,12 @@ public class RIPBase {
 		explore(initialState, initialTransition);
 
 		buildFiles();
+
+		try{
+			EmulatorHelper.clearData(packageName);
+			EmulatorHelper.uninstallAPK(packageName);
+		}catch (Exception e){ }
+
 		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, "+executedIterations+" events executed, in "+elapsedTime+" minutes");
 		if(jsConsoleReader != null) {
 			jsConsoleReader.kill();
