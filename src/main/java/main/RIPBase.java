@@ -186,7 +186,7 @@ public class RIPBase {
 		statesTable = new Hashtable<>();
 		states = new ArrayList<>();
 		transitions = new ArrayList<>();
-		
+
 		new File(folderName).mkdirs();
 
 
@@ -207,7 +207,7 @@ public class RIPBase {
 			throw new RipException("APK could not be installed");
 		}
 
-		if(aapt==null) {
+		if (aapt == null) {
 			throw new RipException("AAPT_LOCATION was not set");
 		}
 
@@ -244,13 +244,14 @@ public class RIPBase {
 
 		buildFiles();
 
-		try{
+		try {
 			EmulatorHelper.clearData(packageName);
 			EmulatorHelper.uninstallAPK(packageName);
-		}catch (Exception e){ }
+		} catch (Exception e) {
+		}
 
-		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, "+executedIterations+" events executed, in "+elapsedTime+" minutes");
-		if(jsConsoleReader != null) {
+		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, " + executedIterations + " events executed, in " + elapsedTime + " minutes");
+		if (jsConsoleReader != null) {
 			jsConsoleReader.kill();
 		}
 	}
