@@ -86,7 +86,7 @@ public class RIPRR extends RIPBase {
 					String resourceID = (String) androidNode.get("resourceID");
 					String xpath = (String) androidNode.get("xpath");
 					String text = (String) androidNode.get("text");
-					tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text));
+					tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath,text));
 				}
 				//Check if the transitions has an android node and whether the transition is GUI_INPUT_TYPE
 				if(tempTransition.getOriginElement() != null && tempTransition.getType().equals(TransitionType.GUI_INPUT_TEXT)){
@@ -96,8 +96,6 @@ public class RIPRR extends RIPBase {
 					Boolean isNumber = aux.getText().matches("-?\\d+(\\.\\d+)?");
 					ArrayList<String> strings = new ArrayList();
 					//Get the characters in the text
-					//TODO BORRAR SYSOUT
-					System.out.println("TEXTO A GUARDAR: " + aux.getText());
 					char[] textoArray =  aux.getText().toCharArray();
 					if(isNumber){
 						//Add strings of two digits or one of one digit and the rest of two in case the amount of characters are even
@@ -243,7 +241,7 @@ public class RIPRR extends RIPBase {
 	}
 
 	@Override
-	public int enterInput(AndroidNode node) throws IOException, RipException {
+	public int enterInput(AndroidNode node, Transition transition) throws IOException, RipException {
 		int type = EmulatorHelper.checkInputType();
 		String input = "+";
 		Transition old = null;

@@ -6,6 +6,15 @@
 	"scriptPath":"./test/outputt/result.json",
 	"executionParams":{
 		"events":20,
-		"time":2
-	}
+		"time":2,
+		"userLogin": true,
+		"loginData":{
+			"activityName": "",
+			"userIDNode":"",
+			"userIDImput":"",
+			"passwordIDNode":"",
+			"passwordImput":""
+		}
+	},
+	
 }

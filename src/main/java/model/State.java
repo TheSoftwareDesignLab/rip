@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import main.RIPBase;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.w3c.dom.Document;
@@ -86,6 +87,8 @@ public class State {
 
 	private boolean airplane;
 
+	private NodeList allNodes;
+
 
 	/**
 	 * Creates a new state
@@ -120,7 +123,7 @@ public class State {
 	}
 
 	public void setActivityName(String activityName) {
-		this.activityName = activityName;
+		this.activityName = activityName.split("\r\n")[0];
 	}
 
 	public Document getParsedXML() {
@@ -157,8 +160,34 @@ public class State {
 	 */
 	public void generatePossibleTransition() {
 
+		// GUI interactions
+		allNodes = parsedXML.getElementsByTagName("node");
+		Node currentNode;
+		AndroidNode newAndroidNode;
 		possibleTransitions.push(new Transition(this, TransitionType.BUTTON_BACK));
-
+		if(RIPBase.userLogin) {
+			if (activityName.equals(RIPBase.loginActivityNameUserId) || activityName.equals(RIPBase.loginActivityNamePassword)) {
+				System.out.println("EN LA ACTIVIDAD");
+				Transition aux = new Transition(this,TransitionType.GUI_INPUT_TEXT);
+				AndroidNode userIDNode = getAndroidNodeByID(RIPBase.userIDNode);
+				AndroidNode passwordNode = getAndroidNodeByID(RIPBase.passwordIDNode);
+				System.out.println("USER LOGIN NODE: " + userIDNode);
+				System.out.println("USER PASSWORD NODE: " + passwordNode);
+				if(userIDNode != null){
+					aux.setOriginElement(userIDNode);
+					aux.setInputString(RIPBase.userIdInput);
+					aux.setType(TransitionType.INPUT_LOGIN_USER_ID);
+					possibleTransitions.push(aux);
+					possibleTransitions.push(new Transition(this,TransitionType.GUI_CLICK_BUTTON,getAndroidNodeByID(RIPBase.buttonUserIDConfirmation)));
+				}else if(passwordNode != null){
+					aux.setOriginElement(passwordNode);
+					aux.setInputString((RIPBase.passwordInput));
+					aux.setType(TransitionType.INPUT_LOGIN_USER_PASSWORD);
+					possibleTransitions.push(aux);
+					possibleTransitions.push(new Transition(this,TransitionType.GUI_CLICK_BUTTON,getAndroidNodeByID(RIPBase.buttonUserPasswordConfirmation)));
+				}
+			}
+		}
 		// Add the possible contextual changes in the transitions
 		if (contextualChanges == true) {
 			possibleTransitions.push(new Transition(this, TransitionType.CONTEXT_INTERNET_OFF));
@@ -173,30 +202,33 @@ public class State {
 		if (hybrid == true) {
 		}
 
-		// GUI interactions
-		NodeList allNodes = parsedXML.getElementsByTagName("node");
-		Node currentNode;
-		AndroidNode newAndroidNode;
 		for (int i = 0; i < allNodes.getLength(); i++) {
 			currentNode = allNodes.item(i);
+
 			newAndroidNode = new AndroidNode(this, currentNode);
-			stateNodes.add(newAndroidNode);
-			if(newAndroidNode.isDomainAttribute()) {
-				loadDomainModel(newAndroidNode);
-			}
-			if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
-				if (newAndroidNode.isEditableText()) {
-					possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
-				} else {
-					possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
-				}
-			}
-			if (newAndroidNode.isScrollable() ) {
-				if(newAndroidNode.getpClass().contains("ViewPager")) {
-					possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
-				} else {
-					possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
-				}
+
+				String[] auxClassArray = newAndroidNode.getpClass().split("\\.");
+				String auxClass = auxClassArray[auxClassArray.length-1];
+				//This if prevent any interaction inside a webview
+				if(!auxClass.equals("View") && !auxClass.equals("WebView")){
+					stateNodes.add(newAndroidNode);
+					if(newAndroidNode.isDomainAttribute()) {
+						loadDomainModel(newAndroidNode);
+					}
+					if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
+						if (newAndroidNode.isEditableText()) {
+							possibleTransitions.push(new Transition(this,TransitionType.GUI_INPUT_TEXT, newAndroidNode));
+						} else {
+							possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+						}
+					}
+					if (newAndroidNode.isScrollable() ) {
+						if(newAndroidNode.getpClass().contains("ViewPager")) {
+							possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
+						} else {
+							possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+						}
+					}
 			}
 		}
 	}
@@ -290,6 +322,16 @@ public class State {
 		return null;
 	}
 
+	public  AndroidNode getAndroidNodeByID(String resourceID){
+		for (int i = 0; i < allNodes.getLength(); i++) {
+			Node temp = allNodes.item(i);
+			AndroidNode newAndroidNode = new AndroidNode(this, temp);
+			if(newAndroidNode.getResourceID().equals(resourceID)) {
+				return newAndroidNode;
+			}
+		}
+		return null;
+	}
 	public List<AndroidNode> getStateNodes() {
 		return stateNodes;
 	}

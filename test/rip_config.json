@@ -1,11 +1,22 @@
 	{
-	"apkPath":"./rectangledbmi.com.pittsburghrealtimetracker.apk",
+	"apkPath":"Picap Mototaxi_v2.32_apkpure.com.apk",
 	"outputFolder":"./output/",
 	"isHybrid":false,
 	"executionMode":"dfs",
 	"scriptPath":"./output/result.json",
 	"executionParams":{
 		"events":10000,
-		"time":10000
+		"time":10000,
+		"userLogin": true,
+		"loginData":{
+			"loginActivityNameUserId": "com.kickstarter.kickstarter/com.kickstarter.ui.activities.LoginActivity",
+			"userIDNode":"com.kickstarter.kickstarter:id/email",
+			"userIDInput":"thesoftwaredesignlab@gmail.com",
+			"buttonUserIDConfirmation": "com.kickstarter.kickstarter:id/login_button",
+			"loginActivityNamePassword": "com.kickstarter.kickstarter/com.kickstarter.ui.activities.LoginActivity",
+			"passwordIDNode":"com.kickstarter.kickstarter:id/password",
+			"passwordInput":"TheSDL-2019",
+			"buttonUserPasswordConfirmation": "com.kickstarter.kickstarter:id/login_button"
+		}
 	}
 }

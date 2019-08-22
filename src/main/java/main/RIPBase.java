@@ -157,6 +157,16 @@ public class RIPBase {
 	public String configFilePath;
 
 	public JSONObject params;
+
+	public static String loginActivityNameUserId ="";
+	public static String loginActivityNamePassword = "";
+	public static String userIDNode = "";
+	public static String userIdInput ="";
+	public static String passwordIDNode ="";
+	public static String passwordInput = "";
+	public static String buttonUserIDConfirmation = "";
+	public static String buttonUserPasswordConfirmation = "";
+
 	/**
 	 * Indicates the execution mode -events- time- complete
 	 */
@@ -174,11 +184,33 @@ public class RIPBase {
 
 	private long finishTime;
 
+	public static boolean userLogin = false;
+
+
+
 	public RIPBase(String configFilePath) throws Exception {
 
 		printRIPInitialMessage();
 		this.configFilePath = configFilePath;
 		params = readConfigFile();
+		JSONObject executionParams = (JSONObject) params.get("executionParams");
+
+		userLogin = (Boolean) executionParams.get("userLogin");
+		if(userLogin){
+			JSONObject loginData = (JSONObject) executionParams.get("loginData");
+
+			loginActivityNameUserId = (String) loginData.get("loginActivityNameUserId");
+			loginActivityNamePassword = (String) loginData.get("loginActivityNamePassword");
+			userIDNode = (String) loginData.get("userIDNode");
+			userIdInput = (String) loginData.get("userIDInput");
+			passwordIDNode = (String) loginData.get("passwordIDNode");
+			passwordInput = (String) loginData.get("passwordInput");
+			buttonUserIDConfirmation = (String) loginData.get("buttonUserIDConfirmation");
+			buttonUserPasswordConfirmation = (String) loginData.get("buttonUserPasswordConfirmation");
+
+		}
+
+
 		startTime = System.currentTimeMillis();
 
 		pacName = "";
@@ -269,17 +301,16 @@ public class RIPBase {
 			folderName = (String) obj.get("outputFolder");
 			hybridApp = (Boolean) obj.get("isHybrid");
 			executionMode = (String) obj.get("executionMode");
-
 			JSONObject execParams = (JSONObject) obj.get("executionParams");
 			switch (executionMode) {
-			case "events":
-				maxIterations = Math.toIntExact((long) execParams.get("events"));
-				break;
-			case "time":
-				maxTime = Math.toIntExact((long) execParams.get("time"));
-				break;
-			default:
-				break;
+				case "events":
+					maxIterations = Math.toIntExact((long) execParams.get("events"));
+					break;
+				case "time":
+					maxTime = Math.toIntExact((long) execParams.get("time"));
+					break;
+				default:
+					break;
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -342,6 +373,11 @@ public class RIPBase {
 			transition.put("stState", tempTransition.getOrigin().getId());
 			transition.put("dsState", tempTransition.getDestination().getId());
 			transition.put("tranType", tempTransition.getType().name());
+			if(tempTransition.getType() == TransitionType.GUI_INPUT_TEXT
+					|| tempTransition.getType() == TransitionType.INPUT_LOGIN_USER_ID
+					|| tempTransition.getType() == TransitionType.INPUT_LOGIN_USER_PASSWORD  ){
+				transition.put("inputText",tempTransition.getInputString());
+			}
 			transition.put("screenshot", tempTransition.getScreenshot());
 			if(tempTransition.getOriginNode()!=null) {
 				JSONObject androidNode = new JSONObject();
@@ -514,20 +550,13 @@ public class RIPBase {
 	public boolean isRippingOutsideApp(Document parsedXML) throws IOException, RipException {
 		String currentPackage = parsedXML.getElementsByTagName("node").item(0).getAttributes().getNamedItem("package")
 				.getNodeValue();
-		if (pacName.equals("") || pacName.equals("com.google.android.packageinstaller")) {
-			pacName = currentPackage;
+		if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller")){
+			return false;
 		}
-		System.out.println("pacName: " + pacName);
-		System.out.println("packageName: " + packageName);
-		System.out.println("Current package: " + currentPackage);
-		// Is exploring outside the application
-		if (!currentPackage.equals(pacName)) {
-			System.out.println("Ripping outside");
-			System.out.println("Going back");
-			EmulatorHelper.goBack();
-			return true;
-		}
-		return false;
+		System.out.println("Ripping outside");
+		System.out.println("Going back");
+		EmulatorHelper.goBack();
+		return true;
 	}
 
 	public State compareScreenShotWithExisting(String screenShot) {
@@ -561,17 +590,31 @@ public class RIPBase {
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
 
-	public int enterInput(AndroidNode node) throws IOException, RipException {
+	public int enterInput(AndroidNode node, Transition transition) throws IOException, RipException {
+
 		int type = EmulatorHelper.checkInputType();
 		Random rm = new Random();
 		String input = "";
-		if (type == 1) {
-			input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
-					+ (char) (rm.nextInt(26) + 'a');
-		} else {
-			input = String.valueOf(rm.nextInt(100));
+		//In case the transition does not have an input text it will be generate randomly
+		if(transition.getInputString().equals("")){
+			if (type == 1) {
+				input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
+						+ (char) (rm.nextInt(26) + 'a');
+			} else {
+				input = String.valueOf(rm.nextInt(100));
+			}
+			transition.setInputString(input);
+		}else{
+			//In case the transition does have an input text it will be assigned to the input variable to make the insertion
+			input = transition.getInputString();
 		}
 		EmulatorHelper.moveToEndInput();
+		if(transition.getType() == TransitionType.INPUT_LOGIN_USER_ID || transition.getType() == TransitionType.INPUT_LOGIN_USER_PASSWORD){
+			System.out.println("ENTROOOO AL IF: TEXTO: " + node.getText() );
+			for(int i = 0; i < node.getText().length(); i++){
+				EmulatorHelper.deleteOneEntrance();
+			}
+		}
 		EmulatorHelper.enterInput(input);
 		return type;
 	}
@@ -591,44 +634,54 @@ public class RIPBase {
 	public TransitionType executeTransition(Transition transition) throws IOException, RipException {
 		AndroidNode origin;
 		switch (transition.getType()) {
-		case GUI_CLICK_BUTTON:
-			origin = transition.getOriginNode();
-			tap(origin);
-			return TransitionType.GUI_CLICK_BUTTON;
-		case SCROLL:
-			origin = transition.getOriginNode();
-			scroll(origin, false);
-			return TransitionType.SCROLL;
-		case SWIPE:
-			origin = transition.getOriginNode();
-			scroll(origin, true);
-			return TransitionType.SWIPE;
-		case CONTEXT_INTERNET_OFF:
-			EmulatorHelper.turnInternet(false);
-			return TransitionType.CONTEXT_INTERNET_OFF;
-		case CONTEXT_INTERNET_ON:
-			EmulatorHelper.turnInternet(true);
-			return TransitionType.CONTEXT_INTERNET_ON;
-		case ROTATE_LANDSCAPE:
-			EmulatorHelper.rotateLandscape();
-			return TransitionType.ROTATE_LANDSCAPE;
-		case ROTATE_PORTRAIT:
-			EmulatorHelper.rotatePortrait();
-			return TransitionType.ROTATE_PORTRAIT;
-		case CONTEXT_LOCATION_OFF:
-			EmulatorHelper.turnLocationServices(false);
-			return TransitionType.CONTEXT_LOCATION_OFF;
-		case CONTEXT_LOCATION_ON:
-			EmulatorHelper.turnLocationServices(true);
-			return TransitionType.CONTEXT_LOCATION_ON;
-		case BUTTON_BACK:
-			EmulatorHelper.goBack();
-			return TransitionType.BUTTON_BACK;
-		case GUI_INPUT_TEXT:
-			AndroidNode originInput = transition.getOriginNode();
-			tap(originInput);
-			int type = enterInput(originInput);
-			return (type==1)?TransitionType.GUI_INPUT_TEXT:TransitionType.GUI_INPUT_NUMBER;
+			case GUI_CLICK_BUTTON:
+				origin = transition.getOriginNode();
+				tap(origin);
+				return TransitionType.GUI_CLICK_BUTTON;
+			case SCROLL:
+				origin = transition.getOriginNode();
+				scroll(origin, false);
+				return TransitionType.SCROLL;
+			case SWIPE:
+				origin = transition.getOriginNode();
+				scroll(origin, true);
+				return TransitionType.SWIPE;
+			case CONTEXT_INTERNET_OFF:
+				EmulatorHelper.turnInternet(false);
+				return TransitionType.CONTEXT_INTERNET_OFF;
+			case CONTEXT_INTERNET_ON:
+				EmulatorHelper.turnInternet(true);
+				return TransitionType.CONTEXT_INTERNET_ON;
+			case ROTATE_LANDSCAPE:
+				EmulatorHelper.rotateLandscape();
+				return TransitionType.ROTATE_LANDSCAPE;
+			case ROTATE_PORTRAIT:
+				EmulatorHelper.rotatePortrait();
+				return TransitionType.ROTATE_PORTRAIT;
+			case CONTEXT_LOCATION_OFF:
+				EmulatorHelper.turnLocationServices(false);
+				return TransitionType.CONTEXT_LOCATION_OFF;
+			case CONTEXT_LOCATION_ON:
+				EmulatorHelper.turnLocationServices(true);
+				return TransitionType.CONTEXT_LOCATION_ON;
+			case BUTTON_BACK:
+				EmulatorHelper.goBack();
+				return TransitionType.BUTTON_BACK;
+			case GUI_INPUT_TEXT:
+				AndroidNode originInput = transition.getOriginNode();
+				tap(originInput);
+				int type = enterInput(originInput, transition);
+				return (type==1)?TransitionType.GUI_INPUT_TEXT:TransitionType.GUI_INPUT_NUMBER;
+			case INPUT_LOGIN_USER_ID:
+				originInput = transition.getOriginNode();
+				tap(originInput);
+				enterInput(originInput, transition);
+				return TransitionType.INPUT_LOGIN_USER_ID;
+			case INPUT_LOGIN_USER_PASSWORD:
+				originInput = transition.getOriginNode();
+				tap(originInput);
+				enterInput(originInput, transition);
+				return TransitionType.INPUT_LOGIN_USER_PASSWORD;
 		}
 		return null;
 
@@ -781,15 +834,16 @@ public class RIPBase {
 			System.out.println("State Already Exists: " + reason);
 		} else {
 			//New State
-			currentState.generatePossibleTransition();
 			String activity = EmulatorHelper.getCurrentFocus();
 			EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
 			System.out.println("Current ST: " + currentState.getId());
 			currentState.setActivityName(activity);
 			statesTable.put(rawXML, currentState);
-			states.add(currentState);
 			currentState.setScreenShot(screenShot);
 			currentState.retrieveContext(packageName);
+
+			currentState.generatePossibleTransition();
+			states.add(currentState);
 			ImageHelper.getNodeImagesFromState(currentState);
 		}
 		//Add out and in bound transitions to the previous state and the current one respectively
