@@ -1,5 +1,5 @@
 	{
-	"apkPath":"Picap Mototaxi_v2.32_apkpure.com.apk",
+	"apkPath":"materialistic.apk",
 	"outputFolder":"./output/",
 	"isHybrid":false,
 	"executionMode":"dfs",
@@ -9,14 +9,14 @@
 		"time":10000,
 		"userLogin": true,
 		"loginData":{
-			"loginActivityNameUserId": "com.kickstarter.kickstarter/com.kickstarter.ui.activities.LoginActivity",
-			"userIDNode":"com.kickstarter.kickstarter:id/email",
-			"userIDInput":"thesoftwaredesignlab@gmail.com",
-			"buttonUserIDConfirmation": "com.kickstarter.kickstarter:id/login_button",
-			"loginActivityNamePassword": "com.kickstarter.kickstarter/com.kickstarter.ui.activities.LoginActivity",
-			"passwordIDNode":"com.kickstarter.kickstarter:id/password",
+			"loginActivityNameUserId": "io.github.hidroh.materialistic/io.github.hidroh.materialistic.LoginActivity",
+			"userIDNode":"io.github.hidroh.materialistic:id/edittext_username",
+			"userIDInput":"TheSDL",
+			"buttonUserIDConfirmation": "io.github.hidroh.materialistic:id/login_button",
+			"loginActivityNamePassword": "io.github.hidroh.materialistic/io.github.hidroh.materialistic.LoginActivity",
+			"passwordIDNode":"io.github.hidroh.materialistic:id/edittext_password",
 			"passwordInput":"TheSDL-2019",
-			"buttonUserPasswordConfirmation": "com.kickstarter.kickstarter:id/login_button"
+			"buttonUserPasswordConfirmation": "io.github.hidroh.materialistic:id/login_button"
 		}
 	}
 }
