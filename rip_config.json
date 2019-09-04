@@ -7,5 +7,13 @@
 	"executionParams":{
 		"events":20,
 		"time":2
+	},
+	"usesLogin": true,
+	"inputs":{
+		"activityName":".activities.Login",
+		"userID":"usuario",
+		"userValue":"ca.escobar2434@uniandes.edu.co",
+		"passID":"et_password",
+		"passVal":"asd123asd"
 	}
 }

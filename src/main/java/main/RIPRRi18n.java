@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,7 +25,7 @@ import model.State;
 import model.Transition;
 import model.TransitionType;
 
-public class RIPRRi18n extends RIPRR {
+public class RIPRRi18n extends RIPi18n {
 
 	public RIPRRi18n(String configFilePath) throws Exception {
 		super(configFilePath);
@@ -38,8 +39,10 @@ public class RIPRRi18n extends RIPRR {
 	public ArrayList<State> oldStates;
 
 	public ArrayList<Transition> oldTransitions;
+	public ArrayList<Transition> oldTransitionsCopy;
 
 	AndroidNode transToBeExecAN;
+	public Hashtable<AndroidNode, List<String>> androidNodesStrings;
 	
 	@Override
 	public void preProcess(JSONObject preProcArgs) {
@@ -48,7 +51,7 @@ public class RIPRRi18n extends RIPRR {
 		oldStatesTable = new Hashtable<>();
 		oldStates = new ArrayList<>();
 		oldTransitions = new ArrayList<>();
-
+		androidNodesStrings = new Hashtable();
 		//JSON parser object to parse read file
 		JSONParser jsonParser = new JSONParser();
 
@@ -69,6 +72,7 @@ public class RIPRRi18n extends RIPRR {
 				tempState.setId(Math.toIntExact((long) currentState.get("id")));
 				Document parsedXML = loadXMLFromString(tempState.getRawXML());
 				tempState.setParsedXML(parsedXML);
+				tempState.generatePossibleTransition();
 				oldStates.add(tempState);
 				oldStatesTable.put(tempState.getRawXML(), tempState);
 			}
@@ -88,9 +92,55 @@ public class RIPRRi18n extends RIPRR {
 					String text = (String) androidNode.get("text");
 					tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text));
 				}
+				//Check if the transitions has an android node and whether the transition is GUI_INPUT_TYPE
+				if(tempTransition.getOriginElement() != null && tempTransition.getType().equals(TransitionType.GUI_INPUT_TEXT)){
+					//Get the android node
+					AndroidNode aux = tempTransition.getOriginElement();
+					//Check whether is a number or not
+					Boolean isNumber = aux.getText().matches("-?\\d+(\\.\\d+)?");
+					ArrayList<String> strings = new ArrayList();
+					//Get the characters in the text
+					//TODO BORRAR SYSOUT
+					System.out.println("TEXTO A GUARDAR: " + aux.getText());
+					char[] textoArray =  aux.getText().toCharArray();
+					if(isNumber){
+						//Add strings of two digits or one of one digit and the rest of two in case the amount of characters are even
+						for(int j = 0; j < textoArray.length; j++){
+							if(textoArray.length%2==0){
+								if(j%2==0){
+									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]));
+								}
+							}else{
+								if(j == 0){
+									strings.add(String.valueOf(textoArray[j]));
+								}
+								if(j%2==1){
+									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]));
+								}
+							}
+						}
+					}else{
+						for(int j = 0; j < textoArray.length; j++){
+							if(textoArray.length%3==0){
+								if(j%3==0){
+									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]) + String.valueOf(textoArray[j+2]));
+								}
+							}else{
+								if(j == 0){
+									strings.add(String.valueOf(textoArray[j]));
+								}
+								if(j%3==1){
+									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]) + String.valueOf(textoArray[j+2]));
+								}
+							}
+
+						}
+					}
+					androidNodesStrings.put(aux,strings);
+				}
 				oldTransitions.add(tempTransition);
 			}
-
+			oldTransitionsCopy = (ArrayList<Transition>) oldTransitions.clone();
 			for (int i = 0; i < oldTransitions.size(); i++) {
 				System.out.println(oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
 			}
@@ -136,11 +186,12 @@ public class RIPRRi18n extends RIPRR {
 					Helper.deleteFile(screenShot);
 					reason = "Found state in graph";
 				}else if(sameState != null){
+					System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
 					Helper.deleteFile(sameState.getScreenShot());
 					File newScreen = new File(screenShot);
 					newScreen.renameTo(new File(sameState.getScreenShot()));
 					currentState = sameState;
-					reason = "Found state by image comparison";
+					reason = "Found state by images";
 				}else{
 					Helper.deleteFile(screenShot);
 					currentState = previousState;
@@ -191,7 +242,7 @@ public class RIPRRi18n extends RIPRR {
 			}
 			//Ending execution due to current node has a different id to the next transition id expected to be executed
 			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
-				System.out.println("EXITING EXECUTION. START STATE != CURRENT STATE");
+				System.out.println("SALIENDO DE EJECUCIÓN. ESTADO DE INICIO != AL ACTUAL");
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
 				return ;
 			} else {
@@ -254,6 +305,7 @@ public class RIPRRi18n extends RIPRR {
 		} finally {
 		}
 	}
+
 	
 	public String processXML(String rawXML) {
 		return rawXML.replaceAll("(text|focused|checked|password)=\"[^\"]*\"", "");
