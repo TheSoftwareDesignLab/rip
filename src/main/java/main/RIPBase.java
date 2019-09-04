@@ -518,20 +518,13 @@ public class RIPBase {
 	public boolean isRippingOutsideApp(Document parsedXML) throws IOException, RipException {
 		String currentPackage = parsedXML.getElementsByTagName("node").item(0).getAttributes().getNamedItem("package")
 				.getNodeValue();
-		if (pacName.equals("") || pacName.equals("com.google.android.packageinstaller")) {
-			pacName = currentPackage;
+		if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller")){
+			return false;
 		}
-		System.out.println("pacName: " + pacName);
-		System.out.println("packageName: " + packageName);
-		System.out.println("Current package: " + currentPackage);
-		// Is exploring outside the application
-		if (!currentPackage.equals(pacName)) {
-			System.out.println("Ripping outside");
-			System.out.println("Going back");
-			EmulatorHelper.goBack();
-			return true;
-		}
-		return false;
+		System.out.println("Ripping outside");
+		System.out.println("Going back");
+		EmulatorHelper.goBack();
+		return true;
 	}
 
 	public State compareScreenShotWithExisting(String screenShot) {

@@ -182,30 +182,30 @@ public class State {
 		AndroidNode newAndroidNode;
 		for (int i = 0; i < allNodes.getLength(); i++) {
 			currentNode = allNodes.item(i);
-			newAndroidNode = new AndroidNode(this, currentNode);
-
-            String[] auxClassArray = newAndroidNode.getpClass().split("\\.");
-            loadDomainModel(newAndroidNode);
-            String auxClass = auxClassArray[auxClassArray.length-1];
-			if(auxClass.equals("WebView")){
-				currentNode.getParentNode().removeChild(currentNode);
-            }else {
-				stateNodes.add(newAndroidNode);
-				if(newAndroidNode.isDomainAttribute()) {
-					loadDomainModel(newAndroidNode);
-				}
-				if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
-					if (newAndroidNode.isEditableText()) {
-						possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
-					} else {
-						possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+			if(currentNode != null){
+				newAndroidNode = new AndroidNode(this, currentNode);
+				String[] auxClassArray = newAndroidNode.getpClass().split("\\.");
+				String auxClass = auxClassArray[auxClassArray.length-1];
+				if(auxClass.equals("WebView")){
+					currentNode.getParentNode().removeChild(currentNode);
+				}else {
+					stateNodes.add(newAndroidNode);
+					if(newAndroidNode.isDomainAttribute()) {
+						loadDomainModel(newAndroidNode);
 					}
-				}
-				if (newAndroidNode.isScrollable() ) {
-					if(newAndroidNode.getpClass().contains("ViewPager")) {
-						possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
-					} else {
-						possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+					if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
+						if (newAndroidNode.isEditableText()) {
+							possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
+						} else {
+							possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+						}
+					}
+					if (newAndroidNode.isScrollable() ) {
+						if(newAndroidNode.getpClass().contains("ViewPager")) {
+							possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
+						} else {
+							possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+						}
 					}
 				}
 			}
