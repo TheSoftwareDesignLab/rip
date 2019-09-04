@@ -189,23 +189,24 @@ public class State {
             String auxClass = auxClassArray[auxClassArray.length-1];
 			if(auxClass.equals("WebView")){
 				currentNode.getParentNode().removeChild(currentNode);
-            }
-			stateNodes.add(newAndroidNode);
-			if(newAndroidNode.isDomainAttribute()) {
-				loadDomainModel(newAndroidNode);
-			}
-			if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
-				if (newAndroidNode.isEditableText()) {
-					possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
-				} else {
-					possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+            }else {
+				stateNodes.add(newAndroidNode);
+				if(newAndroidNode.isDomainAttribute()) {
+					loadDomainModel(newAndroidNode);
 				}
-			}
-			if (newAndroidNode.isScrollable() ) {
-				if(newAndroidNode.getpClass().contains("ViewPager")) {
-					possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
-				} else {
-					possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+				if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
+					if (newAndroidNode.isEditableText()) {
+						possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
+					} else {
+						possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+					}
+				}
+				if (newAndroidNode.isScrollable() ) {
+					if(newAndroidNode.getpClass().contains("ViewPager")) {
+						possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
+					} else {
+						possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+					}
 				}
 			}
 		}
