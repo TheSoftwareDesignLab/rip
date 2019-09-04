@@ -167,12 +167,9 @@ public class State {
 		possibleTransitions.push(new Transition(this, TransitionType.BUTTON_BACK));
 		if(RIPBase.userLogin) {
 			if (activityName.equals(RIPBase.loginActivityNameUserId) || activityName.equals(RIPBase.loginActivityNamePassword)) {
-				System.out.println("EN LA ACTIVIDAD");
 				Transition aux = new Transition(this,TransitionType.GUI_INPUT_TEXT);
 				AndroidNode userIDNode = getAndroidNodeByID(RIPBase.userIDNode);
 				AndroidNode passwordNode = getAndroidNodeByID(RIPBase.passwordIDNode);
-				System.out.println("USER LOGIN NODE: " + userIDNode);
-				System.out.println("USER PASSWORD NODE: " + passwordNode);
 				if(userIDNode != null){
 					aux.setOriginElement(userIDNode);
 					aux.setInputString(RIPBase.userIdInput);
