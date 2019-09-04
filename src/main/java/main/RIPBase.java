@@ -754,6 +754,7 @@ public class RIPBase {
 		EmulatorHelper.isEventIdle();
 		currentState.setId(getSequentialNumber());
 		String rawXML = EmulatorHelper.getCurrentViewHierarchy();
+		rawXML = processXML(rawXML);
 		Document parsedXML = loadXMLFromString(rawXML);
 		String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
 		currentState.setRawXML(rawXML);
@@ -827,6 +828,10 @@ public class RIPBase {
 			previousState.addOutboundTransition(executedTransition);
 			transitions.add(executedTransition);
 		}
+	}
+
+	public String processXML(String rawXML){
+		return rawXML;
 	}
 
 	public boolean validExecution() {
