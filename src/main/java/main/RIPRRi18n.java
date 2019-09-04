@@ -59,8 +59,6 @@ public class RIPRRi18n extends RIPRR {
 
 			int amountStates = Math.toIntExact((long) obj.get(AMOUNT_STATES));
 			int amountTransitions = Math.toIntExact((long) obj.get(AMOUNT_TRANSITIONS));
-			System.out.println("AMOUNT STATES: " +amountStates);
-			System.out.println("AMOUNT TRANSITIONS: " +amountTransitions);
 			JSONObject states = (JSONObject) obj.get(STATES);
 
 			for (int i = 0; i < amountStates; i++) {
@@ -74,9 +72,6 @@ public class RIPRRi18n extends RIPRR {
 				oldStates.add(tempState);
 				oldStatesTable.put(tempState.getRawXML(), tempState);
 			}
-			System.out.println("AMOUNT STATES OLDSTATES: " +oldStates.size());
-			System.out.println("AMOUNT STATES OLDSTATESTABLE: " +oldStatesTable.size());
-
 			JSONObject transitions = (JSONObject) obj.get(TRANSITIONS);
 
 			for (int i = 1; i < amountTransitions; i++) {
@@ -141,12 +136,11 @@ public class RIPRRi18n extends RIPRR {
 					Helper.deleteFile(screenShot);
 					reason = "Found state in graph";
 				}else if(sameState != null){
-					System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
 					Helper.deleteFile(sameState.getScreenShot());
 					File newScreen = new File(screenShot);
 					newScreen.renameTo(new File(sameState.getScreenShot()));
 					currentState = sameState;
-					reason = "Found state by images";
+					reason = "Found state by image comparison";
 				}else{
 					Helper.deleteFile(screenShot);
 					currentState = previousState;
@@ -197,7 +191,7 @@ public class RIPRRi18n extends RIPRR {
 			}
 			//Ending execution due to current node has a different id to the next transition id expected to be executed
 			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
-				System.out.println("SALIENDO DE EJECUCIÓN. ESTADO DE INICIO != AL ACTUAL");
+				System.out.println("EXITING EXECUTION. START STATE != CURRENT STATE");
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
 				return ;
 			} else {

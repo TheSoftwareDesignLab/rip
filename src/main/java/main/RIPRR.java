@@ -31,10 +31,10 @@ public class RIPRR extends RIPBase {
 	public ArrayList<State> oldStates;
 
 	public ArrayList<Transition> oldTransitions;
-	public ArrayList<Transition> oldTransitionsCopy;
 
 	AndroidNode transToBeExecAN;
-	public Hashtable<AndroidNode, List<String>> androidNodesStrings;
+
+
 	public RIPRR(String configFilePath) throws Exception {
 		super(configFilePath);
 	}
@@ -46,7 +46,6 @@ public class RIPRR extends RIPBase {
 		oldStatesTable = new Hashtable<>();
 		oldStates = new ArrayList<>();
 		oldTransitions = new ArrayList<>();
-		androidNodesStrings = new Hashtable();
 		//JSON parser object to parse read file
 		JSONParser jsonParser = new JSONParser();
 
@@ -81,6 +80,13 @@ public class RIPRR extends RIPBase {
 				Transition tempTransition = new Transition(oldStates.get(originState - 1), tType);
 				tempTransition.setDestination(oldStates.get(destState - 1));
 
+				if(tempTransition.getOriginElement() != null && tempTransition.getType().equals(TransitionType.GUI_INPUT_TEXT)){
+					//Get the android node
+					String inputString = (String) currentTransition.get("inputString");
+					tempTransition.setInputString(inputString);
+					System.out.println("INPUT STRING: " + inputString);
+				}
+
 				if (currentTransition.containsKey("androidNode")) {
 					JSONObject androidNode = (JSONObject) currentTransition.get("androidNode");
 					String resourceID = (String) androidNode.get("resourceID");
@@ -88,55 +94,10 @@ public class RIPRR extends RIPBase {
 					String text = (String) androidNode.get("text");
 					tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text));
 				}
-				//Check if the transitions has an android node and whether the transition is GUI_INPUT_TYPE
-				if(tempTransition.getOriginElement() != null && tempTransition.getType().equals(TransitionType.GUI_INPUT_TEXT)){
-					//Get the android node
-					AndroidNode aux = tempTransition.getOriginElement();
-					//Check whether is a number or not
-					Boolean isNumber = aux.getText().matches("-?\\d+(\\.\\d+)?");
-					ArrayList<String> strings = new ArrayList();
-					//Get the characters in the text
-					//TODO BORRAR SYSOUT
-					System.out.println("TEXTO A GUARDAR: " + aux.getText());
-					char[] textoArray =  aux.getText().toCharArray();
-					if(isNumber){
-						//Add strings of two digits or one of one digit and the rest of two in case the amount of characters are even
-						for(int j = 0; j < textoArray.length; j++){
-							if(textoArray.length%2==0){
-								if(j%2==0){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]));
-								}
-							}else{
-								if(j == 0){
-									strings.add(String.valueOf(textoArray[j]));
-								}
-								if(j%2==1){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]));
-								}
-							}
-						}
-					}else{
-						for(int j = 0; j < textoArray.length; j++){
-							if(textoArray.length%3==0){
-								if(j%3==0){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]) + String.valueOf(textoArray[j+2]));
-								}
-							}else{
-								if(j == 0){
-									strings.add(String.valueOf(textoArray[j]));
-								}
-								if(j%3==1){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]) + String.valueOf(textoArray[j+2]));
-								}
-							}
+				//Check if the transition has an android node and whether the transition is GUI_INPUT_TYPE
 
-						}
-					}
-					androidNodesStrings.put(aux,strings);
-				}
 				oldTransitions.add(tempTransition);
 			}
-			oldTransitionsCopy = (ArrayList<Transition>) oldTransitions.clone();
 			for (int i = 0; i < oldTransitions.size(); i++) {
 				System.out.println(oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
 			}
@@ -180,7 +141,7 @@ public class RIPRR extends RIPBase {
 			}
 			//Ending execution due to current node has a different id to the next transition id expected to be executed
 			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
-				System.out.println("SALIENDO DE EJECUCIÓN. ESTADO DE INICIO != AL ACTUAL");
+				System.out.println("EXITING EXECUTION. START STATE != CURRENT STATE");
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
 				return ;
 			} else {
@@ -188,13 +149,13 @@ public class RIPRR extends RIPBase {
 				Transition tempTrans = currentState.popTransition();
 				AndroidNode tempTransAN = tempTrans.getOriginNode();
 				//Check 1. same type between the transition and the expected transition
-				//	2. same android id source 3. same android node xPath 4. same android node text
+				//	2. same android id source 3. same android node xPath
 				if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
 					while( !(tempTrans.getType().equals(transToBeExec.getType()))
 							|| !tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID())
 							|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
 						) {
-						//If just one of those conditions is false get the next possible transition in the current state
+						//If one or more of those conditions is false get the next possible transition in the current state
                         executeTransition(tempTrans);
 						ifKeyboardHideKeyboard();
 						EmulatorHelper.isEventIdle();
@@ -202,7 +163,9 @@ public class RIPRR extends RIPBase {
 						tempTransAN = tempTrans.getOriginNode();
 					}
 				}else{
-					while(!(tempTrans.getType().equals(transToBeExec.getType()))) {
+					while(!tempTrans.getType().equals(transToBeExec.getType())
+							|| !tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID())
+							|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())) {
 						//If just one of those conditions is false get the next possible transition in the current state
                         executeTransition(tempTrans);
 						ifKeyboardHideKeyboard();
@@ -210,6 +173,10 @@ public class RIPRR extends RIPBase {
 						tempTrans = currentState.popTransition();
 						tempTransAN = tempTrans.getOriginNode();
 					}
+				}
+
+				if(tempTrans.getType() == TransitionType.GUI_INPUT_TEXT){
+					tempTrans.setInputString(transToBeExec.getInputString());
 				}
 				//Execute the transition
 				executeTransition(tempTrans);
@@ -240,33 +207,6 @@ public class RIPRR extends RIPBase {
 			e.printStackTrace();
 		} finally {
 		}
-	}
-
-	@Override
-	public int enterInput(AndroidNode node) throws IOException, RipException {
-		int type = EmulatorHelper.checkInputType();
-		String input = "+";
-		Transition old = null;
-		for (Transition oldTransition: oldTransitionsCopy) {
-			AndroidNode oldTransitionAN = oldTransition.getOriginElement();
-			if(oldTransitionAN != null
-					&& oldTransitionAN.getResourceID().equals(node.getResourceID())
-					&& oldTransitionAN.getxPath().equals(node.getxPath())
-					&& oldTransitionAN.getType().equals(node.getType())
-					&& !oldTransitionAN.getText().equals(node.getOriginalText())
-			){
-				System.out.println("TEXTO A INGRESAR: " + androidNodesStrings.get(oldTransitionAN).get(0));
-				input = androidNodesStrings.get(oldTransitionAN).remove(0);
-				old = oldTransition;
-			}
-		}
-		if(old != null && androidNodesStrings.get(old.getOriginElement()).isEmpty()){
-			oldTransitionsCopy.remove(old);
-		}
-		EmulatorHelper.moveToEndInput();
-		EmulatorHelper.enterInput(input);
-		//EmulatorHelper.goBack();
-		return type;
 	}
 
 	@Override

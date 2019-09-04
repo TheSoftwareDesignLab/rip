@@ -343,12 +343,16 @@ public class RIPBase {
 			transition.put("dsState", tempTransition.getDestination().getId());
 			transition.put("tranType", tempTransition.getType().name());
 			transition.put("screenshot", tempTransition.getScreenshot());
+			if (tempTransition.getType()==TransitionType.GUI_INPUT_TEXT){
+				transition.put("inputString",tempTransition.getInputString());
+			}
 			if(tempTransition.getOriginNode()!=null) {
 				JSONObject androidNode = new JSONObject();
 				androidNode.put("resourceID", tempTransition.getOriginNode().getResourceID());
 				androidNode.put("name", tempTransition.getOriginNode().getName());
 				androidNode.put("text", tempTransition.getOriginNode().getText());
 				androidNode.put("xpath", tempTransition.getOriginNode().getxPath());
+
 				if(tempTransition.getType()==TransitionType.SCROLL || tempTransition.getType()==TransitionType.SWIPE) {
 					int[] p1 = tempTransition.getOriginNode().getPoint1();
 					int[] p2 = tempTransition.getOriginNode().getPoint2();
@@ -561,7 +565,25 @@ public class RIPBase {
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
 
-	public int enterInput(AndroidNode node) throws IOException, RipException {
+//	public int enterInput(Transition transition) throws IOException, RipException {
+//		int type = EmulatorHelper.checkInputType();
+//		Random rm = new Random();
+//		String input = transition.getInputString();
+//		if(input.equals("")){
+//			if (type == 1) {
+//				input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
+//						+ (char) (rm.nextInt(26) + 'a');
+//			} else {
+//				input = String.valueOf(rm.nextInt(100));
+//			}
+//			transition.setInputString(input);
+//		}
+//		EmulatorHelper.moveToEndInput();
+//		EmulatorHelper.enterInput(input);
+//		return type;
+//	}
+
+	public int enterInput(Transition transition) throws IOException, RipException {
 		int type = EmulatorHelper.checkInputType();
 		Random rm = new Random();
 		String input = "";
@@ -573,8 +595,10 @@ public class RIPBase {
 		}
 		EmulatorHelper.moveToEndInput();
 		EmulatorHelper.enterInput(input);
+		EmulatorHelper.goBack();
 		return type;
 	}
+
 
 	public void ifKeyboardHideKeyboard(){
 		try {
@@ -627,7 +651,7 @@ public class RIPBase {
 		case GUI_INPUT_TEXT:
 			AndroidNode originInput = transition.getOriginNode();
 			tap(originInput);
-			int type = enterInput(originInput);
+			int type = enterInput(transition);
 			return (type==1)?TransitionType.GUI_INPUT_TEXT:TransitionType.GUI_INPUT_NUMBER;
 		}
 		return null;

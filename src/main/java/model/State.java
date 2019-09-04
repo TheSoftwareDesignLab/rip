@@ -86,6 +86,8 @@ public class State {
 
 	private boolean airplane;
 
+	private NodeList allNodes;
+
 
 	/**
 	 * Creates a new state
@@ -120,7 +122,7 @@ public class State {
 	}
 
 	public void setActivityName(String activityName) {
-		this.activityName = activityName;
+		this.activityName = activityName.split("\r\n")[0];
 	}
 
 	public Document getParsedXML() {
@@ -158,7 +160,7 @@ public class State {
 	public void generatePossibleTransition() {
 
 		possibleTransitions.push(new Transition(this, TransitionType.BUTTON_BACK));
-
+		allNodes = parsedXML.getElementsByTagName("node");
 		// Add the possible contextual changes in the transitions
 		if (contextualChanges == true) {
 			possibleTransitions.push(new Transition(this, TransitionType.CONTEXT_INTERNET_OFF));
@@ -174,12 +176,20 @@ public class State {
 		}
 
 		// GUI interactions
-		NodeList allNodes = parsedXML.getElementsByTagName("node");
+		allNodes = parsedXML.getElementsByTagName("node");
+		//TODO Filtar los nodos que sean hijos de un webview
 		Node currentNode;
 		AndroidNode newAndroidNode;
 		for (int i = 0; i < allNodes.getLength(); i++) {
 			currentNode = allNodes.item(i);
 			newAndroidNode = new AndroidNode(this, currentNode);
+
+            String[] auxClassArray = newAndroidNode.getpClass().split("\\.");
+            loadDomainModel(newAndroidNode);
+            String auxClass = auxClassArray[auxClassArray.length-1];
+			if(auxClass.equals("WebView")){
+				currentNode.getParentNode().removeChild(currentNode);
+            }
 			stateNodes.add(newAndroidNode);
 			if(newAndroidNode.isDomainAttribute()) {
 				loadDomainModel(newAndroidNode);
@@ -285,6 +295,17 @@ public class State {
 			AndroidNode temp = stateNodes.get(i);
 			if(temp.getxPath().equals(xpath)&&temp.getResourceID().equals(resourceID)) {
 				return temp;
+			}
+		}
+		return null;
+	}
+
+	public  AndroidNode getAndroidNodeByID(String resourceID){
+		for (int i = 0; i < allNodes.getLength(); i++) {
+			Node temp = allNodes.item(i);
+			AndroidNode newAndroidNode = new AndroidNode(this, temp);
+			if(newAndroidNode.getResourceID().equals(resourceID)) {
+				return newAndroidNode;
 			}
 		}
 		return null;

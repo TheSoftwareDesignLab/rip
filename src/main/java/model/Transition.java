@@ -7,7 +7,7 @@ public class Transition {
 	private TransitionType type;
 	private AndroidNode originElement;
 	private String screenshot;
-	
+	private String inputString;
 	/**
 	 * Creates a transition with a known origin state and a type
 	 * @param origin
@@ -29,7 +29,15 @@ public class Transition {
 		this.origin = origin;
 		this.type = type;
 		this.originElement = originElement;
-		
+		this.inputString = "";
+	}
+
+	public String getInputString(){
+		return this.inputString;
+	}
+
+	public void setInputString(String inputString){
+		this.inputString = inputString;
 	}
 
 	public State getOrigin() {
