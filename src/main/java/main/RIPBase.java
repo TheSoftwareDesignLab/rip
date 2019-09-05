@@ -377,7 +377,7 @@ public class RIPBase {
 				androidNode.put("bounds", "["+tempTransition.getOriginNode().getPoint1()[0]+","+tempTransition.getOriginNode().getPoint1()[1]+"]["+
 						tempTransition.getOriginNode().getPoint2()[0]+","+tempTransition.getOriginNode().getPoint2()[1]+"]");
 				transition.put("androidNode", androidNode);
-			}			
+			}
 			resultTransitions.put(i+"",transition);
 		}
 		resultFile.put(TRANSITIONS, resultTransitions);
@@ -523,6 +523,10 @@ public class RIPBase {
 		}
 		System.out.println("Ripping outside");
 		System.out.println("Going back");
+//		State auxState = new State(hybridApp,contextualExploration);
+//		auxState.setId(-1);
+//		Transition auxTrans = new Transition(auxState,TransitionType.BUTTON_BACK);
+//		transitions.add(auxTrans);
 		EmulatorHelper.goBack();
 		return true;
 	}
@@ -765,7 +769,6 @@ public class RIPBase {
 				Helper.deleteFile(screenShot);
 				reason = "Found state in graph";
 			}else if(sameState != null){
-				System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
 				Helper.deleteFile(sameState.getScreenShot());
 				File newScreen = new File(screenShot);
 				newScreen.renameTo(new File(sameState.getScreenShot()));
@@ -786,7 +789,7 @@ public class RIPBase {
 					}
 				}
 				currentState = sameState;
-				reason = "Found state by images";
+				reason = "Found state by image comparison";
 			}else{
 				Helper.deleteFile(screenShot);
 				currentState = previousState;
@@ -794,11 +797,12 @@ public class RIPBase {
 			}
 			sequentialNumber--;
 			if(EmulatorHelper.isHome()) {
-				throw new RipException("Execution closed the app");
+				throw new RipException("Execution closed the app. Exploration in home view");
 			}
 			System.out.println("State Already Exists: " + reason);
 		} else {
 			//New State
+			EmulatorHelper.isEventIdle();
 			currentState.generatePossibleTransition();
 			String activity = EmulatorHelper.getCurrentFocus();
 			EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
