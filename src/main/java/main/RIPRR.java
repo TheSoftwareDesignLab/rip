@@ -94,7 +94,6 @@ public class RIPRR extends RIPBase {
 					String text = (String) androidNode.get("text");
 					tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text));
 				}
-				//Check if the transition has an android node and whether the transition is GUI_INPUT_TYPE
 
 				oldTransitions.add(tempTransition);
 			}
