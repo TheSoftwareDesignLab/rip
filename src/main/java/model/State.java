@@ -177,7 +177,6 @@ public class State {
 
 		// GUI interactions
 		allNodes = parsedXML.getElementsByTagName("node");
-		//TODO Filtar los nodos que sean hijos de un webview
 		Node currentNode;
 		AndroidNode newAndroidNode;
 		for (int i = 0; i < allNodes.getLength(); i++) {
@@ -188,6 +187,7 @@ public class State {
 				String auxClass = auxClassArray[auxClassArray.length-1];
 				if(auxClass.equals("WebView")){
 					currentNode.getParentNode().removeChild(currentNode);
+					System.out.println("There is a Webview, all the elements inside will not be taking in count for future transitions");
 				}else {
 					stateNodes.add(newAndroidNode);
 					if(newAndroidNode.isDomainAttribute()) {

@@ -85,59 +85,22 @@ public class RIPRRi18n extends RIPi18n {
 				int destState = Math.toIntExact((long) currentTransition.get("dsState"));
 				Transition tempTransition = new Transition(oldStates.get(originState - 1), tType);
 				tempTransition.setDestination(oldStates.get(destState - 1));
-				if (currentTransition.containsKey("androidNode")) {
-					JSONObject androidNode = (JSONObject) currentTransition.get("androidNode");
-					String resourceID = (String) androidNode.get("resourceID");
-					String xpath = (String) androidNode.get("xpath");
-					String text = (String) androidNode.get("text");
-					tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text));
-				}
-				//Check if the transitions has an android node and whether the transition is GUI_INPUT_TYPE
+
 				if(tempTransition.getOriginElement() != null && tempTransition.getType().equals(TransitionType.GUI_INPUT_TEXT)){
 					//Get the android node
-					AndroidNode aux = tempTransition.getOriginElement();
-					//Check whether is a number or not
-					Boolean isNumber = aux.getText().matches("-?\\d+(\\.\\d+)?");
-					ArrayList<String> strings = new ArrayList();
-					//Get the characters in the text
-					//TODO BORRAR SYSOUT
-					System.out.println("TEXTO A GUARDAR: " + aux.getText());
-					char[] textoArray =  aux.getText().toCharArray();
-					if(isNumber){
-						//Add strings of two digits or one of one digit and the rest of two in case the amount of characters are even
-						for(int j = 0; j < textoArray.length; j++){
-							if(textoArray.length%2==0){
-								if(j%2==0){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]));
-								}
-							}else{
-								if(j == 0){
-									strings.add(String.valueOf(textoArray[j]));
-								}
-								if(j%2==1){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]));
-								}
-							}
-						}
-					}else{
-						for(int j = 0; j < textoArray.length; j++){
-							if(textoArray.length%3==0){
-								if(j%3==0){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]) + String.valueOf(textoArray[j+2]));
-								}
-							}else{
-								if(j == 0){
-									strings.add(String.valueOf(textoArray[j]));
-								}
-								if(j%3==1){
-									strings.add(String.valueOf(textoArray[j]) + String.valueOf(textoArray[j+1]) + String.valueOf(textoArray[j+2]));
-								}
-							}
-
-						}
-					}
-					androidNodesStrings.put(aux,strings);
+					String inputString = (String) currentTransition.get("inputString");
+					tempTransition.setInputString(inputString);
+					System.out.println("INPUT STRING: " + inputString);
 				}
+
+					if (currentTransition.containsKey("androidNode")) {
+						JSONObject androidNode = (JSONObject) currentTransition.get("androidNode");
+						String resourceID = (String) androidNode.get("resourceID");
+						String xpath = (String) androidNode.get("xpath");
+						String text = (String) androidNode.get("text");
+						tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text));
+					}
+
 				oldTransitions.add(tempTransition);
 			}
 			oldTransitionsCopy = (ArrayList<Transition>) oldTransitions.clone();
@@ -164,67 +127,6 @@ public class RIPRRi18n extends RIPi18n {
 		System.out.println("NEW STATE EXPLORATION STARTED");
 		currentState = new State(hybridApp,contextualExploration);
 		try{
-			ifKeyboardHideKeyboard();
-			EmulatorHelper.isEventIdle();
-			currentState.setId(getSequentialNumber());
-			String rawXML = EmulatorHelper.getCurrentViewHierarchy();
-			rawXML = processXML(rawXML);
-			Document parsedXML = loadXMLFromString(rawXML);
-			String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
-			currentState.setRawXML(rawXML);
-			currentState.setParsedXML(parsedXML);
-			//Conditions for find a new state
-			rippingOutsideApp = isRippingOutsideApp(parsedXML);
-			State foundState = findStateInGraph(currentState);
-			State sameState = compareScreenShotWithExisting(screenShot);
-
-			if (foundState != null || sameState != null || rippingOutsideApp) {
-				// State already exists
-				String reason = "";
-				if(foundState != null){
-					currentState = foundState;
-					Helper.deleteFile(screenShot);
-					reason = "Found state in graph";
-				}else if(sameState != null){
-					System.out.println("SAME STATE FOUND BY IMAGE COMPARISON");
-					Helper.deleteFile(sameState.getScreenShot());
-					File newScreen = new File(screenShot);
-					newScreen.renameTo(new File(sameState.getScreenShot()));
-					currentState = sameState;
-					reason = "Found state by images";
-				}else{
-					Helper.deleteFile(screenShot);
-					currentState = previousState;
-					reason = "Ripping out side the app";
-				}
-				sequentialNumber--;
-				if(EmulatorHelper.isHome()) {
-					throw new RipException("Execution closed the app");
-				}
-				System.out.println("State Already Exists: " + reason);
-			} else {
-				//New State
-				String activity = EmulatorHelper.getCurrentFocus();
-				EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
-				System.out.println("Current ST: " + currentState.getId());
-				currentState.setActivityName(activity);
-				statesTable.put(rawXML, currentState);
-				states.add(currentState);
-				currentState.setScreenShot(screenShot);
-				currentState.retrieveContext(packageName);
-				ImageHelper.getNodeImagesFromState(currentState);
-			}
-			//Add out and in bound transitions to the previous state and the current one respectively
-			if (!rippingOutsideApp) {
-				if (currentState.hasRemainingTransitions()) {
-					previousState.addPossibleTransition(executedTransition);
-				}
-				executedTransition.setDestination(currentState);
-				executedTransition.setOrigin(previousState);
-				currentState.addInboundTransition(executedTransition);
-				previousState.addOutboundTransition(executedTransition);
-				transitions.add(executedTransition);
-			}
 			//End execution if the old transitions are already done
 			if(oldTransitions.size()==0) {
 				System.out.println("OLD TRANSITIONS EMPTY");
@@ -321,6 +223,20 @@ public class RIPRRi18n extends RIPi18n {
 		return true;
 	}
 
+	@Override
+	public void printRIPInitialMessage() {
+		System.out.println("\n 2018, Universidad de los Andes\n The Software Design Lab\n");
+		System.out.println("https://thesoftwaredesignlab.github.io/\n");
+		String s = String.join("\n",
+				"🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥"
+				, "🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥",
+				"🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  "
+				, "🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   ",
+				"🔥🔥   🔥🔥    🔥🔥  🔥🔥           🔥🔥   🔥🔥    🔥🔥   🔥🔥         "
+				, "🔥🔥    🔥🔥   🔥🔥  🔥🔥           🔥🔥    🔥🔥   🔥🔥    🔥🔥   "
+				,"🔥🔥     🔥🔥  🔥🔥  🔥🔥           🔥🔥     🔥🔥  🔥🔥     🔥🔥  ", " ");
+		System.out.println(s);
+	}
 	public static void main(String[] args) {
 		if(args.length<1) {
 			System.err.println("Please provide config file location");

@@ -180,6 +180,7 @@ public class RIPRR extends RIPBase {
 				}
 				//Execute the transition
 				executeTransition(tempTrans);
+				ifKeyboardHideKeyboard();
 				//Remove the transition
 				oldTransitions.remove(0);
 				//Add one to the iteration counter
