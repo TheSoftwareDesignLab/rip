@@ -768,7 +768,7 @@ public class RIPBase {
 				currentState = foundState;
 				Helper.deleteFile(screenShot);
 				reason = "Found state in graph";
-			}else if(sameState != null){
+			} else if (sameState != null) {
 				Helper.deleteFile(sameState.getScreenShot());
 				File newScreen = new File(screenShot);
 				newScreen.renameTo(new File(sameState.getScreenShot()));
@@ -778,19 +778,19 @@ public class RIPBase {
 				NodeList allNodes = sameState.getParsedXML().getElementsByTagName("node");
 				List<AndroidNode> androidNodes = sameState.getStateNodes();
 				//Change the nodes' state information because of any change i.e a text change
-				for (AndroidNode androidNode: androidNodes){
-					for(int i = 0; i < allNodes.getLength(); i++){
+				for (AndroidNode androidNode: androidNodes) {
+					for(int i = 0; i < allNodes.getLength(); i++) {
 						Node currentNode = allNodes.item(i);
 						AndroidNode auxAndroidNode = new AndroidNode(sameState, currentNode);
 						if(androidNode.getResourceID().equals(auxAndroidNode.getResourceID())
-								&& androidNode.getxPath().equals(auxAndroidNode.getxPath())){
+								&& androidNode.getxPath().equals(auxAndroidNode.getxPath())) {
 							androidNode.loadAttributesFromDom(currentNode);
 						}
 					}
 				}
 				currentState = sameState;
-				reason = "Found state by image comparison";
-			}else{
+				reason = "Found state by images";
+			} else {
 				Helper.deleteFile(screenShot);
 				currentState = previousState;
 				reason = "Ripping outside the app";
@@ -825,6 +825,10 @@ public class RIPBase {
 			previousState.addOutboundTransition(executedTransition);
 			transitions.add(executedTransition);
 		}
+	}
+	
+	public String processXML(String rawXML) {
+		return rawXML;
 	}
 
 	public String processXML(String rawXML){
