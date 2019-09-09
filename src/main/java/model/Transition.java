@@ -8,6 +8,8 @@ public class Transition {
 	private AndroidNode originElement;
 	private String screenshot;
 	private String inputString;
+	private boolean leavesAppCore;
+	private int valuableTransNumber;
 	/**
 	 * Creates a transition with a known origin state and a type
 	 * @param origin
@@ -16,7 +18,7 @@ public class Transition {
 	public Transition(State origin, TransitionType type) {
 		this.origin = origin;
 		this.type = type;
-		
+		leavesAppCore = false;
 	}
 	
 	/**
@@ -34,6 +36,20 @@ public class Transition {
 
 	public String getInputString(){
 		return this.inputString;
+	}
+
+	/**
+	 * @return the leavesAppCore
+	 */
+	public boolean isLeavesAppCore() {
+		return leavesAppCore;
+	}
+
+	/**
+	 * @param leavesAppCore the leavesAppCore to set
+	 */
+	public void setLeavesAppCore(boolean leavesAppCore) {
+		this.leavesAppCore = leavesAppCore;
 	}
 
 	public void setInputString(String inputString){
@@ -93,6 +109,17 @@ public class Transition {
 
 	public AndroidNode getOriginElement() {
 		return originElement;
+	}
+
+	public void setValuableTransNumber(int valuableTransNumber) {
+		this.valuableTransNumber = valuableTransNumber;
+	}
+
+	/**
+	 * @return the valuableTransNumber
+	 */
+	public int getValuableTransNumber() {
+		return valuableTransNumber;
 	}
 
 }

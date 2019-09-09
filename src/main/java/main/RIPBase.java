@@ -98,6 +98,7 @@ public class RIPBase {
 	public ArrayList<State> states;
 
 	public ArrayList<Transition> transitions;
+	public ArrayList<Transition> executedTransitions;
 	
 	/*
 	 * Device information
@@ -186,6 +187,7 @@ public class RIPBase {
 		statesTable = new Hashtable<>();
 		states = new ArrayList<>();
 		transitions = new ArrayList<>();
+		executedTransitions = new ArrayList<>();
 
 		new File(folderName).mkdirs();
 
@@ -238,6 +240,7 @@ public class RIPBase {
 		preProcess(params);
 
 		Transition initialTransition = new Transition(null, TransitionType.FIRST_INTERACTION);
+		initialTransition.setLeavesAppCore(false);
 		State initialState = new State(hybridApp, contextualExploration);
 		initialState.setId(getSequentialNumber());
 		explore(initialState, initialTransition);
@@ -342,6 +345,7 @@ public class RIPBase {
 			transition.put("stState", tempTransition.getOrigin().getId());
 			transition.put("dsState", tempTransition.getDestination().getId());
 			transition.put("tranType", tempTransition.getType().name());
+			transition.put("outside", tempTransition.isLeavesAppCore());
 			transition.put("screenshot", tempTransition.getScreenshot());
 			if (tempTransition.getType()==TransitionType.GUI_INPUT_TEXT){
 				transition.put("inputString",tempTransition.getInputString());
@@ -381,6 +385,19 @@ public class RIPBase {
 			resultTransitions.put(i+"",transition);
 		}
 		resultFile.put(TRANSITIONS, resultTransitions);
+		//All Transitions
+		JSONObject allTransitions = new JSONObject();
+		for (int i = 0; i < executedTransitions.size(); i++) {
+			Transition tempTransition = executedTransitions.get(i);
+			JSONObject transition = new JSONObject();
+
+			transition.put("stState", tempTransition.getOrigin().getId());
+			transition.put("tranType", tempTransition.getType().name());
+			transition.put("outside", tempTransition.isLeavesAppCore());
+			transition.put("valTrans", tempTransition.getValuableTransNumber());
+			allTransitions.put(i+"",transition);
+		}
+		resultFile.put("allTransitions", allTransitions);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(folderName + File.separator + "result.json"));
 		writer.write(resultFile.toJSONString());
 		writer.close();
@@ -704,12 +721,16 @@ public class RIPBase {
 				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
 				stateChanges = stateChanges();
+				stateTransition.setValuableTransNumber(transitions.size()-1);
+				executedTransitions.add(stateTransition);
+			}
+			if(stateChanges && validExecution()) {
+				executedTransitions.remove(executedTransitions.size()-1); 
 			}
 			// If the state changes, recursively explores the application
 			if (validExecution()){
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
-				executedIterations++;
 				explore(currentState, stateTransition);
 			}
 
@@ -724,7 +745,7 @@ public class RIPBase {
 			// Error getting the current view hierarchy
 			e.printStackTrace();
 		} catch (RipException e) {
-			if(e.getMessage().equals("Execution closed the app")) {
+			if(e.getMessage().contains("Execution closed the app")) {
 				System.out.println(e.getMessage());
 			} else {
 				e.printStackTrace();
@@ -758,6 +779,9 @@ public class RIPBase {
 		currentState.setParsedXML(parsedXML);
 		//Conditions for find a new state
 		rippingOutsideApp = isRippingOutsideApp(parsedXML);
+		executedTransition.setLeavesAppCore(rippingOutsideApp);
+		executedTransition.setValuableTransNumber(transitions.size()-1);
+		executedTransitions.add(executedTransition);
 		State foundState = findStateInGraph(currentState);
 		State sameState = compareScreenShotWithExisting(screenShot);
 
@@ -828,10 +852,6 @@ public class RIPBase {
 	}
 	
 	public String processXML(String rawXML) {
-		return rawXML;
-	}
-
-	public String processXML(String rawXML){
 		return rawXML;
 	}
 
