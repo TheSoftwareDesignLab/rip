@@ -31,6 +31,8 @@ public class RIPRR extends RIPBase {
 	public ArrayList<State> oldStates;
 
 	public ArrayList<Transition> oldTransitions;
+	
+	public ArrayList<Transition> allOldTransitions;
 
 	AndroidNode transToBeExecAN;
 
@@ -46,6 +48,7 @@ public class RIPRR extends RIPBase {
 		oldStatesTable = new Hashtable<>();
 		oldStates = new ArrayList<>();
 		oldTransitions = new ArrayList<>();
+		allOldTransitions = new ArrayList<>();
 		//JSON parser object to parse read file
 		JSONParser jsonParser = new JSONParser();
 
@@ -70,6 +73,7 @@ public class RIPRR extends RIPBase {
 				oldStates.add(tempState);
 				oldStatesTable.put(tempState.getRawXML(), tempState);
 			}
+			
 			JSONObject transitions = (JSONObject) obj.get(TRANSITIONS);
 
 			for (int i = 1; i < amountTransitions; i++) {
@@ -96,6 +100,19 @@ public class RIPRR extends RIPBase {
 				}
 
 				oldTransitions.add(tempTransition);
+			}
+			JSONObject allTransitions = (JSONObject) obj.get("allTransitions");
+
+			for (int i = 1; i < allTransitions.keySet().size(); i++) {
+				JSONObject currentTransition = (JSONObject) allTransitions.get(i + "");
+				int originState = Math.toIntExact((long) currentTransition.get("stState"));
+				TransitionType tType = TransitionType.valueOf((String) currentTransition.get("tranType"));
+				int valTrans = Math.toIntExact((long) currentTransition.get("valTrans"));
+				boolean outside = (boolean) currentTransition.get("outside");
+				Transition tempTransition = new Transition(oldStates.get(originState - 1), tType);
+				tempTransition.setLeavesAppCore(outside);
+				tempTransition.setValuableTransNumber(valTrans);
+				allOldTransitions.add(tempTransition);
 			}
 			for (int i = 0; i < oldTransitions.size(); i++) {
 				System.out.println(oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
@@ -139,9 +156,9 @@ public class RIPRR extends RIPBase {
 				System.out.println((i+1)+": "+oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
 			}
 			//Ending execution due to current node has a different id to the next transition id expected to be executed
-			//TODO Manejar la ida y vuelta afuera de la app
+			
 
-			if(transToBeExec.getOrigin().getId()!=currentState.getId() && transToBeExec.getOrigin().getId() != -1) {
+			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
 				System.out.println("EXITING EXECUTION. START STATE != CURRENT STATE");
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
 				return ;
@@ -154,6 +171,7 @@ public class RIPRR extends RIPBase {
 
 			Transition tempTrans = currentState.popTransition();
 			AndroidNode tempTransAN = tempTrans.getOriginNode();
+			Transition teempTransition = allOldTransitions.get(0);
 
 			if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
 				while( !(tempTrans.getType().equals(transToBeExec.getType()))
@@ -161,7 +179,11 @@ public class RIPRR extends RIPBase {
 						|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
 				) {
 					//If one or more of those conditions is false get the next possible transition in the current state
-					executeTransition(tempTrans);
+					if(!teempTransition.isLeavesAppCore()) {
+						executeTransition(tempTrans);
+					}
+					allOldTransitions.remove(0);
+					teempTransition = allOldTransitions.get(0);
 					ifKeyboardHideKeyboard();
 					EmulatorHelper.isEventIdle();
 					tempTrans = currentState.popTransition();
@@ -170,7 +192,11 @@ public class RIPRR extends RIPBase {
 			}else{
 				while(!tempTrans.getType().equals(transToBeExec.getType())) {
 					//If just one of those conditions is false get the next possible transition in the current state
-					executeTransition(tempTrans);
+					if(!teempTransition.isLeavesAppCore()) {
+						executeTransition(tempTrans);
+					}
+					allOldTransitions.remove(0);
+					teempTransition = allOldTransitions.get(0);
 					ifKeyboardHideKeyboard();
 					EmulatorHelper.isEventIdle();
 					tempTrans = currentState.popTransition();
@@ -181,6 +207,8 @@ public class RIPRR extends RIPBase {
 				tempTrans.setInputString(transToBeExec.getInputString());
 			}
 			executeTransition(tempTrans);
+			allOldTransitions.remove(0);
+			teempTransition = allOldTransitions.get(0);
 			ifKeyboardHideKeyboard();
 
 			//Remove the transition

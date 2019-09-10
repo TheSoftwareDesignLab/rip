@@ -99,7 +99,7 @@ public class RIPBase {
 
 	public ArrayList<Transition> transitions;
 	public ArrayList<Transition> executedTransitions;
-	
+
 	/*
 	 * Device information
 	 */
@@ -529,6 +529,7 @@ public class RIPBase {
 	}
 
 	public int getSequentialNumber() {
+		System.out.println(sequentialNumber);
 		return ++sequentialNumber;
 	}
 
@@ -540,10 +541,10 @@ public class RIPBase {
 		}
 		System.out.println("Ripping outside");
 		System.out.println("Going back");
-//		State auxState = new State(hybridApp,contextualExploration);
-//		auxState.setId(-1);
-//		Transition auxTrans = new Transition(auxState,TransitionType.BUTTON_BACK);
-//		transitions.add(auxTrans);
+		//		State auxState = new State(hybridApp,contextualExploration);
+		//		auxState.setId(-1);
+		//		Transition auxTrans = new Transition(auxState,TransitionType.BUTTON_BACK);
+		//		transitions.add(auxTrans);
 		EmulatorHelper.goBack();
 		return true;
 	}
@@ -579,23 +580,23 @@ public class RIPBase {
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
 
-//	public int enterInput(Transition transition) throws IOException, RipException {
-//		int type = EmulatorHelper.checkInputType();
-//		Random rm = new Random();
-//		String input = transition.getInputString();
-//		if(input.equals("")){
-//			if (type == 1) {
-//				input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
-//						+ (char) (rm.nextInt(26) + 'a');
-//			} else {
-//				input = String.valueOf(rm.nextInt(100));
-//			}
-//			transition.setInputString(input);
-//		}
-//		EmulatorHelper.moveToEndInput();
-//		EmulatorHelper.enterInput(input);
-//		return type;
-//	}
+	//	public int enterInput(Transition transition) throws IOException, RipException {
+	//		int type = EmulatorHelper.checkInputType();
+	//		Random rm = new Random();
+	//		String input = transition.getInputString();
+	//		if(input.equals("")){
+	//			if (type == 1) {
+	//				input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
+	//						+ (char) (rm.nextInt(26) + 'a');
+	//			} else {
+	//				input = String.valueOf(rm.nextInt(100));
+	//			}
+	//			transition.setInputString(input);
+	//		}
+	//		EmulatorHelper.moveToEndInput();
+	//		EmulatorHelper.enterInput(input);
+	//		return type;
+	//	}
 
 	public int enterInput(Transition transition) throws IOException, RipException {
 		int type = EmulatorHelper.checkInputType();
@@ -785,17 +786,19 @@ public class RIPBase {
 		executedTransitions.add(executedTransition);
 		State sameState;
 		State foundState;
-		if(rippingOutsideApp){
+		if (rippingOutsideApp){
 			//Application is ripping outside the class
 			Helper.deleteFile(screenShot);
 			currentState = previousState;
 			System.out.println("Ripping outside the app" );
-		}else if( (foundState = findStateInGraph(currentState))!= null){
+			sequentialNumber--;
+		} else if ((foundState = findStateInGraph(currentState))!= null){
 			//The state is already in the states' graph
 			currentState = foundState;
 			Helper.deleteFile(screenShot);
 			System.out.println("State Already Exists: Found state in graph");
-		} else if((sameState = compareScreenShotWithExisting(screenShot)) != null){
+			sequentialNumber--;
+		} else if ((sameState = compareScreenShotWithExisting(screenShot)) != null){
 			//State is already explored and it was found by image comparison
 			Helper.deleteFile(sameState.getScreenShot());
 			File newScreen = new File(screenShot);
@@ -818,7 +821,8 @@ public class RIPBase {
 			}
 			currentState = sameState;
 			System.out.println("State Already Exists: Found state by images");
-		}else{
+			sequentialNumber--;
+		} else {
 			//New State
 			System.out.println("New state found");
 			EmulatorHelper.isEventIdle();
