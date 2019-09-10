@@ -777,55 +777,50 @@ public class RIPBase {
 		String screenShot = EmulatorHelper.takeAndPullScreenshot(currentState.getId()+"", folderName);
 		currentState.setRawXML(rawXML);
 		currentState.setParsedXML(parsedXML);
+
 		//Conditions for find a new state
 		rippingOutsideApp = isRippingOutsideApp(parsedXML);
 		executedTransition.setLeavesAppCore(rippingOutsideApp);
 		executedTransition.setValuableTransNumber(transitions.size()-1);
 		executedTransitions.add(executedTransition);
-		State foundState = findStateInGraph(currentState);
-		State sameState = compareScreenShotWithExisting(screenShot);
-
-		if (foundState != null || sameState != null || rippingOutsideApp) {
-			// State already exists
-			String reason = "";
-			if(foundState != null){
-				currentState = foundState;
-				Helper.deleteFile(screenShot);
-				reason = "Found state in graph";
-			} else if (sameState != null) {
-				Helper.deleteFile(sameState.getScreenShot());
-				File newScreen = new File(screenShot);
-				newScreen.renameTo(new File(sameState.getScreenShot()));
-				//Change the XML of the state because it could have some change and because of that it was not found in the graph
-				sameState.setRawXML(rawXML);
-				sameState.setParsedXML(parsedXML);
-				NodeList allNodes = sameState.getParsedXML().getElementsByTagName("node");
-				List<AndroidNode> androidNodes = sameState.getStateNodes();
-				//Change the nodes' state information because of any change i.e a text change
-				for (AndroidNode androidNode: androidNodes) {
-					for(int i = 0; i < allNodes.getLength(); i++) {
-						Node currentNode = allNodes.item(i);
-						AndroidNode auxAndroidNode = new AndroidNode(sameState, currentNode);
-						if(androidNode.getResourceID().equals(auxAndroidNode.getResourceID())
-								&& androidNode.getxPath().equals(auxAndroidNode.getxPath())) {
-							androidNode.loadAttributesFromDom(currentNode);
-						}
+		State sameState;
+		State foundState;
+		if(rippingOutsideApp){
+			//Application is ripping outside the class
+			Helper.deleteFile(screenShot);
+			currentState = previousState;
+			System.out.println("Ripping outside the app" );
+		}else if( (foundState = findStateInGraph(currentState))!= null){
+			//The state is already in the states' graph
+			currentState = foundState;
+			Helper.deleteFile(screenShot);
+			System.out.println("State Already Exists: Found state in graph");
+		} else if((sameState = compareScreenShotWithExisting(screenShot)) != null){
+			//State is already explored and it was found by image comparison
+			Helper.deleteFile(sameState.getScreenShot());
+			File newScreen = new File(screenShot);
+			newScreen.renameTo(new File(sameState.getScreenShot()));
+			//Change the XML of the state because it could have some change and because of that it was not found in the graph
+			sameState.setRawXML(rawXML);
+			sameState.setParsedXML(parsedXML);
+			NodeList allNodes = sameState.getParsedXML().getElementsByTagName("node");
+			List<AndroidNode> androidNodes = sameState.getStateNodes();
+			//Change the nodes' state information because of any change i.e a text change
+			for (AndroidNode androidNode: androidNodes) {
+				for(int i = 0; i < allNodes.getLength(); i++) {
+					Node currentNode = allNodes.item(i);
+					AndroidNode auxAndroidNode = new AndroidNode(sameState, currentNode);
+					if(androidNode.getResourceID().equals(auxAndroidNode.getResourceID())
+							&& androidNode.getxPath().equals(auxAndroidNode.getxPath())) {
+						androidNode.loadAttributesFromDom(currentNode);
 					}
 				}
-				currentState = sameState;
-				reason = "Found state by images";
-			} else {
-				Helper.deleteFile(screenShot);
-				currentState = previousState;
-				reason = "Ripping outside the app";
 			}
-			sequentialNumber--;
-			if(EmulatorHelper.isHome()) {
-				throw new RipException("Execution closed the app. Exploration in home view");
-			}
-			System.out.println("State Already Exists: " + reason);
-		} else {
+			currentState = sameState;
+			System.out.println("State Already Exists: Found state by images");
+		}else{
 			//New State
+			System.out.println("New state found");
 			EmulatorHelper.isEventIdle();
 			currentState.generatePossibleTransition();
 			String activity = EmulatorHelper.getCurrentFocus();
@@ -838,6 +833,7 @@ public class RIPBase {
 			currentState.retrieveContext(packageName);
 			ImageHelper.getNodeImagesFromState(currentState);
 		}
+
 		//Add out and in bound transitions to the previous state and the current one respectively
 		if (!rippingOutsideApp) {
 			if (currentState.hasRemainingTransitions()) {
@@ -850,7 +846,7 @@ public class RIPBase {
 			transitions.add(executedTransition);
 		}
 	}
-	
+
 	public String processXML(String rawXML) {
 		return rawXML;
 	}
