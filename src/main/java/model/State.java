@@ -13,6 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import helper.EmulatorHelper;
+import helper.Helper;
 
 public class State {
 
@@ -188,7 +189,7 @@ public class State {
 				if(auxClass.equals("WebView")){
 					currentNode.getParentNode().removeChild(currentNode);
 					System.out.println("There is a Webview, all the elements inside will not be taking in count for future transitions");
-				}else {
+				} else {
 					stateNodes.add(newAndroidNode);
 					if(newAndroidNode.isDomainAttribute()) {
 						loadDomainModel(newAndroidNode);
@@ -294,7 +295,7 @@ public class State {
 
 		for (int i = 0; i < stateNodes.size(); i++) {
 			AndroidNode temp = stateNodes.get(i);
-			if(temp.getxPath().equals(xpath)&&temp.getResourceID().equals(resourceID)) {
+			if((Helper.levenshteinDistance(temp.getxPath(), xpath)<(temp.getxPath().length()*0.10))&&temp.getResourceID().equals(resourceID)) {
 				return temp;
 			}
 		}

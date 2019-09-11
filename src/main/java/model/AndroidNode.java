@@ -56,34 +56,27 @@ public class AndroidNode {
 		for (int j = 0; j < attributes.getLength(); j++) {
 			Node attribute = attributes.item(j);
 			attributeValue = attribute.getNodeValue();
-			 androidNodeProperty = AndroidNodeProperty.fromName(attribute.getNodeName());
+			androidNodeProperty = AndroidNodeProperty.fromName(attribute.getNodeName());
 			if (androidNodeProperty != null) {
-				switch (androidNodeProperty) {
-				case CLICKABLE:
+				if(androidNodeProperty.equals(AndroidNodeProperty.CLICKABLE)) {
 					clickable = attributeValue.equals(TRUE);
-					break;
-				case BOUNDS:
+				} else if(androidNodeProperty.equals(AndroidNodeProperty.BOUNDS)) {
 					loadBounds(attributeValue);
-					break;
-				case CLASS:
+				} else if(androidNodeProperty.equals(AndroidNodeProperty.CLASS)) {
 					pClass = attributeValue;
-					break;
-				case ENABLED:
+				} else if(androidNodeProperty.equals(AndroidNodeProperty.ENABLED)) {
 					enabled = true;
-					break;
-				case RESOURCE_ID:
+				} else if(androidNodeProperty.equals(AndroidNodeProperty.RESOURCE_ID)) {
 					resourceID = attributeValue;
-					break;
-				case TEXT:
+				} else if(androidNodeProperty.equals(AndroidNodeProperty.TEXT)) {
 					text = attributeValue;
 					originalText = text;
-					break;
-				case INDEX:
+				} else if(androidNodeProperty.equals(AndroidNodeProperty.INDEX)) {
 					index = attributeValue;
-					break;
-				case SCROLLABLE:
+				} else if(androidNodeProperty.equals(AndroidNodeProperty.SCROLLABLE)) {
 					scrollable = Boolean.parseBoolean(attributeValue);
-					break;
+				} else {
+					//TODO
 				}
 			}
 			else {

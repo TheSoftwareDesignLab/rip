@@ -715,11 +715,11 @@ public class RIPBase {
 			// While no changes in the state are detected
 			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
+				// Waits until the executed transition changes the application current state
+				EmulatorHelper.isEventIdle();
 				executeTransition(stateTransition);
 				ifKeyboardHideKeyboard();
 				executedIterations++;
-				// Waits until the executed transition changes the application current state
-				EmulatorHelper.isEventIdle();
 				// Checks if the application changes due to the executed transition
 				stateChanges = stateChanges();
 				stateTransition.setValuableTransNumber(transitions.size()-1);
