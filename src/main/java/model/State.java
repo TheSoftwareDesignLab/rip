@@ -142,6 +142,7 @@ public class State {
 	}
 
 	public Transition popTransition() throws NoSuchElementException {
+		System.out.println("POSSIBLE TRANSITIONS STATE: " + id  + possibleTransitions);
 		return possibleTransitions.pop();
 	}
 

@@ -1,6 +1,6 @@
 	{
 	"apkPath":"./com.adobe.reader.apk",
-	"outputFolder":"./autput/",
+	"outputFolder":"./output/",
 	"isHybrid":false,
 	"executionMode":"dfs",
 	"scriptPath":"./output/result.json",
