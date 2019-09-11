@@ -539,12 +539,10 @@ public class RIPBase {
 		if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller")){
 			return false;
 		}
+		System.out.println("Current package: " + currentPackage);
+		System.out.println("packageName: " + packageName);
 		System.out.println("Ripping outside");
 		System.out.println("Going back");
-		//		State auxState = new State(hybridApp,contextualExploration);
-		//		auxState.setId(-1);
-		//		Transition auxTrans = new Transition(auxState,TransitionType.BUTTON_BACK);
-		//		transitions.add(auxTrans);
 		EmulatorHelper.goBack();
 		return true;
 	}
@@ -708,7 +706,6 @@ public class RIPBase {
 		try {
 			//Process the current state to discover whether is an already existing state or a new one
 			processState(previousState,executedTransition);
-
 			Transition stateTransition = null;
 			boolean stateChanges = false;
 
@@ -724,12 +721,16 @@ public class RIPBase {
 				stateChanges = stateChanges();
 				stateTransition.setValuableTransNumber(transitions.size()-1);
 				executedTransitions.add(stateTransition);
+				if(EmulatorHelper.isHome()){
+					throw new RipException("Execution closed the app");
+				}
 			}
 			if(stateChanges && validExecution()) {
 				executedTransitions.remove(executedTransitions.size()-1); 
 			}
 			// If the state changes, recursively explores the application
 			if (validExecution()){
+			    EmulatorHelper.isEventIdle();
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
 				explore(currentState, stateTransition);
@@ -769,6 +770,7 @@ public class RIPBase {
 	 */
 	public void processState(State previousState, Transition executedTransition)
 			throws IOException, RipException, InterruptedException, ParserConfigurationException, SAXException, Exception {
+
 		ifKeyboardHideKeyboard();
 		EmulatorHelper.isEventIdle();
 		currentState.setId(getSequentialNumber());
@@ -822,7 +824,9 @@ public class RIPBase {
 			currentState = sameState;
 			System.out.println("State Already Exists: Found state by images");
 			sequentialNumber--;
-		} else {
+		} else if(EmulatorHelper.isHome()){
+				throw new RipException("Execution closed the app");
+		}else {
 			//New State
 			System.out.println("New state found");
 			EmulatorHelper.isEventIdle();
