@@ -575,26 +575,9 @@ public class RIPBase {
 	}
 
 	public void tap(AndroidNode node) throws IOException, RipException {
+		System.out.println("X: " + node.getCentralX() + "Y: " + node.getCentralY());
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
-
-	//	public int enterInput(Transition transition) throws IOException, RipException {
-	//		int type = EmulatorHelper.checkInputType();
-	//		Random rm = new Random();
-	//		String input = transition.getInputString();
-	//		if(input.equals("")){
-	//			if (type == 1) {
-	//				input = "" + (char) (rm.nextInt(26) + 'A') + (char) (rm.nextInt(26) + 'a')
-	//						+ (char) (rm.nextInt(26) + 'a');
-	//			} else {
-	//				input = String.valueOf(rm.nextInt(100));
-	//			}
-	//			transition.setInputString(input);
-	//		}
-	//		EmulatorHelper.moveToEndInput();
-	//		EmulatorHelper.enterInput(input);
-	//		return type;
-	//	}
 
 	public int enterInput(Transition transition) throws IOException, RipException {
 		int type = EmulatorHelper.checkInputType();
@@ -630,6 +613,7 @@ public class RIPBase {
 		switch (transition.getType()) {
 		case GUI_CLICK_BUTTON:
 			origin = transition.getOriginNode();
+
 			tap(origin);
 			return TransitionType.GUI_CLICK_BUTTON;
 		case SCROLL:
@@ -789,7 +773,7 @@ public class RIPBase {
 		State sameState;
 		State foundState;
 		if (rippingOutsideApp){
-			//Application is ripping outside the class
+			//Application is ripping outside the app
 			Helper.deleteFile(screenShot);
 			currentState = previousState;
 			System.out.println("Ripping outside the app" );

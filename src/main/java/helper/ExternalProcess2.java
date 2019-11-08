@@ -34,8 +34,8 @@ public class ExternalProcess2 {
 											  String onErrorMessage) throws IOException, RipException {
 		List<String> answer = new ArrayList<String>();
 		ProcessBuilder pb = new ProcessBuilder(commands);
-		System.out.println("-> " + commandName);
-		System.out.println(commands.toString());
+		//System.out.println("-> " + commandName);
+		//System.out.println(commands.toString());
 		Process spb = pb.start();
 		String output = IOUtils.toString(spb.getInputStream(), "UTF-8");
 		String err = IOUtils.toString(spb.getErrorStream(), "UTF-8");
@@ -52,10 +52,10 @@ public class ExternalProcess2 {
 //		}
 		
 		answer.add(err);
-		System.out.println(err);
+		//System.out.println(err);
 		answer.add(commandName);
 		System.out.println("- - - - - - - - - - - - - - - - - - -");
-		Helper.getInstance("./").logMessage(commandName, Arrays.toString(commands.toArray(new String[]{})), err);
+		//Helper.getInstance("./").logMessage(commandName, Arrays.toString(commands.toArray(new String[]{})), err);
 
 		if (!err.equals("")) {
 			throw new RipException(err);

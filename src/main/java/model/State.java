@@ -186,27 +186,30 @@ public class State {
 			if(currentNode != null){
 				newAndroidNode = new AndroidNode(this, currentNode);
 				String[] auxClassArray = newAndroidNode.getpClass().split("\\.");
+
 				String auxClass = auxClassArray[auxClassArray.length-1];
 				if(auxClass.equals("WebView")){
 					currentNode.getParentNode().removeChild(currentNode);
 					System.out.println("There is a Webview, all the elements inside will not be taking in count for future transitions");
 				} else {
-					stateNodes.add(newAndroidNode);
-					if(newAndroidNode.isDomainAttribute()) {
-						loadDomainModel(newAndroidNode);
-					}
-					if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
-						if (newAndroidNode.isEditableText()) {
-							possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
-						} else {
-							possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+					if(newAndroidNode.getResourceID() != "android:id/statusBarBackground"){
+						stateNodes.add(newAndroidNode);
+						if(newAndroidNode.isDomainAttribute()) {
+							loadDomainModel(newAndroidNode);
 						}
-					}
-					if (newAndroidNode.isScrollable() ) {
-						if(newAndroidNode.getpClass().contains("ViewPager")) {
-							possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
-						} else {
-							possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+						if (newAndroidNode.isAButton() || newAndroidNode.isClickable() || (hybrid && newAndroidNode.isEnabled())) {
+							if (newAndroidNode.isEditableText()) {
+								possibleTransitions.push(new Transition(this, TransitionType.GUI_INPUT_TEXT, newAndroidNode));
+							} else {
+								possibleTransitions.push(new Transition(this, TransitionType.GUI_CLICK_BUTTON, newAndroidNode));
+							}
+						}
+						if (newAndroidNode.isScrollable() ) {
+							if(newAndroidNode.getpClass().contains("ViewPager")) {
+								possibleTransitions.push(new Transition(this, TransitionType.SWIPE, newAndroidNode));
+							} else {
+								possibleTransitions.push(new Transition(this, TransitionType.SCROLL, newAndroidNode));
+							}
 						}
 					}
 				}

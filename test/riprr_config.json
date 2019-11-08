@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./com.adobe.reader.apk",
+	"apkPath":"./com.bwx.bequick-aligned-debugSigned.apk",
 	"outputFolder":"./outputRR/",
 	"isHybrid":false,
 	"executionMode":"dfs",

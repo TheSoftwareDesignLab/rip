@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./com.adobe.reader.apk",
+	"apkPath":"./org.ethack.orwall-aligned-debugSigned.apk",
 	"outputFolder":"./output/",
 	"isHybrid":false,
 	"executionMode":"dfs",

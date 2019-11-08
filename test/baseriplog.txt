@@ -1,0 +1,51 @@
+
+ 2018, Universidad de los Andes
+ The Software Design Lab
+
+https://thesoftwaredesignlab.github.io/
+
+🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥
+🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥
+🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥
+🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥 
+🔥🔥   🔥🔥    🔥🔥  🔥🔥          
+🔥🔥    🔥🔥   🔥🔥  🔥🔥          
+🔥🔥     🔥🔥  🔥🔥  🔥🔥          
+ 
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+COMMAND:INSTALL APP; PARAMETERS ./com.bwx.bequick-aligned-debugSigned.apk
+
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+-1
+NEW STATE EXPLORATION STARTED
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+0
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+com.bwx.bequick/com.bwx.bequick.MainSettingsActivity
+
+false
+New state found
+waiting for emulator's event idle state
+Emulator now is in event idle state
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+Current ST: 1
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+WIFI: false
+- - - - - - - - - - - - - - - - - - -
+CPU: 0.0
+- - - - - - - - - - - - - - - - - - -
+MEM: 62739.0
+- - - - - - - - - - - - - - - - - - -
+AIR: false
