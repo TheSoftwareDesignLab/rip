@@ -142,12 +142,11 @@ public class RIPRR extends RIPBase {
 			//End execution if the old transitions are already done
 			if(oldTransitions.size()==0) {
 				System.out.println("OLD TRANSITIONS EMPTY");
-				return;
+				throw new RipException("OLD TRANSITIONS EMPTY");
 			}
 
 			//Get the next old transition to be executed and the node where it is expected to be done
 			Transition transToBeExec = oldTransitions.get(0);
-
 			transToBeExecAN = transToBeExec.getOriginNode();
 
 			System.out.println(currentState.getId());
@@ -155,30 +154,31 @@ public class RIPRR extends RIPBase {
 			for (int i = 0; i < oldTransitions.size(); i++) {
 				System.out.println((i+1)+": "+oldTransitions.get(i).getOrigin().getId()+" - "+oldTransitions.get(i).getDestination().getId()+" - "+oldTransitions.get(i).getType().name());
 			}
-			//Ending execution due to current node has a different id to the next transition id expected to be executed
-			
 
+			//Ending execution due to current node has a different id to the next transition id expected to be executed
 			if(transToBeExec.getOrigin().getId()!=currentState.getId()) {
 				System.out.println("EXITING EXECUTION. START STATE != CURRENT STATE");
 				System.out.println(transToBeExec.getOrigin().getId()+" - "+currentState.getId());
-				return ;
+				throw new RipException("EXITING EXECUTION. START STATE != CURRENT STATE");
 			}
-
 			////Take the next transition in the current state
-
 			//Check 1. same type between the transition and the expected transition
 			//	2. same android id source 3. same android node xPath
-
 			Transition tempTrans = currentState.popTransition();
 			AndroidNode tempTransAN = tempTrans.getOriginNode();
 			Transition teempTransition = allOldTransitions.get(0);
+			boolean sameType = tempTrans.getType().equals(transToBeExec.getType());
+			boolean sameID = tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID());
+			boolean sameXpath = tempTransAN.getxPath().equals(transToBeExecAN.getxPath());
+
+
 
 			if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
-				while( !(tempTrans.getType().equals(transToBeExec.getType()))
-						|| !tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID())
-						|| !tempTransAN.getxPath().equals(transToBeExecAN.getxPath())
-				) {
-					//If one or more of those conditions is false get the next possible transition in the current state
+				//TODO it is possible there is a bug here. The tempTrans could not be of type BUTTON_BACK at the first iteration but could not be the case in the next iterations
+				while( !sameType
+						|| !sameID
+						|| !sameXpath) {
+					//If one or more of those conditions are false get the next possible transition in the current state
 					if(!teempTransition.isLeavesAppCore()) {
 						executeTransition(tempTrans);
 					}
@@ -188,10 +188,14 @@ public class RIPRR extends RIPBase {
 					EmulatorHelper.isEventIdle();
 					tempTrans = currentState.popTransition();
 					tempTransAN = tempTrans.getOriginNode();
+					sameType = tempTrans.getType().equals(transToBeExec.getType());
+					sameID = tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID());
+					sameXpath = tempTransAN.getxPath().equals(transToBeExecAN.getxPath());
 				}
 			}else{
+				//TODO it is possible there is a bug here. The tempTrans could be of the type BUTTON_BACK at the first iteration but could not be the case in the next iterations
 				while(!tempTrans.getType().equals(transToBeExec.getType())) {
-					//If just one of those conditions is false get the next possible transition in the current state
+					//If the condition is false get the next possible transition in the current state
 					if(!teempTransition.isLeavesAppCore()) {
 						executeTransition(tempTrans);
 					}
@@ -222,8 +226,6 @@ public class RIPRR extends RIPBase {
 			tempTrans.setScreenshot(tranScreenshot);
 			//explore recursively
 			explore(currentState, tempTrans);
-
-
 		} catch (NoSuchElementException e) {
 			// There are no more possible transitions in the current state
 		} catch (ParserConfigurationException | SAXException e) {
