@@ -191,6 +191,17 @@ public class RIPBase {
 
 		new File(folderName).mkdirs();
 
+		List<String> emulators = EmulatorHelper.getActiveEmulators();
+
+		//If there is no any emulator running it starts a new one with no data
+		if(emulators.isEmpty()){
+			//Null because the default is Nexus_6_API_27
+			EmulatorHelper.startEmulatorWipeData(null);
+		}
+		//Probably is better let the user start the emulator in case she wants do some previous configurations
+//		else{
+//			EmulatorHelper.shutdownAndStartWipeDataEmulator();
+//		}
 
 		Helper.getInstance(folderName);
 

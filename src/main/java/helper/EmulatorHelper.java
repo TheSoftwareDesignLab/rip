@@ -1355,6 +1355,7 @@ public class EmulatorHelper {
 		List<String> listaEmuladores = new ArrayList();
 		List<String> commands = Arrays.asList("adb","devices");
 		listaEmuladores = ExternalProcess2.executeProcess(commands,"GETTING LIST OF ACTIVE DEVICES", null,null);
+		//TODO Check the list of active emulators to return it with just the correct information
 		System.out.println("LISTA DE EMULADORES: " + listaEmuladores);
 		return listaEmuladores;
 	}
@@ -1367,15 +1368,16 @@ public class EmulatorHelper {
 			e.printStackTrace();
 		}
 	}
-	public static void startEmulatorWipeData(String emulatorName)throws IOException, RipException{
+	public static void startEmulatorWipeData(String emulatorName)throws IOException, RipException, InterruptedException{
 		if(emulatorName == null){
 			emulatorName = "Nexus_6_API_27";
 		}
 		List<String> commands = Arrays.asList("emulator","-wipe-data","-avd",emulatorName);
 		ExternalProcess2.executeProcess(commands,"START EMULATOR WITH WIPED DATA", null,null);
+		isEventIdle();
 	}
 
-	public static void shutdownAndWipeDataEmulator() throws IOException, RipException {
+	public static void shutdownAndStartWipeDataEmulator() throws IOException, RipException, InterruptedException {
 		shutdownEmulators();
 		startEmulatorWipeData(null);
 	}
