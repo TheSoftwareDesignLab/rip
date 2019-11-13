@@ -31,17 +31,6 @@ public class RIPRRi18n extends RIPRR {
 		super(configFilePath);
 		// TODO Auto-generated constructor stub
 	}
-
-	public String scriptPath;
-
-	public Hashtable<String, State> oldStatesTable;
-
-	public ArrayList<State> oldStates;
-
-	public ArrayList<Transition> oldTransitions;
-	public ArrayList<Transition> oldTransitionsCopy;
-	public Hashtable<AndroidNode, List<String>> androidNodesStrings;
-
 	public String processXML(String rawXML) {
 		return rawXML.replaceAll("(text|focused|checked|password)=\"[^\"]*\"", "");
 	}

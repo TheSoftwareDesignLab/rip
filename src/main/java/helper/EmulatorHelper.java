@@ -1,6 +1,7 @@
 package helper;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1348,5 +1349,34 @@ public class EmulatorHelper {
 	public static void deleteOneEntrance()throws  IOException, RipException{
 		List<String> commands = Arrays.asList("adb","shell","input","keyevent","KEYCODE_DEL");
 		ExternalProcess2.executeProcess(commands,"DELETING ONE ENTRANCE IN INPUT FIELD", null, null);
+	}
+
+	public static List<String> getActiveEmulators() throws  IOException, RipException{
+		List<String> listaEmuladores = new ArrayList();
+		List<String> commands = Arrays.asList("adb","devices");
+		listaEmuladores = ExternalProcess2.executeProcess(commands,"GETTING LIST OF ACTIVE DEVICES", null,null);
+		System.out.println("LISTA DE EMULADORES: " + listaEmuladores);
+		return listaEmuladores;
+	}
+
+	public static void shutdownEmulators(){
+		List<String> commands = Arrays.asList("adb","emu","kill");
+		try{
+			ExternalProcess2.executeProcess(commands,"SHUTDOWN EMULATORS", null,null);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	public static void startEmulatorWipeData(String emulatorName)throws IOException, RipException{
+		if(emulatorName == null){
+			emulatorName = "Nexus_6_API_27";
+		}
+		List<String> commands = Arrays.asList("emulator","-wipe-data","-avd",emulatorName);
+		ExternalProcess2.executeProcess(commands,"START EMULATOR WITH WIPED DATA", null,null);
+	}
+
+	public static void shutdownAndWipeDataEmulator() throws IOException, RipException {
+		shutdownEmulators();
+		startEmulatorWipeData(null);
 	}
 }
