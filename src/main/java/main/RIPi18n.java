@@ -101,7 +101,7 @@ public class RIPi18n extends RIPBase{
 			System.err.println("Please provide config file location");
 		} else {
 			try {
-				EmulatorHelper.shutdownEmulators();
+				//EmulatorHelper.shutdownEmulators();
 				new RIPi18n(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();
