@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./org.ethack.orwall-aligned-debugSigned.apk",
+	"apkPath":"./com.evancharlton.mileage.apk",
 	"outputFolder":"./output/",
 	"isHybrid":false,
 	"executionMode":"dfs",

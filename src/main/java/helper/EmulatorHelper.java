@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import main.RipException;
 
@@ -1354,9 +1355,15 @@ public class EmulatorHelper {
 	public static List<String> getActiveEmulators() throws  IOException, RipException{
 		List<String> listaEmuladores = new ArrayList();
 		List<String> commands = Arrays.asList("adb","devices");
-		listaEmuladores = ExternalProcess2.executeProcess(commands,"GETTING LIST OF ACTIVE DEVICES", null,null);
-		//TODO Check the list of active emulators to return it with just the correct information
-		System.out.println("LISTA DE EMULADORES: " + listaEmuladores);
+		String lista = ExternalProcess2.executeProcess(commands,"GETTING LIST OF ACTIVE DEVICES", null,null).get(0);
+		String[] listaEmu = lista.split("\\n");
+		String aux = "";
+		for(int i =1; i<listaEmu.length;i++){
+			aux = listaEmu[i].trim().split("device")[0].trim();
+			if(!aux.equals("") && aux != null){
+				listaEmuladores.add(aux);
+			}
+		}
 		return listaEmuladores;
 	}
 
@@ -1373,12 +1380,37 @@ public class EmulatorHelper {
 			emulatorName = "Nexus_6_API_27";
 		}
 		List<String> commands = Arrays.asList("emulator","-wipe-data","-avd",emulatorName);
-		ExternalProcess2.executeProcess(commands,"START EMULATOR WITH WIPED DATA", null,null);
-		isEventIdle();
+		ProcessBuilder pb = new ProcessBuilder();
+		List<String> emulatorList = getAvailableEmulators();
+		if(emulatorList.contains(emulatorName)){
+			pb.command(commands);
+			pb.start().waitFor(1,TimeUnit.SECONDS);
+			isEventIdle();
+			ProcessBuilder pB1 = new ProcessBuilder();
+			pB1.command("adb", "root");
+			Process root = pB1.start();
+			root.waitFor();
+		}else{
+			throw new RipException("There is no an emulator with the specified name in this system");
+		}
 	}
 
 	public static void shutdownAndStartWipeDataEmulator() throws IOException, RipException, InterruptedException {
 		shutdownEmulators();
 		startEmulatorWipeData(null);
+	}
+
+
+	public static List<String> getAvailableEmulators()throws IOException, RipException{
+		List<String> commands = Arrays.asList("emulator","-list-avds");
+		String response = ExternalProcess2.executeProcess(commands, "GET AVAILABLE EMULATORS",null,null).get(0);
+		String[] emulatorsList= response.split("\\n");
+		List<String> responseList = new ArrayList();
+		String aux = "";
+		for(int i =0; i< emulatorsList.length;i++){
+			aux = emulatorsList[i].trim();
+			responseList.add(aux);
+		}
+		return  responseList;
 	}
 }

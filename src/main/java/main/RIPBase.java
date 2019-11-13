@@ -176,7 +176,6 @@ public class RIPBase {
 	private long finishTime;
 
 	public RIPBase(String configFilePath) throws Exception {
-
 		printRIPInitialMessage();
 		this.configFilePath = configFilePath;
 		params = readConfigFile();
@@ -192,7 +191,7 @@ public class RIPBase {
 		new File(folderName).mkdirs();
 
 		List<String> emulators = EmulatorHelper.getActiveEmulators();
-
+		System.out.println(emulators);
 		//If there is no any emulator running it starts a new one with no data
 		if(emulators.isEmpty()){
 			//Null because the default is Nexus_6_API_27

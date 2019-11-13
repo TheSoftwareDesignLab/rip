@@ -262,6 +262,8 @@ public class RIPRR extends RIPBase {
 			System.err.println("Please provide config file location");
 		} else {
 			try {
+				//Always shutdown the emulators to allow a clean start. RIPBase will start a new emulator with wiped data
+				EmulatorHelper.shutdownEmulators();
 				new RIPRR(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();
