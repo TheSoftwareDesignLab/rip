@@ -191,10 +191,9 @@ public class RIPBase {
 		new File(folderName).mkdirs();
 
 		List<String> emulators = EmulatorHelper.getActiveEmulators();
-		System.out.println(emulators);
 		//If there is no any emulator running it starts a new one with no data
 		if(emulators.isEmpty()){
-			//Null because the default is Nexus_6_API_27
+			//The param is null to start the default emulator: Nexus_6_API_27
 			EmulatorHelper.startEmulatorWipeData(null);
 		}
 		//Probably is better let the user start the emulator in case she wants do some previous configurations
@@ -256,12 +255,8 @@ public class RIPBase {
 		explore(initialState, initialTransition);
 
 		buildFiles();
-
-		try {
-			EmulatorHelper.clearData(packageName);
-			EmulatorHelper.uninstallAPK(packageName);
-		} catch (Exception e) {
-		}
+		//Shutdown emulators
+		EmulatorHelper.shutdownEmulators();
 
 		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, " + executedIterations + " events executed, in " + elapsedTime + " minutes");
 		if (jsConsoleReader != null) {
@@ -546,6 +541,8 @@ public class RIPBase {
 	public boolean isRippingOutsideApp(Document parsedXML) throws IOException, RipException {
 		String currentPackage = parsedXML.getElementsByTagName("node").item(0).getAttributes().getNamedItem("package")
 				.getNodeValue();
+
+		//if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller") || currentPackage.equals("android")){
 		if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller")){
 			return false;
 		}
@@ -585,7 +582,6 @@ public class RIPBase {
 	}
 
 	public void tap(AndroidNode node) throws IOException, RipException {
-		System.out.println("X: " + node.getCentralX() + "Y: " + node.getCentralY());
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
 

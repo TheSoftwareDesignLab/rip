@@ -1371,6 +1371,7 @@ public class EmulatorHelper {
 		List<String> commands = Arrays.asList("adb","emu","kill");
 		try{
 			ExternalProcess2.executeProcess(commands,"SHUTDOWN EMULATORS", null,null);
+			Thread.sleep(8000);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -1390,6 +1391,8 @@ public class EmulatorHelper {
 			pB1.command("adb", "root");
 			Process root = pB1.start();
 			root.waitFor();
+			System.out.println("Emulator ready");
+			Thread.sleep(3000);
 		}else{
 			throw new RipException("There is no an emulator with the specified name in this system");
 		}

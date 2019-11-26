@@ -96,7 +96,9 @@ public class RIPRR extends RIPBase {
 					String resourceID = (String) androidNode.get("resourceID");
 					String xpath = (String) androidNode.get("xpath");
 					String text = (String) androidNode.get("text");
-					tempTransition.setOriginElement(oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text));
+
+					AndroidNode nodoAN = oldStates.get(originState - 1).getAndroidNode(resourceID, xpath, text);
+					tempTransition.setOriginElement(nodoAN);
 				}
 
 				oldTransitions.add(tempTransition);
@@ -146,6 +148,7 @@ public class RIPRR extends RIPBase {
 			}
 
 			//Get the next old transition to be executed and the node where it is expected to be done
+			System.out.println("OLD TRANSITIONS: " + oldTransitions);
 			Transition transToBeExec = oldTransitions.get(0);
 			transToBeExecAN = transToBeExec.getOriginNode();
 
@@ -167,46 +170,44 @@ public class RIPRR extends RIPBase {
 			Transition tempTrans = currentState.popTransition();
 			AndroidNode tempTransAN = tempTrans.getOriginNode();
 			Transition teempTransition = allOldTransitions.get(0);
-			boolean sameType = tempTrans.getType().equals(transToBeExec.getType());
-			boolean sameID = tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID());
-			boolean sameXpath = tempTransAN.getxPath().equals(transToBeExecAN.getxPath());
 
-
-
-			if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
-				//TODO it is possible there is a bug here. The tempTrans could not be of type BUTTON_BACK at the first iteration but could not be the case in the next iterations
-				while( !sameType
-						|| !sameID
-						|| !sameXpath) {
-					//If one or more of those conditions are false get the next possible transition in the current state
-					if(!teempTransition.isLeavesAppCore()) {
-						executeTransition(tempTrans);
-					}
-					allOldTransitions.remove(0);
-					teempTransition = allOldTransitions.get(0);
-					ifKeyboardHideKeyboard();
-					EmulatorHelper.isEventIdle();
-					tempTrans = currentState.popTransition();
-					tempTransAN = tempTrans.getOriginNode();
+			boolean sameType;
+			boolean sameID;
+			boolean sameXpath;
+			while(true){
+				if(tempTrans.getType() != TransitionType.BUTTON_BACK && transToBeExec.getType() != TransitionType.BUTTON_BACK){
 					sameType = tempTrans.getType().equals(transToBeExec.getType());
 					sameID = tempTransAN.getResourceID().equals(transToBeExecAN.getResourceID());
 					sameXpath = tempTransAN.getxPath().equals(transToBeExecAN.getxPath());
-				}
-			}else{
-				//TODO it is possible there is a bug here. The tempTrans could be of the type BUTTON_BACK at the first iteration but could not be the case in the next iterations
-				while(!tempTrans.getType().equals(transToBeExec.getType())) {
-					//If the condition is false get the next possible transition in the current state
-					if(!teempTransition.isLeavesAppCore()) {
-						executeTransition(tempTrans);
+					if(sameType && sameID && sameXpath){
+						break;
 					}
-					allOldTransitions.remove(0);
-					teempTransition = allOldTransitions.get(0);
-					ifKeyboardHideKeyboard();
-					EmulatorHelper.isEventIdle();
-					tempTrans = currentState.popTransition();
-					tempTransAN = tempTrans.getOriginNode();
+				}else{
+					sameType = tempTrans.getType().equals(transToBeExec.getType());
+					if(sameType){
+						break;
+					}
 				}
+				if (tempTrans.getType() == TransitionType.GUI_INPUT_TEXT) {
+					tempTrans.setInputString(transToBeExec.getInputString());
+				}
+				if(!teempTransition.isLeavesAppCore()) {
+					executeTransition(tempTrans);
+				}
+
+				tempTrans = currentState.popTransition();
+				if(allOldTransitions.isEmpty()){
+					throw new RipException("OLD TRANSITIONS EMPTY");
+				}else if(tempTrans == null){
+					throw new RipException("TRANSITIONS IN STATE EMPTY");
+				}
+				allOldTransitions.remove(0);
+				teempTransition = allOldTransitions.get(0);
+				ifKeyboardHideKeyboard();
+				EmulatorHelper.isEventIdle();
+				tempTransAN = tempTrans.getOriginNode();
 			}
+
 			if (tempTrans.getType() == TransitionType.GUI_INPUT_TEXT) {
 				tempTrans.setInputString(transToBeExec.getInputString());
 			}
@@ -262,8 +263,6 @@ public class RIPRR extends RIPBase {
 			System.err.println("Please provide config file location");
 		} else {
 			try {
-				//Always shutdown the emulators to allow a clean start. RIPBase will start a new emulator with wiped data
-				EmulatorHelper.shutdownEmulators();
 				new RIPRR(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();

@@ -50,7 +50,6 @@ public class RIPRRi18n extends RIPRR {
 			System.err.println("Please provide config file location");
 		} else {
 			try {
-				//EmulatorHelper.shutdownEmulators();
 				new RIPRRi18n(args[0]);
 			} catch (RipException e) {
 				e.printStackTrace();

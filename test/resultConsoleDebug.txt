@@ -1,0 +1,273 @@
+- - - - - - - - - - - - - - - - - - -
+
+ 2018, Universidad de los Andes
+ The Software Design Lab
+
+https://thesoftwaredesignlab.github.io/
+
+🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥
+🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥
+🔥🔥     🔥🔥  🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  🔥🔥     🔥🔥  
+🔥🔥🔥🔥🔥🔥   🔥🔥  🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   🔥🔥🔥🔥🔥🔥   
+🔥🔥   🔥🔥    🔥🔥  🔥🔥           🔥🔥   🔥🔥    🔥🔥   🔥🔥         
+🔥🔥    🔥🔥   🔥🔥  🔥🔥           🔥🔥    🔥🔥   🔥🔥    🔥🔥   
+🔥🔥     🔥🔥  🔥🔥  🔥🔥           🔥🔥     🔥🔥  🔥🔥     🔥🔥  
+ 
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+Emulator ready
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+COMMAND:INSTALL APP; PARAMETERS ./com.bwx.bequick-aligned-debugSigned.apk
+
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+Waiting for the app  20% ??Waiting for the app  40% ??Waiting for the app  60% ??Waiting for the app  80% ??Waiting for the app 100% ?Waiting for the app 100% ?
+ID: com.bwx.bequick:id/button2 XPATH ESPERADO: 0_FrameLayout|0_FrameLayout|0_FrameLayout|0_LinearLayout|4_LinearLayout|1_Button/com.bwx.bequick:id/button2
+ID: com.bwx.bequick:id/button2 XPATH ENCONTRADO: 0_FrameLayout|0_FrameLayout|0_FrameLayout|0_LinearLayout|4_LinearLayout|1_Button/com.bwx.bequick:id/button2
+ID: com.bwx.bequick:id/clicable_right XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|6_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/clicable_right XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/clickable_left XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|4_LinearLayout|0_LinearLayout/com.bwx.bequick:id/clickable_left
+ID: com.bwx.bequick:id/clickable_left XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|0_LinearLayout/com.bwx.bequick:id/clickable_left
+ID: com.bwx.bequick:id/button2 XPATH ESPERADO: 0_FrameLayout|0_FrameLayout|0_FrameLayout|0_LinearLayout|2_LinearLayout|1_Button/com.bwx.bequick:id/button2
+ID: com.bwx.bequick:id/button2 XPATH ENCONTRADO: 0_FrameLayout|0_FrameLayout|0_FrameLayout|0_LinearLayout|2_LinearLayout|1_Button/com.bwx.bequick:id/button2
+ID: com.bwx.bequick:id/clicable_right XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/clicable_right XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/popup_button XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|0_LinearLayout|2_ImageButton/com.bwx.bequick:id/popup_button
+ID: com.bwx.bequick:id/popup_button XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|0_LinearLayout|2_ImageButton/com.bwx.bequick:id/popup_button
+ID: com.bwx.bequick:id/toggle XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|0_LinearLayout|1_ToggleButton/com.bwx.bequick:id/toggle
+ID: com.bwx.bequick:id/toggle XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|0_LinearLayout|1_ToggleButton/com.bwx.bequick:id/toggle
+ID: com.bwx.bequick:id/clicable_right XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|6_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/clicable_right XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/clickable_left XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|4_LinearLayout|0_LinearLayout/com.bwx.bequick:id/clickable_left
+ID: com.bwx.bequick:id/clickable_left XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|0_LinearLayout/com.bwx.bequick:id/clickable_left
+ID: com.bwx.bequick:id/button1 XPATH ESPERADO: 0_FrameLayout|0_FrameLayout|0_FrameLayout|0_LinearLayout|2_LinearLayout|0_Button/com.bwx.bequick:id/button1
+ID: com.bwx.bequick:id/button1 XPATH ENCONTRADO: 0_FrameLayout|0_FrameLayout|0_FrameLayout|0_LinearLayout|2_LinearLayout|0_Button/com.bwx.bequick:id/button1
+ID: com.bwx.bequick:id/clicable_right XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/clicable_right XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|1_ToggleButton/com.bwx.bequick:id/clicable_right
+ID: com.bwx.bequick:id/popup_button XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|0_LinearLayout|2_ImageButton/com.bwx.bequick:id/popup_button
+ID: com.bwx.bequick:id/popup_button XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|2_LinearLayout|0_LinearLayout|2_ImageButton/com.bwx.bequick:id/popup_button
+ID: com.bwx.bequick:id/toggle XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|0_LinearLayout|1_ToggleButton/com.bwx.bequick:id/toggle
+ID: com.bwx.bequick:id/toggle XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|1_ScrollView|0_LinearLayout|0_LinearLayout|1_ToggleButton/com.bwx.bequick:id/toggle
+ID: com.bwx.bequick:id/flashlight XPATH ESPERADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|0_LinearLayout|1_LinearLayout|0_ImageButton/com.bwx.bequick:id/flashlight
+ID: com.bwx.bequick:id/flashlight XPATH ENCONTRADO: 0_FrameLayout|0_LinearLayout|0_FrameLayout|0_LinearLayout|0_LinearLayout|1_LinearLayout|0_ImageButton/com.bwx.bequick:id/flashlight
+1 - 2 - GUI_CLICK_BUTTON
+2 - 2 - GUI_CLICK_BUTTON
+2 - 3 - GUI_CLICK_BUTTON
+3 - 2 - GUI_CLICK_BUTTON
+2 - 2 - GUI_CLICK_BUTTON
+2 - 4 - GUI_CLICK_BUTTON
+4 - 5 - BUTTON_BACK
+2 - 5 - GUI_CLICK_BUTTON
+5 - 5 - GUI_CLICK_BUTTON
+5 - 3 - GUI_CLICK_BUTTON
+3 - 5 - GUI_CLICK_BUTTON
+5 - 5 - GUI_CLICK_BUTTON
+5 - 4 - GUI_CLICK_BUTTON
+4 - 5 - BUTTON_BACK
+5 - 2 - GUI_CLICK_BUTTON
+2 - 6 - GUI_CLICK_BUTTON
+6 - 2 - BUTTON_BACK
+-1
+NEW STATE EXPLORATION STARTED
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+0
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+com.bwx.bequick/com.bwx.bequick.MainSettingsActivity
+
+false
+New state found
+waiting for emulator's event idle state
+Emulator now is in event idle state
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+Current ST: 1
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+WIFI: true
+- - - - - - - - - - - - - - - - - - -
+CPU: 0.0
+- - - - - - - - - - - - - - - - - - -
+MEM: 64600.0
+- - - - - - - - - - - - - - - - - - -
+AIR: false
+OLD TRANSITIONS: [1;2;GUI_CLICK_BUTTON, 2;2;GUI_CLICK_BUTTON, 2;3;GUI_CLICK_BUTTON, 3;2;GUI_CLICK_BUTTON, 2;2;GUI_CLICK_BUTTON, 2;4;GUI_CLICK_BUTTON, 4;5;BUTTON_BACK, 2;5;GUI_CLICK_BUTTON, 5;5;GUI_CLICK_BUTTON, 5;3;GUI_CLICK_BUTTON, 3;5;GUI_CLICK_BUTTON, 5;5;GUI_CLICK_BUTTON, 5;4;GUI_CLICK_BUTTON, 4;5;BUTTON_BACK, 5;2;GUI_CLICK_BUTTON, 2;6;GUI_CLICK_BUTTON, 6;2;BUTTON_BACK]
+1
+1: 1 - 2 - GUI_CLICK_BUTTON
+2: 2 - 2 - GUI_CLICK_BUTTON
+3: 2 - 3 - GUI_CLICK_BUTTON
+4: 3 - 2 - GUI_CLICK_BUTTON
+5: 2 - 2 - GUI_CLICK_BUTTON
+6: 2 - 4 - GUI_CLICK_BUTTON
+7: 4 - 5 - BUTTON_BACK
+8: 2 - 5 - GUI_CLICK_BUTTON
+9: 5 - 5 - GUI_CLICK_BUTTON
+10: 5 - 3 - GUI_CLICK_BUTTON
+11: 3 - 5 - GUI_CLICK_BUTTON
+12: 5 - 5 - GUI_CLICK_BUTTON
+13: 5 - 4 - GUI_CLICK_BUTTON
+14: 4 - 5 - BUTTON_BACK
+15: 5 - 2 - GUI_CLICK_BUTTON
+16: 2 - 6 - GUI_CLICK_BUTTON
+17: 6 - 2 - BUTTON_BACK
+POSSIBLE TRANSITIONS STATE: 1[1;null;GUI_CLICK_BUTTON, 1;null;GUI_CLICK_BUTTON, 1;null;BUTTON_BACK]
+X: 971Y: 1713
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+NEW STATE EXPLORATION STARTED
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+1
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+32.0 1
+- - - - - - - - - - - - - - - - - - -
+com.bwx.bequick/com.bwx.bequick.MainSettingsActivity
+
+false
+New state found
+waiting for emulator's event idle state
+Emulator now is in event idle state
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+Current ST: 2
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+WIFI: true
+- - - - - - - - - - - - - - - - - - -
+CPU: 2.1
+- - - - - - - - - - - - - - - - - - -
+MEM: 64561.0
+- - - - - - - - - - - - - - - - - - -
+AIR: false
+OLD TRANSITIONS: [2;2;GUI_CLICK_BUTTON, 2;3;GUI_CLICK_BUTTON, 3;2;GUI_CLICK_BUTTON, 2;2;GUI_CLICK_BUTTON, 2;4;GUI_CLICK_BUTTON, 4;5;BUTTON_BACK, 2;5;GUI_CLICK_BUTTON, 5;5;GUI_CLICK_BUTTON, 5;3;GUI_CLICK_BUTTON, 3;5;GUI_CLICK_BUTTON, 5;5;GUI_CLICK_BUTTON, 5;4;GUI_CLICK_BUTTON, 4;5;BUTTON_BACK, 5;2;GUI_CLICK_BUTTON, 2;6;GUI_CLICK_BUTTON, 6;2;BUTTON_BACK]
+2
+1: 2 - 2 - GUI_CLICK_BUTTON
+2: 2 - 3 - GUI_CLICK_BUTTON
+3: 3 - 2 - GUI_CLICK_BUTTON
+4: 2 - 2 - GUI_CLICK_BUTTON
+5: 2 - 4 - GUI_CLICK_BUTTON
+6: 4 - 5 - BUTTON_BACK
+7: 2 - 5 - GUI_CLICK_BUTTON
+8: 5 - 5 - GUI_CLICK_BUTTON
+9: 5 - 3 - GUI_CLICK_BUTTON
+10: 3 - 5 - GUI_CLICK_BUTTON
+11: 5 - 5 - GUI_CLICK_BUTTON
+12: 5 - 4 - GUI_CLICK_BUTTON
+13: 4 - 5 - BUTTON_BACK
+14: 5 - 2 - GUI_CLICK_BUTTON
+15: 2 - 6 - GUI_CLICK_BUTTON
+16: 6 - 2 - BUTTON_BACK
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+X: 1326Y: 951
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+X: 713Y: 746
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+POSSIBLE TRANSITIONS STATE: 2[2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;GUI_CLICK_BUTTON, 2;null;BUTTON_BACK]
+X: 1326Y: 541
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+NEW STATE EXPLORATION STARTED
+- - - - - - - - - - - - - - - - - - -
+waiting for emulator's event idle state
+Emulator now is in event idle state
+2
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+32.0 2
+75.0 1
+- - - - - - - - - - - - - - - - - - -
+com.bwx.bequick/com.bwx.bequick.MainSettingsActivity
+
+false
+New state found
+waiting for emulator's event idle state
+Emulator now is in event idle state
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+Current ST: 3
+- - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - -
+WIFI: false
+- - - - - - - - - - - - - - - - - - -
+CPU: 1.0
+- - - - - - - - - - - - - - - - - - -
+MEM: 82992.0
+- - - - - - - - - - - - - - - - - - -
+AIR: false
+OLD TRANSITIONS: [2;3;GUI_CLICK_BUTTON, 3;2;GUI_CLICK_BUTTON, 2;2;GUI_CLICK_BUTTON, 2;4;GUI_CLICK_BUTTON, 4;5;BUTTON_BACK, 2;5;GUI_CLICK_BUTTON, 5;5;GUI_CLICK_BUTTON, 5;3;GUI_CLICK_BUTTON, 3;5;GUI_CLICK_BUTTON, 5;5;GUI_CLICK_BUTTON, 5;4;GUI_CLICK_BUTTON, 4;5;BUTTON_BACK, 5;2;GUI_CLICK_BUTTON, 2;6;GUI_CLICK_BUTTON, 6;2;BUTTON_BACK]
+3
+1: 2 - 3 - GUI_CLICK_BUTTON
+2: 3 - 2 - GUI_CLICK_BUTTON
+3: 2 - 2 - GUI_CLICK_BUTTON
+4: 2 - 4 - GUI_CLICK_BUTTON
+5: 4 - 5 - BUTTON_BACK
+6: 2 - 5 - GUI_CLICK_BUTTON
+7: 5 - 5 - GUI_CLICK_BUTTON
+8: 5 - 3 - GUI_CLICK_BUTTON
+9: 3 - 5 - GUI_CLICK_BUTTON
+10: 5 - 5 - GUI_CLICK_BUTTON
+11: 5 - 4 - GUI_CLICK_BUTTON
+12: 4 - 5 - BUTTON_BACK
+13: 5 - 2 - GUI_CLICK_BUTTON
+14: 2 - 6 - GUI_CLICK_BUTTON
+15: 6 - 2 - BUTTON_BACK
+EXITING EXECUTION. START STATE != CURRENT STATE
+2 - 3
+main.RipException: EXITING EXECUTION. START STATE != CURRENT STATE
+	at main.RIPRR.explore(RIPRR.java:168)
+	at main.RIPRR.explore(RIPRR.java:233)
+	at main.RIPRR.explore(RIPRR.java:233)
+	at main.RIPBase.<init>(RIPBase.java:255)
+	at main.RIPRR.<init>(RIPRR.java:41)
+	at main.RIPRR.main(RIPRR.java:272)
