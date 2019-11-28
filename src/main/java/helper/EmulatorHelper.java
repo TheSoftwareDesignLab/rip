@@ -1431,7 +1431,7 @@ public class EmulatorHelper {
 		// Running command that waits emulator for idle state
 		//		System.out.println(Paths.get(Helper.getInstance().getCurrentDirectory(),extraPath,"./whileCommand").toAbsolutePath().toString());
 		ps.waitFor();
-		Thread.sleep(5000);
+		Thread.sleep(8000);
 		isEventIdle();
 //		Thread.sleep(15000);
 		return true;
