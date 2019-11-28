@@ -175,6 +175,14 @@ public class RIPBase {
 
 	private long finishTime;
 
+	//If running ITDroid this parameter represents the target language to be test by the i18n rip family
+	private String translateTo = null;
+
+	private String expresiveLanguage = null;
+
+	//An extra parameter to make the translation when using ITDroid
+	private String extraPath = null;
+
 	public RIPBase(String configFilePath) throws Exception {
 		printRIPInitialMessage();
 		this.configFilePath = configFilePath;
@@ -195,6 +203,10 @@ public class RIPBase {
 		if(emulators.isEmpty()){
 			//The param is null to start the default emulator: Nexus_6_API_27
 			EmulatorHelper.startEmulatorWipeData(null);
+		}
+
+		if(translateTo != null && !translateTo.equals("")){
+			EmulatorHelper.changeLanguage(translateTo,expresiveLanguage,extraPath);
 		}
 		//Probably is better let the user start the emulator in case she wants do some previous configurations
 //		else{
@@ -277,6 +289,9 @@ public class RIPBase {
 			folderName = (String) obj.get("outputFolder");
 			hybridApp = (Boolean) obj.get("isHybrid");
 			executionMode = (String) obj.get("executionMode");
+			translateTo = (String) obj.get("translateTo");
+			expresiveLanguage = (String) obj.get("expresiveLanguage");
+			extraPath = (String) obj.get("extraPath");
 
 			JSONObject execParams = (JSONObject) obj.get("executionParams");
 			switch (executionMode) {

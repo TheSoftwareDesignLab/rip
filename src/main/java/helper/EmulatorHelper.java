@@ -1387,6 +1387,7 @@ public class EmulatorHelper {
 			pb.command(commands);
 			pb.start().waitFor(1,TimeUnit.SECONDS);
 			isEventIdle();
+			//Execute adb root command
 			ProcessBuilder pB1 = new ProcessBuilder();
 			pB1.command("adb", "root");
 			Process root = pB1.start();
@@ -1416,4 +1417,24 @@ public class EmulatorHelper {
 		}
 		return  responseList;
 	}
+
+	public static boolean changeLanguage(String language, String expresiveLanguage, String extraPath) throws IOException, InterruptedException{
+		// Change emulator language
+		ProcessBuilder pB = new ProcessBuilder(new String[]{"adb","shell","setprop persist.sys.locale "+language});
+		Process ps = pB.start();
+		System.out.println("Emulator language changed to "+expresiveLanguage);
+		ps.waitFor();
+		// Restart emulator for language change to be taken into account
+		pB.command(new String[]{"adb","shell","setprop ctl.restart zygote"});
+		ps = pB.start();
+		System.out.println("Emulator is being restarted");
+		// Running command that waits emulator for idle state
+		//		System.out.println(Paths.get(Helper.getInstance().getCurrentDirectory(),extraPath,"./whileCommand").toAbsolutePath().toString());
+		ps.waitFor();
+		Thread.sleep(5000);
+		isEventIdle();
+//		Thread.sleep(15000);
+		return true;
+	}
+
 }
