@@ -299,7 +299,7 @@ public class State {
 
 		for (int i = 0; i < stateNodes.size(); i++) {
 			AndroidNode temp = stateNodes.get(i);
-			if((Helper.levenshteinDistance(temp.getxPath(), xpath)<(temp.getxPath().length()*0.10))&&temp.getResourceID().equals(resourceID)) {
+			if((Helper.levenshteinDistance(temp.getxPath(), xpath)==0)&&temp.getResourceID().equals(resourceID)) {
 				return temp;
 			}
 		}

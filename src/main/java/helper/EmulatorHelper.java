@@ -18,20 +18,21 @@ public class EmulatorHelper {
 	 * 
 	 * @param pathAPK
 	 *            is where apk is stored
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * @throws Exception
 	 *             if the app is already installed
 	 */
-	public static boolean installAPK(String pathAPK) {
-
+	public static boolean installAPK(String pathAPK) throws IOException, InterruptedException {
+		
+		isActionIdle();
 		try {
-
 			List<String> commands = Arrays.asList("adb", "install", "-r", pathAPK);
 			ExternalProcess2.executeProcess(commands, "INSTALLING APK", "Installation complete", "App could not be installed");
 			Helper.logMessage("INSTALL APP",  pathAPK , null);
 			return true;
 
 		} catch (Exception e) {
-			//Michael Osorio
 			Helper.logMessage("APP ALREADY INSTALLED APP", pathAPK, e.getMessage());
 			return false;
 		}
@@ -246,6 +247,38 @@ public class EmulatorHelper {
 		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"});
 		Process pss;
 		boolean termino = false;
+		boolean running = false;
+		System.out.println("waiting for emulator's event idle state");
+		while (!running || !termino) {
+			pss = pBB.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(pss.getInputStream()));
+			String line;
+			String resp = "";
+			while ((line = reader.readLine())!=null) {
+				resp += line;
+			}
+			pss.waitFor();
+			
+			if(running && resp.contains("IDLE")) {
+				termino = true;
+				Thread.sleep(200);
+				System.out.println("Emulator now is in event idle state");
+			} else if (resp.contains("RUNNING")){
+				running = true;
+				System.out.println("Emulator now is in running");
+			} 
+//			else {
+//				Thread.sleep(200);
+//			}
+		}
+	}
+	
+	public static void isActionIdle() throws IOException, InterruptedException {
+		// "adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"
+		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"});
+		Process pss;
+		boolean termino = false;
+		boolean running = false;
 		System.out.println("waiting for emulator's event idle state");
 		while (!termino) {
 			pss = pBB.start();
@@ -259,11 +292,12 @@ public class EmulatorHelper {
 			
 			if(resp.contains("IDLE")) {
 				termino = true;
-				Thread.sleep(500);
-				System.out.println("Emulator now is in event idle state");
-			} else {
-				Thread.sleep(2000);
+				Thread.sleep(200);
+				System.out.println("Emulator now is in action idle state");
 			}
+//			else {
+//				Thread.sleep(200);
+//			}
 		}
 	}
 
@@ -1431,9 +1465,9 @@ public class EmulatorHelper {
 		// Running command that waits emulator for idle state
 		//		System.out.println(Paths.get(Helper.getInstance().getCurrentDirectory(),extraPath,"./whileCommand").toAbsolutePath().toString());
 		ps.waitFor();
-		Thread.sleep(8000);
+//		Thread.sleep(000);
 		isEventIdle();
-//		Thread.sleep(15000);
+		Thread.sleep(2000);
 		return true;
 	}
 

@@ -140,6 +140,7 @@ public class RIPRR extends RIPBase {
 		currentState = new State(hybridApp,contextualExploration);
 		try{
 			//Process the current state to discover whether is an existing state or a new one
+			Thread.sleep(850);
 			processState(previousState,executedTransition);
 			//End execution if the old transitions are already done
 			if(oldTransitions.size()==0) {
@@ -193,6 +194,7 @@ public class RIPRR extends RIPBase {
 				}
 				if(!teempTransition.isLeavesAppCore()) {
 					executeTransition(tempTrans);
+					EmulatorHelper.isActionIdle();
 				}
 
 				tempTrans = currentState.popTransition();
@@ -204,7 +206,7 @@ public class RIPRR extends RIPBase {
 				allOldTransitions.remove(0);
 				teempTransition = allOldTransitions.get(0);
 				ifKeyboardHideKeyboard();
-				EmulatorHelper.isEventIdle();
+				EmulatorHelper.isActionIdle();
 				tempTransAN = tempTrans.getOriginNode();
 			}
 
@@ -212,6 +214,7 @@ public class RIPRR extends RIPBase {
 				tempTrans.setInputString(transToBeExec.getInputString());
 			}
 			executeTransition(tempTrans);
+			EmulatorHelper.isActionIdle();
 			allOldTransitions.remove(0);
 			teempTransition = allOldTransitions.get(0);
 			ifKeyboardHideKeyboard();
@@ -222,7 +225,7 @@ public class RIPRR extends RIPBase {
 			executedIterations++;
 			// Waits until the executed transition changes the application current state
 			ifKeyboardHideKeyboard();
-			EmulatorHelper.isEventIdle();
+			EmulatorHelper.isActionIdle();
 			String tranScreenshot = ImageHelper.takeTransitionScreenshot(tempTrans, transitions.size());
 			tempTrans.setScreenshot(tranScreenshot);
 			//explore recursively

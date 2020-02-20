@@ -1,6 +1,6 @@
 	{
-	"apkPath":"./com.evancharlton.mileage.apk",
-	"outputFolder":"./output/",
+	"apkPath":"./com.bwx.bequick.apk",
+	"outputFolder":"./outputRR/",
 	"isHybrid":false,
 	"executionMode":"dfs",
 	"scriptPath":"./output/result.json",

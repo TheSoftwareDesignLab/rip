@@ -7,13 +7,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -202,16 +206,15 @@ public class RIPBase {
 		//If there is no any emulator running it starts a new one with no data
 		if(emulators.isEmpty()){
 			//The param is null to start the default emulator: Nexus_6_API_27
+			System.out.println("There are no Emulators running right now");
 			EmulatorHelper.startEmulatorWipeData(null);
 		}
 
 		if(translateTo != null && !translateTo.equals("")){
+//			EmulatorHelper.clearData(packageName);
 			EmulatorHelper.changeLanguage(translateTo,expresiveLanguage,extraPath);
 		}
-		//Probably is better let the user start the emulator in case she wants do some previous configurations
-//		else{
-//			EmulatorHelper.shutdownAndStartWipeDataEmulator();
-//		}
+		System.out.println("test");
 
 		Helper.getInstance(folderName);
 
@@ -221,7 +224,7 @@ public class RIPBase {
 		} catch (IOException | RipException e) {
 			e.printStackTrace();
 		}
-
+		System.out.println(version);
 
 		// Installs the APK in the device
 		appInstalled = EmulatorHelper.installAPK(apkLocation);
@@ -238,6 +241,7 @@ public class RIPBase {
 		try {
 			packageName = EmulatorHelper.getPackageName(aapt, apkLocation);
 			mainActivity = EmulatorHelper.getMainActivity(aapt, apkLocation);
+			System.out.println(packageName+" "+mainActivity);
 			EmulatorHelper.startActivity(packageName, mainActivity);
 			ProgressBar pb = new ProgressBar("Waiting for the app", 100);
 			pb.start();
@@ -286,6 +290,7 @@ public class RIPBase {
 			obj = (JSONObject) jsonParser.parse(reader);
 
 			apkLocation = (String) obj.get("apkPath");
+//			packageName = (String) obj.get("packageName");
 			folderName = (String) obj.get("outputFolder");
 			hybridApp = (Boolean) obj.get("isHybrid");
 			executionMode = (String) obj.get("executionMode");
@@ -718,7 +723,7 @@ public class RIPBase {
 			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				// Waits until the executed transition changes the application current state
-				EmulatorHelper.isEventIdle();
+				EmulatorHelper.isActionIdle();
 				executeTransition(stateTransition);
 				ifKeyboardHideKeyboard();
 				executedIterations++;
@@ -735,7 +740,7 @@ public class RIPBase {
 			}
 			// If the state changes, recursively explores the application
 			if (validExecution()){
-			    EmulatorHelper.isEventIdle();
+			    EmulatorHelper.isActionIdle();
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
 				explore(currentState, stateTransition);
@@ -777,7 +782,7 @@ public class RIPBase {
 			throws IOException, RipException, InterruptedException, ParserConfigurationException, SAXException, Exception {
 
 		ifKeyboardHideKeyboard();
-		EmulatorHelper.isEventIdle();
+		EmulatorHelper.isActionIdle();
 		currentState.setId(getSequentialNumber());
 		String rawXML = EmulatorHelper.getCurrentViewHierarchy();
 		rawXML = processXML(rawXML);
@@ -834,7 +839,7 @@ public class RIPBase {
 		}else {
 			//New State
 			System.out.println("New state found");
-			EmulatorHelper.isEventIdle();
+			EmulatorHelper.isActionIdle();
 			currentState.generatePossibleTransition();
 			String activity = EmulatorHelper.getCurrentFocus();
 			EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);
