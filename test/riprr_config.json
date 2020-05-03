@@ -1,5 +1,5 @@
 	{
-	"apkPath":"./com.bwx.bequick-aligned-debugSigned.apk",
+	"apkPath":"./com.evancharlton.mileage.apk",
 	"outputFolder":"./outputRR/",
 	"isHybrid":false,
 	"executionMode":"dfs",

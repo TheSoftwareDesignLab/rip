@@ -7,13 +7,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -175,8 +179,15 @@ public class RIPBase {
 
 	private long finishTime;
 
-	public RIPBase(String configFilePath) throws Exception {
+	//If running ITDroid this parameter represents the target language to be test by the i18n rip family
+	private String translateTo = null;
 
+	private String expresiveLanguage = null;
+
+	//An extra parameter to make the translation when using ITDroid
+	private String extraPath = null;
+
+	public RIPBase(String configFilePath) throws Exception {
 		printRIPInitialMessage();
 		this.configFilePath = configFilePath;
 		params = readConfigFile();
@@ -191,6 +202,19 @@ public class RIPBase {
 
 		new File(folderName).mkdirs();
 
+		List<String> emulators = EmulatorHelper.getActiveEmulators();
+		//If there is no any emulator running it starts a new one with no data
+		if(emulators.isEmpty()){
+			//The param is null to start the default emulator: Nexus_6_API_27
+			System.out.println("There are no Emulators running right now");
+			EmulatorHelper.startEmulatorWipeData(null);
+		}
+
+		if(translateTo != null && !translateTo.equals("")){
+//			EmulatorHelper.clearData(packageName);
+			EmulatorHelper.changeLanguage(translateTo,expresiveLanguage,extraPath);
+		}
+		System.out.println("test");
 
 		Helper.getInstance(folderName);
 
@@ -200,7 +224,7 @@ public class RIPBase {
 		} catch (IOException | RipException e) {
 			e.printStackTrace();
 		}
-
+		System.out.println(version);
 
 		// Installs the APK in the device
 		appInstalled = EmulatorHelper.installAPK(apkLocation);
@@ -217,6 +241,7 @@ public class RIPBase {
 		try {
 			packageName = EmulatorHelper.getPackageName(aapt, apkLocation);
 			mainActivity = EmulatorHelper.getMainActivity(aapt, apkLocation);
+			System.out.println(packageName+" "+mainActivity);
 			EmulatorHelper.startActivity(packageName, mainActivity);
 			ProgressBar pb = new ProgressBar("Waiting for the app", 100);
 			pb.start();
@@ -246,12 +271,8 @@ public class RIPBase {
 		explore(initialState, initialTransition);
 
 		buildFiles();
-
-		try {
-			EmulatorHelper.clearData(packageName);
-			EmulatorHelper.uninstallAPK(packageName);
-		} catch (Exception e) {
-		}
+		//Shutdown emulators
+		EmulatorHelper.shutdownEmulators();
 
 		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, " + executedIterations + " events executed, in " + elapsedTime + " minutes");
 		if (jsConsoleReader != null) {
@@ -269,9 +290,13 @@ public class RIPBase {
 			obj = (JSONObject) jsonParser.parse(reader);
 
 			apkLocation = (String) obj.get("apkPath");
+//			packageName = (String) obj.get("packageName");
 			folderName = (String) obj.get("outputFolder");
 			hybridApp = (Boolean) obj.get("isHybrid");
 			executionMode = (String) obj.get("executionMode");
+			translateTo = (String) obj.get("translateTo");
+			expresiveLanguage = (String) obj.get("expresiveLanguage");
+			extraPath = (String) obj.get("extraPath");
 
 			JSONObject execParams = (JSONObject) obj.get("executionParams");
 			switch (executionMode) {
@@ -405,6 +430,7 @@ public class RIPBase {
 		buildTreeJSON();
 		buildSequentialJSON();
 		buildMetaJSON();
+		EmulatorHelper.saveLogcat("",folderName + File.separator + "logcat.txt");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -536,6 +562,8 @@ public class RIPBase {
 	public boolean isRippingOutsideApp(Document parsedXML) throws IOException, RipException {
 		String currentPackage = parsedXML.getElementsByTagName("node").item(0).getAttributes().getNamedItem("package")
 				.getNodeValue();
+
+		//if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller") || currentPackage.equals("android")){
 		if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller")){
 			return false;
 		}
@@ -575,7 +603,6 @@ public class RIPBase {
 	}
 
 	public void tap(AndroidNode node) throws IOException, RipException {
-		System.out.println("X: " + node.getCentralX() + "Y: " + node.getCentralY());
 		EmulatorHelper.tap(node.getCentralX() + "", node.getCentralY() + "");
 	}
 
@@ -697,7 +724,7 @@ public class RIPBase {
 			while (!stateChanges && validExecution()) {
 				stateTransition = currentState.popTransition();
 				// Waits until the executed transition changes the application current state
-				EmulatorHelper.isEventIdle();
+				EmulatorHelper.isActionIdle();
 				executeTransition(stateTransition);
 				ifKeyboardHideKeyboard();
 				executedIterations++;
@@ -714,7 +741,7 @@ public class RIPBase {
 			}
 			// If the state changes, recursively explores the application
 			if (validExecution()){
-			    EmulatorHelper.isEventIdle();
+			    EmulatorHelper.isActionIdle();
 				String tranScreenshot = ImageHelper.takeTransitionScreenshot(stateTransition, transitions.size());
 				stateTransition.setScreenshot(tranScreenshot);
 				explore(currentState, stateTransition);
@@ -756,7 +783,7 @@ public class RIPBase {
 			throws IOException, RipException, InterruptedException, ParserConfigurationException, SAXException, Exception {
 
 		ifKeyboardHideKeyboard();
-		EmulatorHelper.isEventIdle();
+		EmulatorHelper.isActionIdle();
 		currentState.setId(getSequentialNumber());
 		String rawXML = EmulatorHelper.getCurrentViewHierarchy();
 		rawXML = processXML(rawXML);
@@ -813,7 +840,7 @@ public class RIPBase {
 		}else {
 			//New State
 			System.out.println("New state found");
-			EmulatorHelper.isEventIdle();
+			EmulatorHelper.isActionIdle();
 			currentState.generatePossibleTransition();
 			String activity = EmulatorHelper.getCurrentFocus();
 			EmulatorHelper.takeAndPullXMLSnapshot(currentState.getId()+"", folderName);

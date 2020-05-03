@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import main.RipException;
 
@@ -17,20 +18,21 @@ public class EmulatorHelper {
 	 * 
 	 * @param pathAPK
 	 *            is where apk is stored
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * @throws Exception
 	 *             if the app is already installed
 	 */
-	public static boolean installAPK(String pathAPK) {
-
+	public static boolean installAPK(String pathAPK) throws IOException, InterruptedException {
+		
+		isActionIdle();
 		try {
-
 			List<String> commands = Arrays.asList("adb", "install", "-r", pathAPK);
 			ExternalProcess2.executeProcess(commands, "INSTALLING APK", "Installation complete", "App could not be installed");
 			Helper.logMessage("INSTALL APP",  pathAPK , null);
 			return true;
 
 		} catch (Exception e) {
-			//Michael Osorio
 			Helper.logMessage("APP ALREADY INSTALLED APP", pathAPK, e.getMessage());
 			return false;
 		}
@@ -245,6 +247,38 @@ public class EmulatorHelper {
 		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"});
 		Process pss;
 		boolean termino = false;
+		boolean running = false;
+		System.out.println("waiting for emulator's event idle state");
+		while (!running || !termino) {
+			pss = pBB.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(pss.getInputStream()));
+			String line;
+			String resp = "";
+			while ((line = reader.readLine())!=null) {
+				resp += line;
+			}
+			pss.waitFor();
+			
+			if(running && resp.contains("IDLE")) {
+				termino = true;
+				Thread.sleep(200);
+				System.out.println("Emulator now is in event idle state");
+			} else if (resp.contains("RUNNING")){
+				running = true;
+				System.out.println("Emulator now is in running");
+			} 
+//			else {
+//				Thread.sleep(200);
+//			}
+		}
+	}
+	
+	public static void isActionIdle() throws IOException, InterruptedException {
+		// "adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"
+		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"});
+		Process pss;
+		boolean termino = false;
+		boolean running = false;
 		System.out.println("waiting for emulator's event idle state");
 		while (!termino) {
 			pss = pBB.start();
@@ -258,11 +292,12 @@ public class EmulatorHelper {
 			
 			if(resp.contains("IDLE")) {
 				termino = true;
-				Thread.sleep(500);
-				System.out.println("Emulator now is in event idle state");
-			} else {
-				Thread.sleep(2000);
+				Thread.sleep(200);
+				System.out.println("Emulator now is in action idle state");
 			}
+//			else {
+//				Thread.sleep(200);
+//			}
 		}
 	}
 
@@ -481,8 +516,10 @@ public class EmulatorHelper {
 	 *             if file cannot be created or pulled
 	 */
 	public static void saveLogcat(String path, String localPath) throws Exception {
-		if (path.equals("") || localPath.equals("")) {
+		if (path.equals("") ) {
 			path = "/sdcard/outputLogcat.txt";
+		}
+		if(localPath.equals("")){
 			localPath = "out.txt";
 		}
 		createFile(path);
@@ -1354,8 +1391,15 @@ public class EmulatorHelper {
 	public static List<String> getActiveEmulators() throws  IOException, RipException{
 		List<String> listaEmuladores = new ArrayList();
 		List<String> commands = Arrays.asList("adb","devices");
-		listaEmuladores = ExternalProcess2.executeProcess(commands,"GETTING LIST OF ACTIVE DEVICES", null,null);
-		System.out.println("LISTA DE EMULADORES: " + listaEmuladores);
+		String lista = ExternalProcess2.executeProcess(commands,"GETTING LIST OF ACTIVE DEVICES", null,null).get(0);
+		String[] listaEmu = lista.split("\\n");
+		String aux = "";
+		for(int i =1; i<listaEmu.length;i++){
+			aux = listaEmu[i].trim().split("device")[0].trim();
+			if(!aux.equals("") && aux != null){
+				listaEmuladores.add(aux);
+			}
+		}
 		return listaEmuladores;
 	}
 
@@ -1363,20 +1407,70 @@ public class EmulatorHelper {
 		List<String> commands = Arrays.asList("adb","emu","kill");
 		try{
 			ExternalProcess2.executeProcess(commands,"SHUTDOWN EMULATORS", null,null);
+			Thread.sleep(8000);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
-	public static void startEmulatorWipeData(String emulatorName)throws IOException, RipException{
+	public static void startEmulatorWipeData(String emulatorName)throws IOException, RipException, InterruptedException{
 		if(emulatorName == null){
 			emulatorName = "Nexus_6_API_27";
 		}
 		List<String> commands = Arrays.asList("emulator","-wipe-data","-avd",emulatorName);
-		ExternalProcess2.executeProcess(commands,"START EMULATOR WITH WIPED DATA", null,null);
+		ProcessBuilder pb = new ProcessBuilder();
+		List<String> emulatorList = getAvailableEmulators();
+		if(emulatorList.contains(emulatorName)){
+			pb.command(commands);
+			pb.start().waitFor(1,TimeUnit.SECONDS);
+			isEventIdle();
+			//Execute adb root command
+			ProcessBuilder pB1 = new ProcessBuilder();
+			pB1.command("adb", "root");
+			Process root = pB1.start();
+			root.waitFor();
+			System.out.println("Emulator ready");
+			Thread.sleep(3000);
+		}else{
+			throw new RipException("There is no an emulator with the specified name in this system");
+		}
 	}
 
-	public static void shutdownAndWipeDataEmulator() throws IOException, RipException {
+	public static void shutdownAndStartWipeDataEmulator() throws IOException, RipException, InterruptedException {
 		shutdownEmulators();
 		startEmulatorWipeData(null);
 	}
+
+
+	public static List<String> getAvailableEmulators()throws IOException, RipException{
+		List<String> commands = Arrays.asList("emulator","-list-avds");
+		String response = ExternalProcess2.executeProcess(commands, "GET AVAILABLE EMULATORS",null,null).get(0);
+		String[] emulatorsList= response.split("\\n");
+		List<String> responseList = new ArrayList();
+		String aux = "";
+		for(int i =0; i< emulatorsList.length;i++){
+			aux = emulatorsList[i].trim();
+			responseList.add(aux);
+		}
+		return  responseList;
+	}
+
+	public static boolean changeLanguage(String language, String expresiveLanguage, String extraPath) throws IOException, InterruptedException{
+		// Change emulator language
+		ProcessBuilder pB = new ProcessBuilder(new String[]{"adb","shell","setprop persist.sys.locale "+language});
+		Process ps = pB.start();
+		System.out.println("Emulator language changed to "+expresiveLanguage);
+		ps.waitFor();
+		// Restart emulator for language change to be taken into account
+		pB.command(new String[]{"adb","shell","setprop ctl.restart zygote"});
+		ps = pB.start();
+		System.out.println("Emulator is being restarted");
+		// Running command that waits emulator for idle state
+		//		System.out.println(Paths.get(Helper.getInstance().getCurrentDirectory(),extraPath,"./whileCommand").toAbsolutePath().toString());
+		ps.waitFor();
+//		Thread.sleep(000);
+		isEventIdle();
+		Thread.sleep(2000);
+		return true;
+	}
+
 }
