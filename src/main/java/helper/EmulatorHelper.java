@@ -516,8 +516,10 @@ public class EmulatorHelper {
 	 *             if file cannot be created or pulled
 	 */
 	public static void saveLogcat(String path, String localPath) throws Exception {
-		if (path.equals("") || localPath.equals("")) {
+		if (path.equals("") ) {
 			path = "/sdcard/outputLogcat.txt";
+		}
+		if(localPath.equals("")){
 			localPath = "out.txt";
 		}
 		createFile(path);
