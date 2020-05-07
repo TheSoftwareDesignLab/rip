@@ -431,6 +431,7 @@ public class RIPBase {
 		buildSequentialJSON();
 		buildMetaJSON();
 		EmulatorHelper.saveLogcat("",folderName + File.separator + "logcat.txt");
+		EmulatorHelper.saveLogcatErrors("", folderName + File.separator + "logcatErrors.txt");
 	}
 
 	@SuppressWarnings("unchecked")

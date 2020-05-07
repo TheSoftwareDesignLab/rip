@@ -526,7 +526,19 @@ public class EmulatorHelper {
 		List<String> commands = Arrays.asList("adb", "shell", "logcat", "-d", ">", path);
 		ExternalProcess2.executeProcess(commands, "SAVE LOGCAT", null, null);
 		pullFile(path, localPath);
+	}
 
+	public static void saveLogcatErrors(String path, String localPath) throws Exception{
+		if (path.equals("") ) {
+			path = "/sdcard/outputLogcat.txt";
+		}
+		if(localPath.equals("")){
+			localPath = "outError.txt";
+		}
+		createFile(path);
+			List<String> commands = Arrays.asList("adb", "shell", "logcat", "-s", "System.err", "-d", ">", path);
+		ExternalProcess2.executeProcess(commands, "SAVE LOGCAT ERRORS", null, null);
+		pullFile(path, localPath);
 	}
 
 	/**
