@@ -4,6 +4,7 @@
 	"isHybrid":false,
 	"executionMode":"dfs",
 	"scriptPath":"./output/result.json",
+	"emulatorName":"Pixel_2_XL_API_27",
 	"executionParams":{
 		"events":10000,
 		"time":10000
