@@ -186,6 +186,8 @@ public class RIPBase {
 
 	//An extra parameter to make the translation when using ITDroid
 	private String extraPath = null;
+	//Rip is going to use this emulator for exploration
+	private String emulatorName = null;
 
 	public RIPBase(String configFilePath) throws Exception {
 		printRIPInitialMessage();
@@ -199,7 +201,6 @@ public class RIPBase {
 		states = new ArrayList<>();
 		transitions = new ArrayList<>();
 		executedTransitions = new ArrayList<>();
-
 		new File(folderName).mkdirs();
 
 		List<String> emulators = EmulatorHelper.getActiveEmulators();
@@ -207,7 +208,7 @@ public class RIPBase {
 		if(emulators.isEmpty()){
 			//The param is null to start the default emulator: Nexus_6_API_27
 			System.out.println("There are no Emulators running right now");
-			EmulatorHelper.startEmulatorWipeData(null);
+			EmulatorHelper.startEmulatorWipeData(emulatorName);
 		}
 
 		if(translateTo != null && !translateTo.equals("")){
@@ -297,6 +298,7 @@ public class RIPBase {
 			translateTo = (String) obj.get("translateTo");
 			expresiveLanguage = (String) obj.get("expresiveLanguage");
 			extraPath = (String) obj.get("extraPath");
+			emulatorName = (String) obj.get("emulatorName");
 
 			JSONObject execParams = (JSONObject) obj.get("executionParams");
 			switch (executionMode) {
