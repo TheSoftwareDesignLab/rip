@@ -241,10 +241,16 @@ public class EmulatorHelper {
 		}
 		return ans;
 	}
-	
+	public static void isEventIdle() throws IOException, InterruptedException {
+		TimeUnit.SECONDS.sleep(6);
+	}
+	public static void isActionIdle() throws IOException, InterruptedException {
+		TimeUnit.SECONDS.sleep(6);
+	}
+	/*
 	public static void isEventIdle() throws IOException, InterruptedException {
 		// "adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"
-		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"});
+		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","interactiveState"});
 		Process pss;
 		boolean termino = false;
 		boolean running = false;
@@ -254,12 +260,13 @@ public class EmulatorHelper {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(pss.getInputStream()));
 			String line;
 			String resp = "";
+			System.out.println(running);
 			while ((line = reader.readLine())!=null) {
 				resp += line;
 			}
 			pss.waitFor();
 			
-			if(running && resp.contains("IDLE")) {
+			if(running && resp.contains("INTERACTIVE_STATE_AWAKE")) {
 				termino = true;
 				Thread.sleep(200);
 				System.out.println("Emulator now is in event idle state");
@@ -275,22 +282,24 @@ public class EmulatorHelper {
 	
 	public static void isActionIdle() throws IOException, InterruptedException {
 		// "adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"
-		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","mAppTransitionState"});
+		ProcessBuilder pBB = new ProcessBuilder(new String[]{"adb","shell","dumpsys","window","-a","|","grep","interactiveState"});
 		Process pss;
 		boolean termino = false;
 		boolean running = false;
 		System.out.println("waiting for emulator's event idle state");
 		while (!termino) {
+			System.out.println(termino);
 			pss = pBB.start();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(pss.getInputStream()));
 			String line;
 			String resp = "";
 			while ((line = reader.readLine())!=null) {
 				resp += line;
+				
 			}
 			pss.waitFor();
 			
-			if(resp.contains("IDLE")) {
+			if(resp.contains("INTERACTIVE_STATE_AWAKE")) {
 				termino = true;
 				Thread.sleep(200);
 				System.out.println("Emulator now is in action idle state");
@@ -300,7 +309,7 @@ public class EmulatorHelper {
 //			}
 		}
 	}
-
+*/
 	/**
 	 * Gets the current orientation of the accelerometer
 	 * 
@@ -1176,6 +1185,16 @@ public class EmulatorHelper {
 		String a = ans.split("=")[1].replaceAll("'", "").replaceAll("\\s+", "");
 		return a;
 	}
+	
+	public static void runFlutter(String dir) throws IOException, RipException, InterruptedException {
+		List<String> commands = Arrays.asList("flutter","run");
+		List<String> answer = ExternalProcess3.executeProcess(commands, "RUN FLUTTER", null, null, dir);
+		System.out.println("Flutter running");
+		//List<String> commands2 = Arrays.asList("adb", "shell", "pidof", packag);
+		//List<String> runCheck = ExternalProcess2.executeProcess(commands, "RUN FLUTTER", null, null);
+		//String ans = runCheck.get(0);
+		//return ans;
+	}
 
 	/**
 	 * Gets the main activity of the apk given
@@ -1426,7 +1445,7 @@ public class EmulatorHelper {
 	}
 	public static void startEmulatorWipeData(String emulatorName)throws IOException, RipException, InterruptedException{
 		if(emulatorName == null){
-			emulatorName = "Nexus_6_API_27";
+			emulatorName = "Flutter_API_30";
 		}
 		List<String> commands = Arrays.asList("emulator","-wipe-data","-avd",emulatorName);
 		ProcessBuilder pb = new ProcessBuilder();

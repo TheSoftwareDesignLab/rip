@@ -11,9 +11,6 @@ import java.util.NoSuchElementException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

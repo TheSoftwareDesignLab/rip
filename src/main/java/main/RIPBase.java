@@ -33,7 +33,6 @@ import helper.EmulatorHelper;
 import helper.Helper;
 import helper.ImageHelper;
 import hybridResources.JSConsoleReader;
-import me.tongfei.progressbar.ProgressBar;
 import model.AndroidNode;
 import model.State;
 import model.Transition;
@@ -227,6 +226,7 @@ public class RIPBase {
 		System.out.println(version);
 
 		// Installs the APK in the device
+		/*
 		appInstalled = EmulatorHelper.installAPK(apkLocation);
 
 		if (!appInstalled) {
@@ -236,13 +236,17 @@ public class RIPBase {
 		if (aapt == null) {
 			throw new RipException("AAPT_LOCATION was not set");
 		}
-
+		*/
 		// Launches the applications' main activity
 		try {
-			packageName = EmulatorHelper.getPackageName(aapt, apkLocation);
-			mainActivity = EmulatorHelper.getMainActivity(aapt, apkLocation);
-			System.out.println(packageName+" "+mainActivity);
-			EmulatorHelper.startActivity(packageName, mainActivity);
+			System.out.println("should be starting activity");
+			EmulatorHelper.runFlutter(apkLocation);
+			//it used to be install apk, get package name and activity, start app
+			//packageName = EmulatorHelper.getPackageName(aapt, apkLocation);
+			//mainActivity = EmulatorHelper.getMainActivity(aapt, apkLocation);
+			//System.out.println(packageName+" "+mainActivity);
+			//EmulatorHelper.startActivity(packageName, mainActivity);
+			/*
 			ProgressBar pb = new ProgressBar("Waiting for the app", 100);
 			pb.start();
 			for (int i = 5; i > 0; i--) {
@@ -250,8 +254,8 @@ public class RIPBase {
 				TimeUnit.SECONDS.sleep(1);
 			}
 			pb.stop();
-
-		} catch (IOException | RipException | InterruptedException e) {
+			*/
+		} catch (IOException | RipException e) {
 			e.printStackTrace();
 		}
 
