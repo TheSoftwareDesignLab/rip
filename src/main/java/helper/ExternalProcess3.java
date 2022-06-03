@@ -37,23 +37,16 @@ public class ExternalProcess3 {
 											  String onErrorMessage, String dir) throws IOException, RipException, InterruptedException {
 		List<String> answer = new ArrayList<String>();
 		Path currentRelativePath = Paths.get("");
+		System.out.println(currentRelativePath);
 		String s = currentRelativePath.toAbsolutePath().toString();
+		System.out.println(s);
 		//System.out.println(s+dir);
 		ProcessBuilder pb = new ProcessBuilder(commands).directory(new File(dir));
 		System.out.println(pb.directory());
 
 	
 		Process spb = pb.start();
-		String output = IOUtils.toString(spb.getInputStream(), "UTF-8");
-		String err = IOUtils.toString(spb.getErrorStream(), "UTF-8");
-		while(err.contains("null root node")) {
-			pb = new ProcessBuilder(commands).directory(new File(dir));
-			spb = pb.start();
-			output = IOUtils.toString(spb.getInputStream(), "UTF-8");
-			err = IOUtils.toString(spb.getErrorStream(), "UTF-8");
-		}
-		answer.add(output);
-		
+				
 		BufferedReader reader = new BufferedReader(new InputStreamReader(spb.getInputStream()));
 		BufferedReader errorReader = new BufferedReader(new InputStreamReader(spb.getErrorStream()));
 		String line, errorLine = "";
@@ -72,23 +65,12 @@ public class ExternalProcess3 {
 //			System.out.println("answer added ----------------: " + output);
 //		}
 		
-		answer.add(err);
 		//System.out.println(err);
 		answer.add(commandName);
 		System.out.println("- - - - - - - - - - - - - - - - - - -");
 		//Helper.getInstance("./").logMessage(commandName, Arrays.toString(commands.toArray(new String[]{})), err);
 
-		if (!err.equals("")) {
-			throw new RipException(err);
-		}
-
-		if (!output.startsWith("<?xml")) {
-			if (output.startsWith("adb: error") || output.contains("error") || output.contains("Failure")
-					|| output.contains("Error")) {
-				throw new RipException(output);
-			}
-		}
-
+		
 		return answer;
 	}
 

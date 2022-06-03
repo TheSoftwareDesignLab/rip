@@ -243,6 +243,7 @@ public class EmulatorHelper {
 	}
 	public static void isEventIdle() throws IOException, InterruptedException {
 		TimeUnit.SECONDS.sleep(6);
+		System.out.println("Is event idle");
 	}
 	public static void isActionIdle() throws IOException, InterruptedException {
 		TimeUnit.SECONDS.sleep(6);
@@ -481,7 +482,7 @@ public class EmulatorHelper {
 	public static void launchEmulator(String emulator) throws Exception {
 
 		if (emulator.equals("")) {
-			emulator = "Nexus_5_API_27";
+			emulator = "Flutter_API_30";
 		}
 		List<String> commands = Arrays.asList("~/Library/Android/sdk/tools/emulator", "-avd", emulator, "-netdelay",
 				"none", "-netspeed", "full");
@@ -1187,6 +1188,7 @@ public class EmulatorHelper {
 	}
 	
 	public static void runFlutter(String dir) throws IOException, RipException, InterruptedException {
+		System.out.println(dir);
 		List<String> commands = Arrays.asList("flutter","run");
 		List<String> answer = ExternalProcess3.executeProcess(commands, "RUN FLUTTER", null, null, dir);
 		System.out.println("Flutter running");
@@ -1451,6 +1453,7 @@ public class EmulatorHelper {
 		ProcessBuilder pb = new ProcessBuilder();
 		List<String> emulatorList = getAvailableEmulators();
 		if(emulatorList.contains(emulatorName)){
+			System.out.println("Encontro el emulador");
 			pb.command(commands);
 			pb.start().waitFor(1,TimeUnit.SECONDS);
 			isEventIdle();
