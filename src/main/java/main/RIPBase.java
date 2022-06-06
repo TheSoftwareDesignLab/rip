@@ -13,6 +13,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -224,40 +227,23 @@ public class RIPBase {
 			e.printStackTrace();
 		}
 		System.out.println(version);
-
-		// Installs the APK in the device
-		/*
-		appInstalled = EmulatorHelper.installAPK(apkLocation);
-
-		if (!appInstalled) {
-			throw new RipException("APK could not be installed");
-		}
-
-		if (aapt == null) {
-			throw new RipException("AAPT_LOCATION was not set");
-		}
-		*/
-		// Launches the applications' main activity
-		try {
-			System.out.println("should be starting activity");
-			EmulatorHelper.runFlutter(apkLocation);
-			//it used to be install apk, get package name and activity, start app
-			//packageName = EmulatorHelper.getPackageName(aapt, apkLocation);
-			//mainActivity = EmulatorHelper.getMainActivity(aapt, apkLocation);
-			//System.out.println(packageName+" "+mainActivity);
-			//EmulatorHelper.startActivity(packageName, mainActivity);
-			/*
-			ProgressBar pb = new ProgressBar("Waiting for the app", 100);
-			pb.start();
-			for (int i = 5; i > 0; i--) {
-				pb.stepBy(20);
-				TimeUnit.SECONDS.sleep(1);
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		System.out.println("should be starting activity");
+		
+		executorService.submit(new Callable() {
+			public String call() {
+				try {
+					EmulatorHelper.runFlutter(apkLocation);
+				} catch (IOException | RipException | InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					return "";
+				}
+				
 			}
-			pb.stop();
-			*/
-		} catch (IOException | RipException e) {
-			e.printStackTrace();
-		}
+		});
+		EmulatorHelper.isEventIdle();
 
 		JSConsoleReader jsConsoleReader = null;
 		// Explores the application
@@ -276,6 +262,7 @@ public class RIPBase {
 
 		buildFiles();
 		//Shutdown emulators
+		executorService.isShutdown();
 		EmulatorHelper.shutdownEmulators();
 
 		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, " + executedIterations + " events executed, in " + elapsedTime + " minutes");
@@ -294,7 +281,7 @@ public class RIPBase {
 			obj = (JSONObject) jsonParser.parse(reader);
 
 			apkLocation = (String) obj.get("apkPath");
-//			packageName = (String) obj.get("packageName");
+			packageName = (String) obj.get("packageName");
 			folderName = (String) obj.get("outputFolder");
 			hybridApp = (Boolean) obj.get("isHybrid");
 			executionMode = (String) obj.get("executionMode");
@@ -567,13 +554,15 @@ public class RIPBase {
 	public boolean isRippingOutsideApp(Document parsedXML) throws IOException, RipException {
 		String currentPackage = parsedXML.getElementsByTagName("node").item(0).getAttributes().getNamedItem("package")
 				.getNodeValue();
+		
+		System.out.println(currentPackage);
+		System.out.println("Current package: " + currentPackage);
+		System.out.println("packageName: " + packageName);
 
 		//if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller") || currentPackage.equals("android")){
 		if(currentPackage.equals(packageName) || currentPackage.equals("com.google.android.packageinstaller")){
 			return false;
 		}
-		System.out.println("Current package: " + currentPackage);
-		System.out.println("packageName: " + packageName);
 		System.out.println("Ripping outside");
 		System.out.println("Going back");
 		EmulatorHelper.goBack();

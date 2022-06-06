@@ -1197,6 +1197,8 @@ public class EmulatorHelper {
 		//String ans = runCheck.get(0);
 		//return ans;
 	}
+	
+
 
 	/**
 	 * Gets the main activity of the apk given
@@ -1495,8 +1497,15 @@ public class EmulatorHelper {
 		System.out.println("Emulator language changed to "+expresiveLanguage);
 		ps.waitFor();
 		// Restart emulator for language change to be taken into account
-		pB.command(new String[]{"adb","shell","setprop ctl.restart zygote"});
+		pB.command(new String[]{"adb","shell","stop"});
 		ps = pB.start();
+		ps.waitFor();
+		pB.command(new String[]{"adb","shell","sleep 3"});
+		ps = pB.start();
+		ps.waitFor();
+		pB.command(new String[]{"adb","shell","start"});
+		ps = pB.start();
+		
 		System.out.println("Emulator is being restarted");
 		// Running command that waits emulator for idle state
 		//		System.out.println(Paths.get(Helper.getInstance().getCurrentDirectory(),extraPath,"./whileCommand").toAbsolutePath().toString());
