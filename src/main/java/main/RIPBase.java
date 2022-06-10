@@ -36,6 +36,7 @@ import helper.EmulatorHelper;
 import helper.Helper;
 import helper.ImageHelper;
 import hybridResources.JSConsoleReader;
+import me.tongfei.progressbar.ProgressBar;
 import model.AndroidNode;
 import model.State;
 import model.Transition;
@@ -211,6 +212,7 @@ public class RIPBase {
 			System.out.println("There are no Emulators running right now");
 			EmulatorHelper.startEmulatorWipeData(null);
 		}
+		EmulatorHelper.isEventIdle();
 
 		if(translateTo != null && !translateTo.equals("")){
 //			EmulatorHelper.clearData(packageName);
@@ -219,7 +221,7 @@ public class RIPBase {
 		System.out.println("test");
 
 		Helper.getInstance(folderName);
-
+		
 		// Captures the Android version of the device
 		try {
 			version = EmulatorHelper.getAndroidVersion();
@@ -227,22 +229,30 @@ public class RIPBase {
 			e.printStackTrace();
 		}
 		System.out.println(version);
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
-		System.out.println("should be starting activity");
 		
-		executorService.submit(new Callable() {
-			public String call() {
-				try {
-					EmulatorHelper.runFlutter(apkLocation);
-				} catch (IOException | RipException | InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					return "";
-				}
-				
+		appInstalled = EmulatorHelper.installAPK(apkLocation);
+		
+		if(!appInstalled) {
+			throw new RipException("APK could not be installed");
+			
+		}
+		
+		if(aapt == null) {
+			throw new RipException("AAPT was not set");
+		}
+		try {
+			packageName = EmulatorHelper.getPackageName(aapt, apkLocation);
+			EmulatorHelper.flutterMonkey(packageName);
+			ProgressBar pb = new ProgressBar("waiting for the app", 100);
+			pb.start();
+			for(int i = 5; i>0; i--) {
+				pb.stepBy(20);
+				TimeUnit.SECONDS.sleep(1);
 			}
-		});
+		}catch (IOException | RipException| InterruptedException e){
+			e.printStackTrace();
+		}
+		
 		EmulatorHelper.isEventIdle();
 
 		JSConsoleReader jsConsoleReader = null;
@@ -262,7 +272,7 @@ public class RIPBase {
 
 		buildFiles();
 		//Shutdown emulators
-		executorService.isShutdown();
+		
 		EmulatorHelper.shutdownEmulators();
 
 		System.out.println("EXPLORATION FINISHED, " + statesTable.size() + " states discovered, " + executedIterations + " events executed, in " + elapsedTime + " minutes");

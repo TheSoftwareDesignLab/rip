@@ -242,11 +242,11 @@ public class EmulatorHelper {
 		return ans;
 	}
 	public static void isEventIdle() throws IOException, InterruptedException {
-		TimeUnit.SECONDS.sleep(6);
+		TimeUnit.SECONDS.sleep(12);
 		System.out.println("Is event idle");
 	}
 	public static void isActionIdle() throws IOException, InterruptedException {
-		TimeUnit.SECONDS.sleep(6);
+		TimeUnit.SECONDS.sleep(12);
 	}
 	/*
 	public static void isEventIdle() throws IOException, InterruptedException {
@@ -1187,6 +1187,7 @@ public class EmulatorHelper {
 		return a;
 	}
 	
+
 	public static void runFlutter(String dir) throws IOException, RipException, InterruptedException {
 		System.out.println(dir);
 		List<String> commands = Arrays.asList("flutter","run");
@@ -1198,6 +1199,12 @@ public class EmulatorHelper {
 		//return ans;
 	}
 	
+	public static void flutterMonkey(String packageName) throws IOException, RipException {
+		//adb shell monkey -p co.banano.natriumwallet -c android.intent.category.LAUNCHER 1
+		List<String> commands = Arrays.asList("adb", "shell","monkey","-p", packageName, "-c", "android.intent.category.LAUNCHER", "1");
+		System.out.println("commands sent; running app");
+		List<String> answer = ExternalProcess2.executeProcess(commands, "GETTING PACKAGE NAME", null, null);
+	}
 
 
 	/**
