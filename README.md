@@ -1,7 +1,7 @@
 # RIP || RIPi18n || RIP Record&Replay || RIPRandom
 ### 2018, Universidad de los Andes - The Software Design Lab
 
-This repo stores the source code for 4 proyects, for more information about each one please visit its webpage or visit our shared page.
+This repo stores the source code for 4 projects, for more information about each one please visit its webpage or visit our shared page.
 
 ## RIP
 
